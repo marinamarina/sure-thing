@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %} League_table {% endblock %}
+
+{% block inner_container %}
+    <h4>Position | Team name | Matches played</h4>
+
+    <ul>
+    {% for value in league_table.values() %}
+        <li>{{value.position}} | {{value.team_name}} | {{value.matches_played}}</li>
+    {% endfor %}
+    </ul>
+<div></div>
+{% endblock %}

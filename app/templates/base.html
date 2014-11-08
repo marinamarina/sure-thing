@@ -1,0 +1,56 @@
+{% extends "bootstrap/base.html" %}
+{% block head %}
+    {{super()}}
+    {% block title %} Football app {% endblock %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/my_styles.css', _external=True) }}" />
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <script src="{{ url_for('static', filename='js/basic.js', _external=True) }} "></script>
+
+     {% block scripts %}
+        {{ super() }}
+     {% endblock %}
+{% endblock %}
+
+{% block navbar %}
+<div class="navbar navbar-inverse" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Home</a>
+        </div>
+        <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li><a href="/aboutMe">About me</a></li>
+                <li><a href="/leagueTable">League table</a></li>
+
+            </ul>
+        </div>
+        <!--header menu-->
+            {% include 'includes/header_menu.inc.html' %}
+        <!--/header menu-->
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+        {% for message in get_flashed_messages() %}
+            <div class="alert alert-warning">
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                {{ message }}
+            </div>
+        {% endfor %}
+        <div class="inner_container">
+            {% block inner_container %}
+            {% endblock %}
+            {% include 'includes/footer.inc.html' %}
+        </div>
+{% endblock %}
+{% block footer %}
+<script src="{{ url_for('static', filename='js/basic.js', _external=True) }} "></script>
+{% endblock %}

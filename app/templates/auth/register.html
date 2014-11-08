@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% import 'bootstrap/wtf.html' as wtf %}
+{% from 'includes/__formhelpers.html' import render_field %}
+{% block title %} <h2>Registration</h2> {% endblock %}
+
+{% block inner_container %}
+<form method="POST" >
+            <dl>
+               {{ render_field(form.email) }}
+               {{ render_field(form.username) }}
+               {{ render_field(form.password) }}
+               {{ render_field(form.password2) }}
+               {{ form.submit() }}
+            </dl>
+ </form>
+{% endblock %}
