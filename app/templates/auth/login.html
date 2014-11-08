@@ -1,21 +1,31 @@
 {% extends 'base.html' %}
-{% from 'includes/__formhelpers.html' import render_field %}
+{% from 'includes/__formhelpers.html' import render_field, render_checkbox, render_submit_field %}
 {% import "bootstrap/wtf.html" as wtf %}
 
 {% block title %}
-<h2>Login</h2>
+    {{ title }}
 {% endblock %}
 {% block inner_container %}
-<form method="POST">
-            <div class="block">
-                {{ form.email.label }} {{ form.email(id='name-field') }}
+<div id="login-overlay" class="modal-dialog">
+    <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title">{{title}}</h4>
             </div>
-            <div class="block">
-                {{ form.password.label }} {{ form.password(id='password-field') }}
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-xs-6">
+                        <div class="well">
+                            <form method="POST" class= "form-register" role="form">
+                            {{ render_field(form.email) }}
+                            {{ render_field(form.password) }}
+                            {{ render_checkbox(form.rememberMe) }}
+                            {{ render_submit_field(form.submit) }}
+                            </form>
+                        </div>
+                    </div>
+                </div>
             </div>
-             <div class="block">
-                {{ form.rememberMe.label }} {{ form.rememberMe(id='rememberMe-field') }}
-            </div>
-            {{ form.submit() }}
-        </form>
+ </div>
+
 {% endblock %}

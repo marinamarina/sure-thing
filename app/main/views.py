@@ -55,6 +55,46 @@ def index():
 
     return dict(  user=current_user) #posts=posts, form=form,
 
+#route decorators
+@main.route('/dashboard', methods=['POST', 'GET'])
+@templated()
+def dashboard():
+    show_followed=False
+
+    if current_user.is_authenticated():
+        #we get the value of the show_followed cookie from the request cookie dictionary
+        #and convert it to boolean
+        show_followed = bool(request.cookies.get('show_followed', ''))
+
+    '''if show_followed:
+        my_query = current_user.followed_posts
+    else:
+        my_query = Post.query'''
+
+    # define the form
+    '''form = BlogPostForm()
+    if (current_user.can(Permission.WRITE_ARTICLES)):
+        if form.is_submitted():
+            print "submitted"
+        if form.validate():
+            print "valid"
+            print form.errors
+        if form.validate_on_submit():
+            # redirect loop
+            post = Post(body_html=form.body_html.data, title=form.title.data, author_id=current_user.id)
+            try:
+                #add new post
+                db.session.add(post)
+                return redirect(url_for('.index'))
+            except Exception:
+                db.session.flush()
+            finally:
+                flash ("You have now been authorized!" + str(current_user.role))
+
+    posts = my_query.order_by(Post.timestamp.desc()).all()'''
+
+    return dict(  user=current_user) #posts=posts, form=form,
+
 '''
 @main.route('/show_all_posts')
 @login_required

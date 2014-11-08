@@ -1,12 +1,6 @@
 body {
     background: url('../img/soft_circle_scales.png') repeat #ffffff;
 }
-#submit {
-    background: violet;
-}
-dl {
-    margin: 20px 0 0 21px;
-}
 .auth {
     display: block;
     color: white;

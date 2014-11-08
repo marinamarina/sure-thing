@@ -1,21 +1,14 @@
 {% extends "base.html" %}
 {% from 'includes/__formhelpers.html' import render_field %}
 
+{% block title %}
+    Home page
+{% endblock %}
+
 {% block inner_container %}
-        <h1>That is an index page</h1>
+        <h1>That is a dashboard</h1>
         <p>Welcome to my website,
             {% if current_user.is_authenticated() %}{{ current_user.username }}{% else %} Stranger {% endif %}!
         </p>
-        {% if not known %}
-            <p>Pleased to meet you</p>
-        {% endif %}
-
-        <!--remove "not" when adding posts-->
-
-        {% if current_user.is_authenticated() %}
-
-
-        {% endif %}
-
 
 {% endblock %}

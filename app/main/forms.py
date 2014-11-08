@@ -18,17 +18,17 @@ class NameForm(CSRFDisabledForm):
     submit = SubmitField('Submit form')
 
 class LoginForm(CSRFDisabledForm):
-    email = StringField('Email', validators = [DataRequired(), Email()])
+    email = StringField('Email address', validators = [DataRequired(message= "Please enter your email!"), Email()])
     password = PasswordField('Password')
-    rememberMe = BooleanField('RememberMe')
+    rememberMe = BooleanField('Remember me')
     submit = SubmitField('Login')
 
 class RegistrationForm(CSRFDisabledForm):
-    email = StringField('Email', [DataRequired(), Email(), validator_user_already_registered()])
-    username = StringField('Username', [Length(1,64), validator_user_already_registered()])
-    password = PasswordField('Password', validators=[DataRequired(message= "Please enter a valid password!"), EqualTo('password2', message= "Passwords must match!" )])
-    password2 = PasswordField('Confirm Password', validators=[DataRequired(message= "Please confirm your password!")])
-    submit = SubmitField('Register User')
+    email = StringField('Email', description='Email address', validators=[DataRequired(), Email(), validator_user_already_registered()])
+    username = StringField('Username', description='Username', validators=[Length(1,64), validator_user_already_registered()])
+    password = PasswordField('Password', description='Password', validators=[DataRequired(message= "Please enter a valid password!"), EqualTo('password2', message= "Passwords must match!" )])
+    password2 = PasswordField('Confirm Password', description='Confirm Email', validators=[DataRequired(message= "Please confirm your password!")])
+    submit = SubmitField('Register')
 
 class PasswordChangeForm(CSRFDisabledForm):
     old_password = StringField('Old Password', validators=[DataRequired()])
