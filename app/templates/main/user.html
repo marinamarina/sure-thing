@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% block title %}
+   Profile | {{ user.username }}
+{% endblock %}
+{% block inner_container %}
+    <div class="column vcard" itemscope="" itemtype="http://schema.org/Person">
+     <div class="left-column">
+        <a href="/account" class="vcard-avatar"><img alt="" class="avatar" data-user="{{user.id}}" height="230" width=230 src="{{user.avatar()}}"></a>
+      </div>
+      <div class="right-column">
+        <h1 class="vcard-names">
+        {% if user.real_name %}
+        <span class="vcard-fullname" itemprop="realName">{{user.real_name}}</span>, для друзей
+        {% endif %}
+        <span class="vcard-username" itemprop="username">{{user.username}}</span>
+      </h1>
+      <ul class="vcard-details">
+        <li class="vcard-detail" itemprop="homeLocation"><span class="location"> Lives: {{user.location}}</span></li>
+        <li class="vcard-detail"><span class="mail">Email: </span><a class="email" href="mailto:{{user.email}}">{{user.email}}</a></li>
+        {% if user.about_me %}
+        <li class="vcard-detail"><span class="clock"></span><span class="join-label" style="text-decoration: indigo">About user: {{user.about_me}}</span></li>
+        {% endif %}
+        <li class="vcard-detail"><span class="clock"></span><span class="join-label">Joined us on: </span><time class="join-date" datetime="{{user.member_since}}" day="numeric" is="local-time" month="short" year="numeric" title="Jan 29, 2013, 9:17 AM GMT">{{user.member_since}}</time></li>
+        <li class="vcard-detail"><span class="clock"></span><span class="join-label">Last seen: </span><time class="last-seen-date" datetime="{{user.last_seen}}" day="numeric" is="local-time" month="short" year="numeric" title="Jan 29, 2013, 9:17 AM GMT">{{user.last_seen}}</time></li>
+      </ul>
+          <!--Social connections-->
+      <div class="buttons">
+      {% if current_user.id != user.id %}
+          {% if current_user.is_authenticated() and not current_user.is_following(user) %}
+            <a href="{{ url_for('.follow', username=user.username) }}" class="btn btn-primary">Follow </a>
+          {% endif %}
+          {% if current_user.is_authenticated() and current_user.is_following(user) %}
+            <a href="{{ url_for('.unfollow', username=user.username) }}" class="btn btn-primary">Unfollow </a>
+          {% endif %}
+          <a href="{{ url_for('.show_followers', username=user.username) }}">Followers: <span class="badge">{{ user.followers.count()-1 }}</span></a>
+          <a href="{{ url_for('.show_followed_users', username=user.username) }}">| Following: <span class="badge">{{ user.followed.count()-1 }}</span> </a>
+
+          {% if current_user.is_authenticated() and current_user.id != user.id and user.is_following(current_user) %}
+            <span>| Follows you</span>
+          {% endif %}
+     {% endif %}
+          <!--/Social connections-->
+      </div>
+       </div>
+
+    </div>
+    <h3>Posts by {{user.username}}</h3>
+    {% include 'includes/posts.inc.html' %}
+
+{% endblock %}

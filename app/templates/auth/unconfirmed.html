@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% block title %}
+<h2>Login</h2>
+{% endblock %}
+{% block inner_container %}
+<p>
+    Dear {{ current_user.username }}, you have not confirmed your account yet.
+    Please, confirm your account before you can access this site.
+    If you have not received your verification email, please <a href="{{ url_for('auth.resend_verification_email') }} ">click here</a>
+</p>
+{% endblock %}

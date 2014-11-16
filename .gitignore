@@ -59,6 +59,3 @@ target/
 # Other
 .DS_Store
 .idea/*
-
-*
-!.gitignore

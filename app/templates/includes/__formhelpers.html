@@ -1,0 +1,35 @@
+{# All macros are using bootstrap css styles #}
+
+{# Macro to render standard form fields #}
+{% macro render_field(field) %}
+  <div class="form-group">
+        {{ field.label }}
+        {{ field(class_="form-control", placeholder=field.description, required="true", autofocus="true")|safe }}
+        {% if field.errors %}
+           <ul class=errors>
+               {% for error in field.errors %}
+                    <li>{{ error }}</li>
+               {% endfor %}
+           </ul>
+        {% endif %}
+  </div>
+
+
+{% endmacro %}
+
+{# Special macro to render checkboxes #}
+{% macro render_checkbox(field) %}
+<div class="checkbox">
+    {{ field }} {{ field.label }}
+   <!--label>
+       <input type="checkbox" value="{{ field.name }}">
+                    {{ field.description }}
+   </label-->
+</div>
+{% endmacro %}
+
+{# Special macro to render a submit form field #}
+{% macro render_submit_field(field) %}
+   {{ field(class_="btn btn-lg btn-primary btn-block") }}
+{% endmacro %}
+

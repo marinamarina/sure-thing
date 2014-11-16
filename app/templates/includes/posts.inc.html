@@ -1,0 +1,39 @@
+<!--posts include-->
+<div class="posts">
+    {% for post in posts %}
+    <div class="blog-post">
+
+            <h2 class="blog-post-title">
+                <a href="/" rel="bookmark">{{post.title}}</a>
+            </h2>
+            <ul class="blog-post-meta">
+                <li class="meta-item-avatar">
+                    <img alt="{{ post.author.real_name or post.author.username }}" class="author-avatar" data-user="123345" height="80" src="{{post.author.avatar()}}" width="80">
+                </li>
+                <li class="meta-item-username">
+                    <a href="/user/{{post.author.username}}">{{post.author.username}} </a>
+                </li>
+
+            </ul>
+            <div class="blog-post-body">
+                {% if post.body_html %}
+                    <!-- "safe" options tells jinja not to escape the html elements -->
+                    {{ post.body_html | safe }}
+                {% endif %}
+            </div>
+             <div class="blog-post-footer">
+                <a href="{{ url_for('.post', id=post.id) }} "><span class="label label-default">Permalink to the post</span></a>
+                 {% if current_user.id==post.author.id or current_user.can(Permission.ADMINISTER)  %}
+                    <a href="{{ url_for('.post_editor', id=post.id) }} "><span class="label label-default">Edit post</span></a>
+                 {% endif %}
+                 {% if post.edited == True  %}
+                    <span class="label label-default">Edited</span>
+                 {% endif %}
+                 <a href="{{ url_for('.post', id=post.id) }}"><span class="label label-primary">{{ post.comments.count() }} Comment{% if post.comments.count() > 1 or post.comments.count() == 0 %}s{% endif %} > </span></a>
+
+             </div>
+    </div>
+    {% endfor %}
+
+</div>
+<!--/posts include-->

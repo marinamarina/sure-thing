@@ -1,0 +1,7 @@
+<p>Dear {{ user.username }}, to receive emails from us in the future, please confirm your email address.<br />
+All it takes is a single click:<br />
+<a href="{{ url_for('auth.verify', token=token, _external=True) }}">Click here to verify your email address</a>
+<br />
+If the above link is not clickable, copy and paste this link into your web browser's address bar:</p>
+
+<p>{{ url_for('auth.verify', token=token, _external=True) }}</p>

@@ -1,0 +1,5 @@
+Dear {{user.username}}, to receive email from us, confirm your email address.
+
+Please, copy and paste this link into your web browser's address bar to verify your account:
+
+{{ url_for('auth.verify', token=token, _external=True) }}
