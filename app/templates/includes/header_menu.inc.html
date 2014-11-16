@@ -11,7 +11,6 @@
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="navbar-collapse collapse" id="bs-example-navbar-collapse-1" style="height: 1px;">
             <ul class="nav navbar-nav">
-                <li class="active"><a href="#"><span class="glyphicon glyphicon-home"></span>Dashboard</a></li>
                 <li><a href="#"><span class="glyphicon glyphicon-info-sign"></span>Help</a></li>
                 <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-search"></span>Search <b class="caret"></b></a>
                     <ul class="dropdown-menu" style="min-width: 300px;">
@@ -36,16 +35,17 @@
             <ul class="nav navbar-nav navbar-right">
 
             {% if current_user.is_authenticated() %}
-            <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-user"> Hi,{{current_user.username}}!</span> <b class="caret"></b></a>
-                    <ul class="dropdown-menu">
+            <li class="dropdown"><a href="{{ url_for('main.dashboard') }}" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-user"> Hi,{{current_user.username}}!</span> <b class="caret"></b></a>
+            <li><a href="{{url_for('auth.logout') }}"><span class="glyphicon glyphicon-off"></span>Logout</a></li>
+                    <!--ul class="dropdown-menu">
                         <li><a href="{{ url_for('auth.profile', user=current_user.username) }}"><span class="glyphicon glyphicon-user"></span>Profile</a></li>
                         <li><a href="{{ url_for('auth.change_password') }}"><span class="glyphicon glyphicon-cog"></span>Change Password</a></li>
-                        {% if current_user.can(Permission.MODERATE_COMMENTS) %}
+                        {% if not current_user.can(Permission.MODERATE_COMMENTS) %}
                             <li><a href="{{url_for('main.moderate') }}"> Moderate comments </a></li>
                         {% endif %}
                         <li class="divider"></li>
-                        <li><a href="{{url_for('auth.logout') }}"><span class="glyphicon glyphicon-off"></span>Logout</a></li>
-                    </ul>
+
+                    </ul-->
             </li>
              {% else %}
                  <li class="auth"><a href="{{url_for('auth.login') }}"> Sign In</a></li>
