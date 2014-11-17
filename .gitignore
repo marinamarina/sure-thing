@@ -56,6 +56,9 @@ docs/_build/
 # PyBuilder
 target/
 
+# Grunt
+node_modules/*
+
 # Other
 .DS_Store
 .idea/*
