@@ -1,0 +1,95 @@
+<!--header menu include-->
+<!--div class="container-fluid">
+<nav class="navbar navbar-default" role="navigation">
+        <!-- Brand and toggle get grouped for better mobile display
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span> <span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="http://www.jquery2dotnet.com">Brand</a>
+        </div>
+       
+        <div class="navbar-collapse collapse" id="bs-example-navbar-collapse-1" style="height: 1px;">
+            <ul class="nav navbar-nav">
+                <li><a href="#"><span class="glyphicon glyphicon-info-sign"></span>Help</a></li>
+                <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-search"></span>Search <b class="caret"></b></a>
+                    <ul class="dropdown-menu" style="min-width: 300px;">
+                        <li>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <form class="navbar-form navbar-left" role="search">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" placeholder="Search">
+                                        <span class="input-group-btn">
+                                            <button class="btn btn-primary" type="button">
+                                                Go!</button>
+                                        </span>
+                                    </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+
+            {% if current_user.is_authenticated() %}
+            <li class="dropdown"><a href="{{ url_for('main.dashboard') }}" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-user"> Hi,{{current_user.username}}!</span> <b class="caret"></b></a>
+            <li><a href="{{url_for('auth.logout') }}"><span class="glyphicon glyphicon-off"></span>Logout</a></li>
+                    <ul class="dropdown-menu">
+                        <li><a href="{{ url_for('auth.profile', user=current_user.username) }}"><span class="glyphicon glyphicon-user"></span>Profile</a></li>
+                        <li><a href="{{ url_for('auth.change_password') }}"><span class="glyphicon glyphicon-cog"></span>Change Password</a></li>
+                        {% if not current_user.can(Permission.MODERATE_COMMENTS) %}
+                            <li><a href="{{url_for('main.moderate') }}"> Moderate comments </a></li>
+                        {% endif %}
+                        <li class="divider"></li>
+
+                    </ul>
+            </li>
+             {% else %}
+                 <li class="auth"><a href="{{url_for('auth.login') }}"> Sign In</a></li>
+                 <li class="auth"> New User? <a href="{{url_for('auth.register') }}">Register Now</a></li>
+
+             {% endif %}
+
+            </ul>
+        </div>
+    </nav>
+
+<ul class="navbar-nav navbar-right">
+
+
+
+</ul>
+
+</div-->
+
+<!-- Navigation bar -->
+    <div class="navbar navbar-inverse navbar-fixed-top headroom" >
+        <div class="container">
+            <div class="navbar-header">
+                <!-- Button for smallest screens -->
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse"><span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span> </button>
+                <a class="navbar-brand" href="/"><img src="{{url_for('static', filename="img/logo.png", _external=True) }}" height="64px" width="64px" alt="#" /></a>
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav pull-right">
+                    <li class="active"><a href="/">Home</a></li>
+                    {% if current_user.is_authenticated() %}
+                        <li><a href="{{ url_for('main.dashboard') }}">Dashboard</a></li>
+                    {% endif %}
+                    <li><a href="contact.html">Help</a></li>
+                    <li><a class="btn" href="{{url_for('auth.login') }}">SIGN IN | REGISTER</a></li>
+                    {% if current_user.is_authenticated() %}
+                        <img alt="avatar" class="img-circle" data-user="{{user.id}}" height="38" width=38 src="{{user.avatar()}}" />
+                        <p style="color:white">{{user.username}}</p>
+                    {% endif %}
+                </ul>
+            </div><!--/.nav-collapse -->
+        </div>
+    </div> 
+    <!-- /Navigation bar -->
+
+
+<!--/header menu include -->

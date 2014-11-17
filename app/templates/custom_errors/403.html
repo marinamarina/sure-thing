@@ -3,5 +3,5 @@
 {% block title %}Keekaboo!{% endblock %}
 {% block inner_container %}
         <h1>Keekaboo! Access is forbidden</h1>
-        <img src="../../static/img/cat_http_403.jpg" />
+        <img src="{{url_for('static', filename="img/cat_http_403.jpg", _external=True) }}" />
 {% endblock %}

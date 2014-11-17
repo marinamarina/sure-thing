@@ -1,29 +1,38 @@
 {% extends "bootstrap/base.html" %}
-{% block title %} Sure thing {% endblock %}
+{% block body_attribs %} class="home"{% endblock %}
 
-{% block head %}
-    {{super()}}
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/my_styles.css', _external=True) }}" />
-    <link rel="stylesheet" media="screen" href="http://fonts.googleapis.com/css?family=Open+Sans:300,400,700" />
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/font-awesome.min.css', _external=True) }}" />
+<html>
 
-    <!-- Custom styles for our template -->
-	<link rel="stylesheet" href="assets/css/bootstrap-theme.css" media="screen" >
-	<link rel="stylesheet" href="assets/css/main.css">
+    <link rel="Shortcut Icon" href="{{ url_for('static', filename='favicon.png') }}" type="image/x-icon" />
+    {% block styles %}
+        {{ super() }}
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/my_styles.css', _external=True) }}" />
+        <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:300,400,700" media="screen" />
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/font-awesome.min.css', _external=True) }}" />
 
-	<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
-	<!--[if lt IE 9]>
-	    <script src="assets/js/html5shiv.js"></script>
-	    <script src="assets/js/respond.min.js"></script>
-	<![endif]-->
+        <!-- Custom styles for our template -->
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap-theme.css', _external=True) }}" media="screen" />
 
-{% endblock %}
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css', _external=True) }}" />
+
+    {% endblock styles %}
+    {% block title %} {{ super() }} Sure thing {% endblock title %}
+    <!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+    <!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+    <!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+    <!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+       <!--[if lt IE 9]>
+        <script src="js/html5shiv.js"></script>
+        <script src="js/respond.min.js"></script>
+       <![endif]-->
 
 {% block navbar %}
 <!--header menu-->
-    {% include 'includes/header_menu.inc.html' %}
+    {% include 'includes/navigation.inc.html' %}
 <!--/header menu-->
-{% endblock %}
+{% endblock navbar %}
 
 {% block content %}
         {% for message in get_flashed_messages() %}
@@ -37,16 +46,15 @@
             {% endblock %}
             {% include 'includes/footer.inc.html' %}
         </div>
-{% endblock %}
+{% endblock content %}
+
 {% block footer %}
-
-{% endblock %}
-
+    {[ super() ]}
+{% endblock footer %}
 
 
 {% block scripts %}
-    {{ super() }}
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
     <script src="{{ url_for('static', filename='js/basic.js', _external=True) }} "></script>
-{% endblock %}
+    {{ super() }}
+{% endblock scripts %}

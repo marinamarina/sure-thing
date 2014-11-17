@@ -1,0 +1,28 @@
+{
+  "name": "surething",
+  "version": "0.0.1",
+  "description": "betting system application",
+  "main": "Gruntfile.js",
+  "dependencies": {
+    "grunt": "~0.4.1"
+  },
+  "devDependencies": {
+    "grunt": "latest",
+    "load-grunt-tasks": "~0.2.0",
+    "grunt-cli": "~0.1.11",
+    "grunt-contrib-concat": "^0.5.0",
+    "grunt-contrib-jshint": "^0.10.0",
+    "grunt-contrib-uglify": "^0.5.1",
+    "grunt-contrib-clean": "^0.6.0",
+    "grunt-contrib-watch": "^0.6.1",
+    "grunt-contrib-sass": "~0.6.0",
+    "time-grunt": "~0.4.0",
+    "grunt-contrib-htmlmin": "~0.1.3",
+    "nodemon": "latest"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "marinashchukina",
+  "license": "BSD"
+}
