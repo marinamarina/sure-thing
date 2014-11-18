@@ -27,7 +27,7 @@ class RegistrationForm(CSRFDisabledForm):
     email = StringField('Email', description='Email address', validators=[DataRequired(), Email(), validator_user_already_registered()])
     username = StringField('Username', description='Username', validators=[Length(1,64), validator_user_already_registered()])
     password = PasswordField('Password', description='Password', validators=[DataRequired(message= "Please enter a valid password!"), EqualTo('password2', message= "Passwords must match!" )])
-    password2 = PasswordField('Confirm Password', description='Confirm Email', validators=[DataRequired(message= "Please confirm your password!")])
+    password2 = PasswordField('Confirm Password', description='Confirm Password', validators=[DataRequired(message= "Please confirm your password!")])
     submit = SubmitField('Register')
 
 class PasswordChangeForm(CSRFDisabledForm):

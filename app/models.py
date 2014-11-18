@@ -19,7 +19,7 @@ class Permission:
     MODERATE_COMMENTS = 0x08
     ADMINISTER = 0x80
 
-#Models definitions
+# Defining models
 class Role(db.Model):
     __tablename__ = 'roles'
     id = db.Column(db.Integer, primary_key=True)
@@ -287,4 +287,67 @@ login_manager.anonymous_user = AnonymousUser
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
+
+class Team(db.Model):
+    __tablename__ = 'teams'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.DateTime(), unique=True)
+    league_position = db.Column(db.Integer, unique=True)
+
+    @staticmethod
+    def insert_old_matches():
+        pass
+
+
+class Match(db.Model):
+    __tablename__ = 'matches'
+    id = db.Column(db.Integer, primary_key=True)
+    date = db.Column(db.DateTime())
+    time = db.Column(db.DateTime())
+    localteam_id = db.Column(db.Integer, db.ForeignKey('teams.id'))
+    awayteam_id = db.Column(db.Integer, db.ForeignKey('teams.id'))
+    localteam_name = db.Column(db.String(64))
+    awayteam_name = db.Column(db.Integer, primary_key=True)
+    #users = db.relationship('User', backref='role', lazy='dynamic')
+
+    @staticmethod
+    def insert_old_matches():
+        pass
+        '''games = {
+            'User': (Permission.FOLLOW |
+                     Permission.COMMENT |
+                     Permission.WRITE_ARTICLES, True),
+            'Moderator': (Permission.FOLLOW |
+                          Permission.COMMENT |
+                          Permission.WRITE_ARTICLES |
+                          Permission.MODERATE_COMMENTS, False),
+            'Administrator': (0xff, False)
+        }
+        for r in roles:
+            role = Role.query.filter_by(name=r).first()
+            if role is None:
+                role = Role(name=r)
+            role.permissions = roles[r][0]
+            role.default = roles[r][1]
+            db.session.add(role)
+        db.session.commit()'''
+
+    def __repr__(self):
+        return '<Match %r vs. %r>' % (self.localteam_name, self.awayteam_name)
+
+'''class Follow(db.Model):
+    __tablename__='follows'
+    follower_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
+    followed_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow)
+
+class Play (db.Model):
+    __tablename='plays'
+    localteam_id = db.Column(db.Integer, db.ForeignKey('matches.id')
+    Match,match_table,properties={
+      'team1':relationship(Team, foreign_keys=[match_table.c.matchTeam1],
+          primaryjoin=match_table.c.matchTeam1==team_table.teamID),
+      'team2':relationship(Team, foreign_keys=[match_table.c.matchTeam2],
+          primaryjoin=match_table.c.matchTeam2==team_table.teamID),
+    })'''
 

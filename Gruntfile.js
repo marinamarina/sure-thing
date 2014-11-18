@@ -6,8 +6,8 @@ module.exports = function(grunt) {
     require('time-grunt')(grunt);
 
   /**
-     * Project initial configuration
-     */
+    * Project initial configuration
+    */
   grunt.initConfig({
     // Metadata.
     pkg: grunt.file.readJSON('package.json'),
@@ -18,67 +18,42 @@ module.exports = function(grunt) {
       ' Licensed <%= _.pluck(pkg.licenses, "type").join(", ") %> */\n',
     
     // Task configuration.
+    // Concatenate
     concat: {
       options: {
-        banner: '<%= banner %>',
-        stripBanners: true
+          banner: "/* CSS files concatenated |  <%= grunt.template.today('dd-mm-yyyy') %> */\n",
       },
-      dist: {
-        src: ['lib/<%= pkg.name %>.js'],
-        dest: 'dist/<%= pkg.name %>.js'
-      }
-    },
-    uglify: {
-      options: {
-        banner: '<%= banner %>'
-      },
-      dist: {
-        src: '<%= concat.dist.dest %>',
-        dest: 'dist/<%= pkg.name %>.min.js'
-      }
-    },
-    jshint: {
-      options: {
-        curly: true,
-        eqeqeq: true,
-        immed: true,
-        latedef: true,
-        newcap: true,
-        noarg: true,
-        sub: true,
-        undef: true,
-        unused: true,
-        boss: true,
-        eqnull: true,
-        browser: true,
-        globals: {
-          jQuery: true
-        }
+      target: {
+        src: ["app/static/css/*.css"],
+        dest: "app/static/cssall/main.css"
+            }
+        },
+      jshint: {
+        options: {
+          curly: true,
+          eqeqeq: true,
+          immed: true,
+          latedef: true,
+          newcap: true,
+          noarg: true,
+          sub: true,
+          undef: true,
+          unused: true,
+          boss: true,
+          eqnull: true,
+          browser: true,
+          globals: {
+            jQuery: true
+          }
       },
       gruntfile: {
         src: 'Gruntfile.js'
-      },
-      lib_test: {
-        src: ['lib/**/*.js', 'test/**/*.js']
-      }
-    },
-    qunit: {
-      files: ['test/**/*.html']
-    },
-    watch: {
-      gruntfile: {
-        files: ['<%= jshint.gruntfile.src %>', 'scss/main.scss'],
-        tasks: ['jshint:gruntfile', 'default']
-      },
-      lib_test: {
-        files: '<%= jshint.lib_test.src %>',
-        tasks: ['jshint:lib_test', 'qunit']
       }
     },
     sass: {                              // Task
       dist: {                            // Target
         files: {                         // Dictionary of files
-          'static/css/test.css': 'static/scss/main.scss'      // 'destination': 'source'
+          'app/static/css/main.css': 'app/static/scss/main.scss'      // 'destination': 'source'
         }
       },
       dev: {                             // Another target
@@ -86,8 +61,14 @@ module.exports = function(grunt) {
           style: 'expanded'
         },
         files: {
-          'static/css/test.css': 'static/scss/main.scss'
+          'app/static/css/main.css': 'app/static/scss/main.scss'
         }
+      }
+    },
+    watch: {
+      sass: {
+        files: ['Gruntfile.js', './app/static/scss/*'],
+        tasks: ['default']
       }
     }
   });
@@ -95,13 +76,13 @@ module.exports = function(grunt) {
   // These plugins provide necessary tasks.
   grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-contrib-uglify');
-  grunt.loadNpmTasks('grunt-contrib-qunit');
+  grunt.loadNpmTasks('grunt-contrib-jasmine');
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-contrib-sass');
 
   // Default task.
   //grunt.registerTask('default', ['jshint', 'qunit', 'concat', 'uglify', 'sass']);
-  grunt.registerTask('default', ['sass']);
+  grunt.registerTask('default', ['sass', 'concat']);
 
 };

@@ -57,8 +57,12 @@ docs/_build/
 target/
 
 # Grunt
-node_modules/*
+.grunt
+node_modules
+tmp
+npm-debug.log
 
 # Other
 .DS_Store
 .idea/*
+.sass-cache

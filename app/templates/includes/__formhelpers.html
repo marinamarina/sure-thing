@@ -2,34 +2,32 @@
 
 {# Macro to render standard form fields #}
 {% macro render_field(field) %}
-  <div class="form-group">
-        {{ field.label }}
-        {{ field(class_="form-control", placeholder=field.description, required="true", autofocus="true")|safe }}
-        {% if field.errors %}
-           <ul class=errors>
-               {% for error in field.errors %}
-                    <li>{{ error }}</li>
-               {% endfor %}
-           </ul>
-        {% endif %}
-  </div>
+    <div class="top-margin">
+      {{ field.label }} <span class="text-danger">*</span>
+      {{ field(class_="form-control", required="true", autofocus="true")|safe }}
+    </div>
+    {% if field.errors %}
+      <ul class=errors>
+        {% for error in field.errors %}
+              <li>{{ error }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
 
 
 {% endmacro %}
 
-{# Special macro to render checkboxes #}
+{# Macro to render checkboxes #}
 {% macro render_checkbox(field) %}
-<div class="checkbox">
+  <div class="col-lg-8">
     {{ field }} {{ field.label }}
-   <!--label>
-       <input type="checkbox" value="{{ field.name }}">
-                    {{ field.description }}
-   </label-->
-</div>
+  </div>
 {% endmacro %}
 
-{# Special macro to render a submit form field #}
+{# Macro to render a submit form field #}
 {% macro render_submit_field(field) %}
-   {{ field(class_="btn btn-lg btn-primary btn-block") }}
+  <div class="col-lg-4 text-right pull-right">
+      {{ field(class_="btn btn-action") }}
+  </div>
 {% endmacro %}
 

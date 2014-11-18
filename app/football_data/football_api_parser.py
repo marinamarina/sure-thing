@@ -28,6 +28,16 @@ class FootballAPIWrapper:
             season_began_in_year = current_year - 1
         return season_began_in_year
 
+    @staticmethod
+    def get_end_year(current_month, current_year):
+        'checking in which year the season began'
+        if current_month > 7:
+            season_ends_in_year = current_year + 1
+        else:
+            season_ends_in_year = current_year
+        return season_ends_in_year
+
+
     def call_api(self, action=None, **kwargs):
         """ Call the Football API
         :param action: Football API action: competition, standings, today, fixtures, commentaries
@@ -114,6 +124,19 @@ class FootballAPIWrapper:
 
         return league_table
 
+    def get_upcoming_fixtures(self):
+        action = 'fixtures'
+        params = {'from_date': '01.08.' + str(self.date_tuple.today), 'to_date' : str(self.date_tuple.today)}
+
+        data_matches = self.call_api(action, **params)
+
+        for match in data_matches["matches"]:
+            if match["match_status"] == "FT":
+                if match["match_localteam_id"] == '9260' or match["match_visitorteam_id"] == '9260':
+                    pass
+                    #print match["match_formatted_date"], match["match_localteam_name"], match["match_visitorteam_name"], match["match_ft_score"]
+
+
     @property
     def api_key(self):
         raise AttributeError('API is a non-readable attribute!')
@@ -138,8 +161,10 @@ class FootballAPIWrapper:
         today_formatted = today.strftime("%d.%m.%Y")
 
         beginning_year = self.get_beginning_year(today.month, today.year)
-        Dates = namedtuple("Dates", "today month beginning_year")
-        return Dates(today_formatted, today.month, beginning_year)
+        end_year = self.get_beginning_year(today.month, today.year)
+
+        Dates = namedtuple("Dates", "today month beginning_year end_year")
+        return Dates(today_formatted, today.month, beginning_year, end_year)
 
 
 '''

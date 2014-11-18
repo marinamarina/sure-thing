@@ -1,8 +1,40 @@
-{% extends 'base.html' %}
-{% block title %}
-<h2>Manage your profile</h2>
-{% endblock %}
+
+<div class="fixedHeader">
+            <div class="titleBar centeredWithinWrapper gridWidth">
+                <div class="fixedHeaderNameAndImage" style="bottom: 70px;">
+                    <div class="fixedHeaderImage">
+                        <img src="http://media-cache-ak0.pinimg.com/avatars/marinascukina_1413825827_140.jpg" style="" alt="Marina Shchukina">
+
+                    </div>
+                    <div class="fixedHeaderName" itemprop="name">
+                        Marina Shchukina
+                    </div>
+                </div>
+              <div class="buttons">
+                <button type="button" class="editProfile hasText rounded ShowModalButton Button primary Module ajax btn"><span class="buttonText">Edit profile</span></button>
+              <em></em>
+              <span class="accessibilityText">User menu</span></button>
+                </div>
+            </div>
+            <div class="divider centeredWithinWrapper gridWidth">
+                <hr>
+            </div>
+        </div>
 {% block inner_container %}
+
+  <div class="profile-info">
+      <div class="about-bar">
+          <div class="about">
+            <div class="name">Marina Shchukina</div>
+                    <div class="profile-info_avatar">
+                        
+                    </div>
+          </div>
+      </div>
+  </div>
+
+
+
     <div class="column vcard" itemscope="" itemtype="http://schema.org/Person">
         <a href="/account" class="vcard-avatar"><img alt="" class="avatar" data-user="{{user.id}}" height="230" width=230 src="{{user.avatar()}}"></a>
 
@@ -33,9 +65,7 @@
 
       </ul>
     </div>
-    <div class="column vcard"">
 
-    </div>
 
 
 {% endblock %}

@@ -58,6 +58,7 @@ def index():
 #route decorators
 @main.route('/dashboard', methods=['POST', 'GET'])
 @templated()
+@login_required
 def dashboard():
     show_followed=False
 

@@ -1,82 +1,193 @@
-/* Header */
-#head { background:#181015 url( ../img/stadium.jpg) no-repeat; background-size: cover; min-height:520px; text-align: center; padding-top:240px; color:white; font-family:"Open sans", Helvetica, Arial; font-weight:300; }
-#head.secondary { height:100px; min-height: 100px; padding-top:0px; }
-	#head .lead { font-family:"Open sans", Helvetica, Arial; font-size:44px; margin-bottom:6px; color:white; line-height:1.15em; } 
-	#head .tagline { color:rgba(255,255,255,0.75); margin-bottom:25px; }
-		#head .tagline a { color:#fff; } 
-	#head .btn { margin-bottom:10px;}
-	#head .btn-default { text-shadow: none; background:transparent; color:rgba(255,255,255,.5); -webkit-box-shadow:inset 0px 0px 0px 3px rgba(255,255,255,.5); -moz-box-shadow:inset 0px 0px 0px 3px rgba(255,255,255,.5); box-shadow:inset 0px 0px 0px 3px rgba(255,255,255,.5); background: transparent; }
-		#head .btn-default:hover,
-		#head .btn-default:focus { color:rgba(255,255,255,.8); -webkit-box-shadow:inset 0px 0px 0px 3px rgba(255,255,255,.8); -moz-box-shadow:inset 0px 0px 0px 3px rgba(255,255,255,.8); box-shadow:inset 0px 0px 0px 3px rgba(255,255,255,.8); background: transparent; }
-		#head .btn-default:active, 
-		#head .btn-default.active { color:#fff; -webkit-box-shadow:inset 0px 0px 0px 3px #fff; -moz-box-shadow:inset 0px 0px 0px 3px #fff; box-shadow:inset 0px 0px 0px 3px #fff; background: transparent; }
-
-@media (max-width: 767px) {
-	#head { min-height:420px; padding-top:160px; }
-	#head .lead { font-size: 34px; }
+/* Layout specific */
+.secondary-small {
+  height: 100px;
+  min-height: 100px;
+  padding-top: 0px;
 }
 
+/* General styles */
+.img-circle {
+  border-radius: 50%;
+}
 
-/* Autohide navbar */
-.slideUp { top:-100px; }
-.headroom { -webkit-transition: all 0.4s ease-out; -moz-transition: all 0.4s ease-out; -o-transition: all 0.4s ease-out; transition: all 0.4s ease-out; }
+.indented {
+  margin-left: 20px;
+}
 
+.btn-round {
+  border-width: 1px;
+  border-radius: 30px !important;
+  opacity: 0.79;
+}
 
-/* Highlights (in jumbotron in most cases) */
-.highlight { margin-top:40px; }
-	.h-caption { text-align: center; } 
-	.h-caption i { display:block; font-size: 54px; color:#382526; margin-bottom:36px; }
-	.h-caption h4 { color:#382526; font-size: 16px; font-weight: bold; margin-bottom:20px; }
-	.h-body { }
+/* Navbar */
+.right-navbar-content p {
+  color: white;
+}
+.right-navbar-content a:nth-child(0) {
+  height: 42px;
+}
 
+/* Header */
+.head {
+  background: white url(../img/stadium2.jpg) no-repeat 30% 87%;
+}
 
-/* Typography */
-h1, h2, h3, h4, h5, h6 { font-family:"Open sans", Helvetica, Arial; }
-h1, .h1, h2, .h2, h3, .h3 { margin-top:30px; } 
-blockquote { font-style: italic; font-family: Georgia; color:#999; margin:30px 0 30px; }
-label { color: #777; }
-.thin { font-weight:300; }
-.page-title { margin-top:20px; font-weight:300; }
-.text-muted { color:#888; }
-.breadcrumb { background:none; padding:0; margin:30px 0 0px 0; }
-ul.list-spaces li{ margin-bottom:10px; }
+.dashboard {
+  padding-top: 100px;
+  background: #FFFFFF;
+  color: #505050 !important;
+  height: 278px;
+  min-height: initial;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
+}
 
-/* Helpers */
-.container-full { margin: 0 auto; width: 100%; }
-.top-space { margin-top: 60px; }
-.top-margin { margin-top:20px; }
+/* User profile */
+.user-profile_image {
+  /*margin: 0 auto -87px;*/
+  margin: 0 auto;
+  padding-top: 18px;
+  position: relative;
+  height: 80px;
+  z-index: 104;
+}
+.user-profile_image img {
+  border-radius: 100%;
+  box-shadow: inset 0 0 0 -2px rgba(255, 255, 255, 0.48), 0 0 0 1px rgba(0, 0, 0, 0.14), 0 0 0 8px white;
+  height: 60px;
+  width: 60px;
+}
 
-img { max-width:100%; }
-img.pull-right { margin-left: 10px; }
-img.pull-left { margin-right: 10px; }
-#map { width:100%; height:280px; }
-#social { margin-top:50px; margin-bottom:50px; }
-	#social .wrapper { width:340px; margin:0 auto; }
+.user-profile_fixed {
+  background: #FFFFFF;
+  left: 0;
+  position: fixed;
+  right: 0;
+  top: 130px;
+  z-index: 103;
+}
 
-/* Main content block */
-.maincontent { }
+.user-profile_info {
+  padding: 14px;
+  padding-bottom: 0px;
+}
 
-/* Sidebars */
-.sidebar { padding-top:36px; padding-bottom:30px; }
-	.sidebar .widget { margin-bottom:20px; }
-	.sidebar h1, .sidebar .h1, .sidebar h2, .sidebar .h2, .sidebar h3, .sidebar .h3 { margin-top:20px; } 
+.user-profile_info-item {
+  list-style-type: none;
+}
 
-/* Footer */
-.footer1 { background: #232323; padding: 30px 0 0 0; font-size: 12px; color: #999; }
-	.footer1 a { color: #ccc; }
-		.footer1 a:hover {color: #fff; }
-	.footer1 .widget { margin-bottom:30px; }		
-	.footer1 .widget-title { font-size: 17px; font-weight: bold; color: #ccc; margin: 0 0 20px; }
-	.footer1 .entry-meta { border-top: 1px solid #ccc; border-bottom: 1px solid #ccc; margin: 0 0 35px 0; padding: 2px 0; color: #888888; font-size: 12px; font-size: 0.75rem; }
-		.footer1 .entry-meta a { color: #333333; }
-		.footer1 .entry-meta .meta-in { border-top: 1px solid #ccc; border-bottom: 1px solid #ccc; padding: 10px 0; }
-	.follow-me-icons { font-size:30px; }		
-		.follow-me-icons i { float:left; margin:0 10px 0 0; }		
+.user-profile_infoMore-item {
+  display: block;
+  float: left;
+  margin-left: 200px;
+}
 
-.footer2 { background: #191919; padding: 15px 0; color: #777; font-size: 12px; }
-	.footer2 a { color: #aaa; }
-		.footer2 a:hover { color: #fff; }
-		.footer2 p { margin: 0; }
+/* Forms */
+/* Legacy */
+.posts {
+  margin: 0 auto;
+}
 
-	.widget-simplenav { margin-left:-5px; }		
-	.widget-simplenav a{ margin:0 5px; }		
+.blog-post {
+  overflow: hidden;
+  width: 100%;
+  border-bottom: 1px solid gray;
+}
+
+.blog-post-title {
+  /*margin-left: 140px;*/
+  font-size: 18px;
+}
+
+.blog-post-meta {
+  overflow: hidden;
+  width: 99px;
+  float: left;
+  /* margin-left: 0; */
+  padding-left: 0;
+}
+
+.blog-post-meta > li {
+  text-decoration: none;
+  list-style: none;
+  display: block;
+  float: left;
+}
+
+.meta-item-username {
+  margin-top: 4px;
+}
+
+.blog-post-body {
+  float: left;
+  display: block;
+  width: 80%;
+  background-color: white;
+  height: 83px;
+  padding: 5px;
+}
+
+.blog-post-footer {
+  display: block;
+  clear: left;
+  float: right;
+  margin: 0px 5px 10px 0;
+}
+
+/* User profile viewable by others */
+.vcard {
+  overflow: hidden;
+  display: block;
+}
+
+.left-column {
+  width: 25%;
+  float: left;
+}
+
+.right-column {
+  float: left;
+}
+
+/* User profile */
+.user_profile {
+  display: none;
+  background: #181015 url(../img/soft_circle_scales.png);
+  background-size: cover;
+  min-height: 520px;
+  text-align: center;
+  padding-top: 240px;
+  color: white;
+  font-family: "Open sans", Helvetica, Arial;
+  font-weight: 300;
+}
+
+/** Social buttons for Bootstrap
+  *	Author: ;
+  *	 http://shapebootstrap.net/wp-content/plugins/shapebootstrap/demo.php?id=505
+  */
+.btn-facebook {
+  color: #fff;
+  background-color: #3b5998;
+  border-color: rgba(0, 0, 0, 0.2);
+}
+
+.btn-facebook:hover, .btn-facebook:focus, .btn-facebook:active, .btn-facebook.active, .open .dropdown-toggle.btn-facebook {
+  color: #fff;
+  background-color: #30487b;
+  border-color: rgba(0, 0, 0, 0.2);
+}
+
+.btn-facebook:active, .btn-facebook.active, .open .dropdown-toggle.btn-facebook {
+  background-image: none;
+}
+
+.btn-facebook.disabled, .btn-facebook[disabled], fieldset[disabled] .btn-facebook, .btn-facebook.disabled:hover, .btn-facebook[disabled]:hover, fieldset[disabled] .btn-facebook:hover, .btn-facebook.disabled:focus, .btn-facebook[disabled]:focus, fieldset[disabled] .btn-facebook:focus, .btn-facebook.disabled:active, .btn-facebook[disabled]:active, fieldset[disabled] .btn-facebook:active, .btn-facebook.disabled.active, .btn-facebook[disabled].active, fieldset[disabled] .btn-facebook.active {
+  background-color: #3b5998;
+  border-color: rgba(0, 0, 0, 0.2);
+}
+
+.btn-facebook .badge {
+  color: #3b5998;
+  background-color: #fff;
+}
