@@ -1,4 +1,4 @@
-/* CSS files concatenated |  18-11-2014 */
+/* CSS files concatenated |  19-11-2014 */
 /*******************************/
 /*         Navigation         */
 /*******************************/
@@ -205,6 +205,10 @@ img.pull-left { margin-right: 10px; }
   opacity: 0.79;
 }
 
+hr {
+  border: 2px solid #505050;
+}
+
 /* Navbar */
 .right-navbar-content p {
   color: white;
@@ -218,6 +222,12 @@ img.pull-left { margin-right: 10px; }
   background: white url(../img/stadium2.jpg) no-repeat 30% 87%;
 }
 
+#head.secondary {
+  height: 100px;
+  min-height: 100px;
+  padding-top: 0px;
+}
+
 .dashboard {
   padding-top: 100px;
   background: #FFFFFF;
@@ -225,6 +235,24 @@ img.pull-left { margin-right: 10px; }
   height: 278px;
   min-height: initial;
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
+}
+
+/* Matches */
+.match-date {
+  border-bottom: 1px solid #CCC;
+}
+
+.match {
+  border-bottom: 1px solid #CCC;
+}
+
+.team {
+  margin-bottom: 30px;
+}
+
+.team-kit {
+  height: 90px;
+  width: 90px;
 }
 
 /* User profile */
@@ -348,8 +376,8 @@ img.pull-left { margin-right: 10px; }
 }
 
 /** Social buttons for Bootstrap
-  *	Author: ;
-  *	 http://shapebootstrap.net/wp-content/plugins/shapebootstrap/demo.php?id=505
+  *	Author: Panayiotis Lipiridis, http://www.lip.is/;
+  *	http://shapebootstrap.net/wp-content/plugins/shapebootstrap/demo.php?id=505
   */
 .btn-facebook {
   color: #fff;

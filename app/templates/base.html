@@ -2,7 +2,6 @@
 {% block body_attribs %} class="home"{% endblock %}
 
 <html>
-
     <link rel="Shortcut Icon" href="{{ url_for('static', filename='favicon.png') }}" type="image/x-icon" />
     {% block styles %}
         {{ super() }}
@@ -23,9 +22,13 @@
        <![endif]-->
 
 {% block navbar %}
-<!--header menu-->
     {% include 'includes/navbar.inc.html' %}
-<!--/header menu-->
+    <!--header-->
+    <div id="header">
+        {% block header %}
+        {% endblock header %}
+    </div>
+    <!--/header-->
 {% endblock navbar %}
 
 {% block content %}
@@ -35,15 +38,21 @@
                 {{ message }}
             </div>
         {% endfor %}
-        <div class="inner_container">
-            {% block inner_container %}
-            {% endblock %}
+        <!--inner wrapper-->
+        <div id="inner_wrapper">
+            {% block inner_wrapper %}
+            {% endblock inner_wrapper %}
+        </div>
+        <!--/inner wrapper-->
+        <!--footer-->
+        <div id="footer">
             {% include 'includes/footer.inc.html' %}
         </div>
+        <!--/footer-->    
 {% endblock content %}
 
 {% block footer %}
-    {[ super() ]}
+    {{ super() }}
 {% endblock footer %}
 
 

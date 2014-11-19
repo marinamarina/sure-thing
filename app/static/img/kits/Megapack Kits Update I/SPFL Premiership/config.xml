@@ -1,0 +1,62 @@
+<record>
+	<!-- resource manager options -->
+
+	<!-- dont preload anything in this folder -->
+	<boolean id="preload" value="false"/>
+
+	<!-- turn off auto mapping -->
+	<boolean id="amap" value="false"/>
+	
+	<!-- logo mappings -->
+	<!-- the following XML maps pictures inside this folder into other positions
+		 in the resource system, which allows this folder to be dropped into any
+		 place in the graphics folder and still have the game pick up the graphics
+		 files from the correct places
+	-->
+	
+	<list id="maps">
+		
+		<!-- Clubs -->
+		<record from="aberdeen_1" to="graphics/pictures/team/1536/kits/home"/>
+		<record from="aberdeen_2" to="graphics/pictures/team/1536/kits/away"/>
+		<record from="aberdeen_3" to="graphics/pictures/team/1536/kits/third"/>
+                
+		<record from="celtic_1" to="graphics/pictures/team/1569/kits/home"/>
+		<record from="celtic_2" to="graphics/pictures/team/1569/kits/away"/>
+		<record from="celtic_3" to="graphics/pictures/team/1569/kits/third"/>
+
+		<record from="dundee_utd_1" to="graphics/pictures/team/1556/kits/home"/>
+		<record from="dundee_utd_2" to="graphics/pictures/team/1556/kits/away"/>
+		<record from="dundee_utd_3" to="graphics/pictures/team/1556/kits/third"/>
+	
+		<record from="hearts_1" to="graphics/pictures/team/1573/kits/home"/>
+		<record from="hearts_2" to="graphics/pictures/team/1573/kits/away"/>
+		
+		<record from="hibernian_1" to="graphics/pictures/team/1575/kits/home"/>
+		<record from="hibernian_2" to="graphics/pictures/team/1575/kits/away"/>
+		
+		<record from="inverness_1" to="graphics/pictures/team/1577/kits/home"/>
+		<record from="inverness_2" to="graphics/pictures/team/1577/kits/away"/>
+		
+		<record from="kilmarnock_1" to="graphics/pictures/team/1580/kits/home"/>
+		<record from="kilmarnock_2" to="graphics/pictures/team/1580/kits/away"/>
+		
+		<record from="motherwell_1" to="graphics/pictures/team/1584/kits/home"/>
+		<record from="motherwell_2" to="graphics/pictures/team/1584/kits/away"/>
+		<record from="motherwell_3" to="graphics/pictures/team/1584/kits/third"/>
+
+		<record from="partick_1" to="graphics/pictures/team/1586/kits/home"/>
+		<record from="partick_2" to="graphics/pictures/team/1586/kits/away"/>
+				
+		<record from="ross_1" to="graphics/pictures/team/1593/kits/home"/>
+		<record from="ross_2" to="graphics/pictures/team/1593/kits/away"/>
+
+		<record from="st_johnstone_1" to="graphics/pictures/team/1596/kits/home"/>
+		<record from="st_johnstone_2" to="graphics/pictures/team/1596/kits/away"/>
+		<record from="st_johnstone_3" to="graphics/pictures/team/1596/kits/third"/>
+		
+		<record from="st_mirren_1" to="graphics/pictures/team/1597/kits/home"/>
+		<record from="st_mirren_2" to="graphics/pictures/team/1597/kits/away"/>
+		<record from="st_mirren_3" to="graphics/pictures/team/1597/kits/third"/>
+	</list>
+</record>

@@ -6,15 +6,13 @@
     {{ title }}
 {% endblock %}
 
-{% block navbar %}
-    {{ super() }}
+{% block header %}
     <header id="head" class="secondary"></header>
-{% endblock navbar %}
+{% endblock header %}
 
-{% block inner_container %}
+{% block inner_wrapper %}
 <!-- container -->
     <div class="container">
-
         <ol class="breadcrumb">
             <li><a href="index.html">Home</a></li>
             <li class="active">Register</li>
@@ -58,4 +56,4 @@
         </div>
     </div>  <!-- /container -->
 
-{% endblock inner_container %}
+{% endblock inner_wrapper %}

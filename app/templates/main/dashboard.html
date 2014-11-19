@@ -4,12 +4,14 @@
 {% block title %}Dashboard{% endblock %}
 {% block navbar %}
     {{ super() }}
-    <header class="head dashboard" >
-    	    {% include 'includes/user_profile.inc.html' %}
-    </header>
+    <div id = "header">
+    	<header class="head dashboard" >
+    		{% include 'includes/user_profile.inc.html' %}
+    	</header>
+    </div>
 
 {% endblock navbar %}
-{% block inner_container %}
+{% block inner_wrapper %}
 
 <!-- container -->
 	<div class="container">
@@ -19,8 +21,7 @@
 			<li class="active">Left Sidebar</li>
 		</ol>
 
-		<div class="row">
-			
+		<div class="row">			
 			<!-- Sidebar -->
 			<aside class="col-md-4 sidebar sidebar-left">
 
@@ -67,4 +68,4 @@
 	</div>	<!-- /container -->
 
 
-{% endblock %}
+{% endblock inner_wrapper %}

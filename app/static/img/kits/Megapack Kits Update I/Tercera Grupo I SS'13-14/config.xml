@@ -1,0 +1,59 @@
+<record>
+	<!-- resource manager options -->
+
+	<!-- don't preload anything in this folder -->
+	<boolean id="preload" value="false"/>
+
+	<!-- turn off auto mapping -->
+	<boolean id="amap" value="false"/>
+
+	<!-- picture mappings -->
+	<!-- the following XML maps pictures inside this folder into other positions
+		in the resource system, which allows this folder to be dropped into any
+		place in the graphics folder and still have the game pick up the graphics
+		files from the correct places
+	-->
+
+	<list id="maps">
+		<record from="alondras_away" to="graphics/pictures/team/814042/kits/away"/>
+		<record from="alondras_home" to="graphics/pictures/team/814042/kits/home"/>
+		<record from="areas_away" to="graphics/pictures/team/67083613/kits/away"/>
+		<record from="areas_home" to="graphics/pictures/team/67083613/kits/home"/>
+		<record from="arosa_away" to="graphics/pictures/team/4212247/kits/away"/>
+		<record from="arosa_home" to="graphics/pictures/team/4212247/kits/home"/>
+		<record from="as_pontes_away" to="graphics/pictures/team/4212252/kits/away"/>
+		<record from="as_pontes_home" to="graphics/pictures/team/4212252/kits/home"/>
+		<record from="barbadas_away" to="graphics/pictures/team/67054478/kits/away"/>
+		<record from="barbadas_home" to="graphics/pictures/team/67054478/kits/home"/>
+		<record from="bertamirans_away" to="graphics/pictures/team/67128827/kits/away"/>
+		<record from="bertamirans_home" to="graphics/pictures/team/67128827/kits/home"/>
+		<record from="betanzos_away" to="graphics/pictures/team/4212322/kits/away"/>
+		<record from="betanzos_home" to="graphics/pictures/team/4212322/kits/home"/>
+		<record from="boiro_away" to="graphics/pictures/team/67105751/kits/away"/>
+		<record from="boiro_home" to="graphics/pictures/team/67105751/kits/home"/>
+		<record from="cerceda_away" to="graphics/pictures/team/814045/kits/away"/>
+		<record from="cerceda_home" to="graphics/pictures/team/814045/kits/home"/>
+		<record from="choco_away" to="graphics/pictures/team/67051299/kits/away"/>
+		<record from="choco_home" to="graphics/pictures/team/67051299/kits/home"/>
+		<record from="dorneda_away" to="graphics/pictures/team/67105769/kits/away"/>
+		<record from="dorneda_home" to="graphics/pictures/team/67105769/kits/home"/>
+		<record from="fabril_away" to="graphics/pictures/team/2094/kits/away"/>
+		<record from="fabril_home" to="graphics/pictures/team/2094/kits/home"/>
+		<record from="grixoa_away" to="graphics/pictures/team/67128832/kits/away"/>
+		<record from="grixoa_home" to="graphics/pictures/team/67128832/kits/home"/>
+		<record from="laracha_away" to="graphics/pictures/team/1503191/kits/away"/>
+		<record from="laracha_home" to="graphics/pictures/team/1503191/kits/home"/>
+		<record from="negreira_away" to="graphics/pictures/team/824228/kits/away"/>
+		<record from="negreira_home" to="graphics/pictures/team/824228/kits/home"/>
+		<record from="ordes_away" to="graphics/pictures/team/67013507/kits/away"/>
+		<record from="ordes_home" to="graphics/pictures/team/67013507/kits/home"/>
+		<record from="pontevedra_away" to="graphics/pictures/team/1723/kits/away"/>
+		<record from="pontevedra_home" to="graphics/pictures/team/1723/kits/home"/>
+		<record from="racingvillalbes_away" to="graphics/pictures/team/814059/kits/away"/>
+		<record from="racingvillalbes_home" to="graphics/pictures/team/814059/kits/home"/>
+		<record from="rapidobouzas_away" to="graphics/pictures/team/814056/kits/away"/>
+		<record from="rapidobouzas_home" to="graphics/pictures/team/814056/kits/home"/>
+		<record from="somozas_away" to="graphics/pictures/team/67051289/kits/away"/>
+		<record from="somozas_home" to="graphics/pictures/team/67051289/kits/home"/>
+	</list>
+</record>
