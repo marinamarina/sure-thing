@@ -51,7 +51,8 @@ class Role(db.Model):
         db.session.commit()
 
     def __repr__(self):
-        return '<Role %r>' % self.name
+        return '<Role (name={})>'.format(self.name)
+
 
 '''class ModelUsingMarkdown(db.Model):
 
@@ -259,7 +260,7 @@ class User (UserMixin, db.Model):
 
     def __repr__(self):
         'user representation'
-        return '<User %r> %r %r' % (self.username, self.real_name, self.location)
+        return '<User (username={}, real_name={}, location={})>'.format(self.username, self.real_name, self.location)
 
 class AnonymousUser(AnonymousUserMixin):
     'class is assigned to the current user when the user is not logged in'
@@ -301,7 +302,6 @@ class Team(db.Model):
         @param id_names: Dictionary with the ids and names of the league teams
         '''
         ids_names = faw.ids_names
-        arr = []
 
         for id, name in ids_names.items():
             team = Team.query.filter_by(id=id).first()
@@ -312,19 +312,26 @@ class Team(db.Model):
             db.session.add(team)
         db.session.commit()
 
+    def __repr__(self):
+        return '<TEAM> {}/{} league_position:{}'.format(
+            self.id,
+            self.name,
+            self.league_position
+            )
 
-'''
 class Match(db.Model):
     __tablename__ = 'matches'
     id = db.Column(db.Integer, primary_key=True)
     date = db.Column(db.DateTime())
     time = db.Column(db.DateTime())
-    localteam_id = db.Column(db.Integer, db.ForeignKey('teams.id'))
-    awayteam_id = db.Column(db.Integer, db.ForeignKey('teams.id'))
-    localteam_name = db.Column(db.String(64))
-    awayteam_name = db.Column(db.Integer, primary_key=True)
+    played = db.Column(db.Boolean)
+    hometeam_id = db.Column(db.Integer, db.ForeignKey('teams.id'), nullable=False)
+    awayteam_id = db.Column(db.Integer, db.ForeignKey('teams.id'), nullable=False)
+    hometeam_score = db.Column(db.Integer)
+    awayteam_score = db.Column(db.Integer)
     #users = db.relationship('User', backref='role', lazy='dynamic')
 
+    '''
     @staticmethod
     def insert_old_matches():
         pass
@@ -346,9 +353,17 @@ class Match(db.Model):
             role.default = roles[r][1]
             db.session.add(role)
         db.session.commit()
+        '''
 
     def __repr__(self):
-        return '<Match %r vs. %r>' % (self.localteam_name, self.awayteam_name)'''
+        return "<Match> date:{} home_team_id:{} away_team_id:{} score:{}-{} played?:{}".format(
+            self.date,
+            self.hometeam_id,
+            self.awayteam_id,
+            self.hometeam_score,
+            self.awayteam_score,
+            self.played
+            )
 
 '''class Follow(db.Model):
     __tablename__='follows'
