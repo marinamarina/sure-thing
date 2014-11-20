@@ -9,6 +9,7 @@ import hashlib
 from flask import flash
 from markdown import markdown
 import bleach
+from . import faw
 
 
 """Database models representation"""
@@ -291,14 +292,28 @@ def load_user(user_id):
 class Team(db.Model):
     __tablename__ = 'teams'
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.DateTime(), unique=True)
+    name = db.Column(db.String(64), unique=True)
     league_position = db.Column(db.Integer, unique=True)
 
     @staticmethod
-    def insert_old_matches():
-        pass
+    def insert_teams():
+        '''
+        @param id_names: Dictionary with the ids and names of the league teams
+        '''
+        ids_names = faw.ids_names
+        arr = []
+
+        for id, name in ids_names.items():
+            team = Team.query.filter_by(id=id).first()
+            if team is None:
+                team = Team()
+            team.id = id
+            team.name = name
+            db.session.add(team)
+        db.session.commit()
 
 
+'''
 class Match(db.Model):
     __tablename__ = 'matches'
     id = db.Column(db.Integer, primary_key=True)
@@ -313,7 +328,7 @@ class Match(db.Model):
     @staticmethod
     def insert_old_matches():
         pass
-        '''games = {
+        games = {
             'User': (Permission.FOLLOW |
                      Permission.COMMENT |
                      Permission.WRITE_ARTICLES, True),
@@ -330,10 +345,10 @@ class Match(db.Model):
             role.permissions = roles[r][0]
             role.default = roles[r][1]
             db.session.add(role)
-        db.session.commit()'''
+        db.session.commit()
 
     def __repr__(self):
-        return '<Match %r vs. %r>' % (self.localteam_name, self.awayteam_name)
+        return '<Match %r vs. %r>' % (self.localteam_name, self.awayteam_name)'''
 
 '''class Follow(db.Model):
     __tablename__='follows'

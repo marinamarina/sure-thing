@@ -24,7 +24,8 @@ hr {
 /* Header */
 .head { background: #FFFFFF url( ../img/stadium2.jpg) no-repeat 30% 87%; }
 #head.secondary {height:100px; min-height: 100px; padding-top:0px; }
-.dashboard { 
+#head .dashboard { 
+    visibility: hidden;
     padding-top: 100px;
     background: #FFFFFF; 
     color: #505050!important;

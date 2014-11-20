@@ -76,7 +76,7 @@ class FootballAPIWrapper:
 
         return output_data
 
-    def feed_teams_ids(self):
+    def feed_ids_names(self):
         'Create an team name -> id relationship'
         action = 'standings'
         data_standings = self.call_api(action)
@@ -84,7 +84,7 @@ class FootballAPIWrapper:
 
         # feeding the dictionary
         output_data = {
-            team["stand_team_name"] : team["stand_team_id"]
+            team["stand_team_id"] : team["stand_team_name"]
             for team in data_standings['teams']
         }
 
@@ -146,9 +146,9 @@ class FootballAPIWrapper:
         self.api_key = value
 
     @property
-    def teams_ids(self):
-        self.teams_ids = self.feed_teams_ids()
-        return self.teams_ids
+    def ids_names(self):
+        self.ids_names = self.feed_ids_names()
+        return self.ids_names
 
     @property
     def league_table(self):

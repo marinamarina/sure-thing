@@ -5,6 +5,7 @@ from flask_mail import Mail
 from config import config
 from flask_login import LoginManager
 from flask_shorturl import ShortUrl
+from football_data.football_api_parser import FootballAPIWrapper
 import os
 from config import basedir
 
@@ -16,6 +17,9 @@ login_manager = LoginManager()
 login_manager.session_protection = 'strong'
 login_manager.login_view = 'auth.login'
 su = ShortUrl()
+faw = FootballAPIWrapper()
+faw.api_key = '2890be06-81bd-b6d7-1dcb4b5983a0'
+
 
 def create_app(config_name):
     app = Flask(__name__)
