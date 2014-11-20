@@ -371,8 +371,13 @@ class Match(db.Model):
     followed_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
 
+registrations  =  db.Table('registrations' ,
+db . Column ( 'student_id' ,  db . Integer ,  db . ForeignKey ( 'students.id' )),
+db . Column ( 'class_id' ,  db . Integer ,  db . ForeignKey ( 'classes.id' )) )
+
 class Play (db.Model):
     __tablename='plays'
+
     localteam_id = db.Column(db.Integer, db.ForeignKey('matches.id')
     Match,match_table,properties={
       'team1':relationship(Team, foreign_keys=[match_table.c.matchTeam1],

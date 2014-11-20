@@ -15,9 +15,19 @@ import urlparse
     I need to output last 5 matches for a team for the team (tendency and result)
 '''
 class FootballAPIWrapper:
-    def __init__(self):
+    def __init__(self, app=None):
+        self.app = app
+        if app is not None:
+            self.init_app(app)
+
         self.__premier_league_id = '1204'
         self.__base_url = 'http://football-api.com/api/?Action='
+
+    def init_app(self, app):
+        if hasattr(app, 'teardown_appcontext'):
+            app.teardown_appcontext(self.teardown)
+        else:
+            app.teardown_request(self.teardown)
 
     @staticmethod
     def get_beginning_year(current_month, current_year):
@@ -90,7 +100,22 @@ class FootballAPIWrapper:
 
         return output_data
 
-    def form_and_tendency(self, action):
+    def output_all_matches(self):
+        action = 'fixtures'
+        params = {'from_date': '01.08.' + str(self.date_tuple.beginning_year), 'to_date' : '31.05.' + str(self.date_tuple.end_year)}
+        all_matches = self.call_api(action, **params)
+        return all_matches
+
+
+    def feed_all_matches_array(self):
+        '''
+        Create an named tuple with all matches for the season
+        This is for the initial feed of the database
+        '''
+        all_matches = self.output_all_matches()
+        pprint(all_)
+
+    def form_and_tendency(self):
         'I need to output last 5 matches for a team for the team (tendency and result)'
         action = 'fixtures'
         params = {'from_date': '01.08.' + str(self.date_tuple.beginning_year), 'to_date' :str(self.date_tuple.today)}
