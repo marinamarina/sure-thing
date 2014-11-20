@@ -1,4 +1,4 @@
-from . import db
+from . import db, faw
 from werkzeug.security import generate_password_hash, check_password_hash
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from flask_login import UserMixin, AnonymousUserMixin
@@ -9,7 +9,6 @@ import hashlib
 from flask import flash
 from markdown import markdown
 import bleach
-from . import faw
 
 
 """Database models representation"""
@@ -291,6 +290,9 @@ def load_user(user_id):
     return User.query.get(int(user_id))
 
 class Team(db.Model):
+    '''
+   represents a football team
+   '''
     __tablename__ = 'teams'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64), unique=True)
@@ -313,13 +315,16 @@ class Team(db.Model):
         db.session.commit()
 
     def __repr__(self):
-        return '<TEAM> {}/{} league_position:{}'.format(
+        return '<Team> {}/{} league_position:{}'.format(
             self.id,
             self.name,
             self.league_position
             )
 
 class Match(db.Model):
+    '''
+    represents a football match
+    '''
     __tablename__ = 'matches'
     id = db.Column(db.Integer, primary_key=True)
     date = db.Column(db.DateTime())
@@ -327,33 +332,40 @@ class Match(db.Model):
     played = db.Column(db.Boolean)
     hometeam_id = db.Column(db.Integer, db.ForeignKey('teams.id'), nullable=False)
     awayteam_id = db.Column(db.Integer, db.ForeignKey('teams.id'), nullable=False)
-    hometeam_score = db.Column(db.Integer)
-    awayteam_score = db.Column(db.Integer)
+    hometeam_score = db.Column(db.String(4))
+    awayteam_score = db.Column(db.String(4))
     #users = db.relationship('User', backref='role', lazy='dynamic')
 
-    '''
+
     @staticmethod
-    def insert_old_matches():
-        pass
-        games = {
-            'User': (Permission.FOLLOW |
-                     Permission.COMMENT |
-                     Permission.WRITE_ARTICLES, True),
-            'Moderator': (Permission.FOLLOW |
-                          Permission.COMMENT |
-                          Permission.WRITE_ARTICLES |
-                          Permission.MODERATE_COMMENTS, False),
-            'Administrator': (0xff, False)
-        }
-        for r in roles:
-            role = Role.query.filter_by(name=r).first()
-            if role is None:
-                role = Role(name=r)
-            role.permissions = roles[r][0]
-            role.default = roles[r][1]
-            db.session.add(role)
-        db.session.commit()
+    def insert_all_matches():
         '''
+        Inserting all the matches to the database (initial insert)
+        '''
+        matches = faw.all_and_unplayed_matches.all
+
+
+        for m in matches:
+            match = Match.query.filter_by(id=m.id).first()
+            if match is None:
+                match = Match()
+
+            #time hometeam_id awayteam_id hometeam_score awayteam_score
+            #match.id = m.id
+            #match.date = m.date
+            #match.time = m.time
+            #match.hometeam_id = m.hometeam_id
+            #match.awayteam_id = m.awayteam_id
+            #match.hometeam_score = m.hometeam_score
+            #match.awayteam_score = m.awayteam_score
+            if (match.hometeam_score != '?'):
+                match.played = True
+            else:
+                match.played = False
+
+            db.session.add(match)
+        db.session.commit()
+
 
     def __repr__(self):
         return "<Match> date:{} home_team_id:{} away_team_id:{} score:{}-{} played?:{}".format(

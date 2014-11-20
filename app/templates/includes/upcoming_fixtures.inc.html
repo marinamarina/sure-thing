@@ -5,46 +5,22 @@
     <div class="matches-for-date">
         <h3 class="match-date row">Sat, 22 Nov</h3>
 
+        {% for match in matches %}
         <!--match-->
         <div class="match row panel panel-default" data="234">
         	<div class="panel-body">
-        	<div class="home-team team col-xs-4 col-md-offset-1 text-center">
-        		<img src="{{url_for('static', filename="img/kits/arsenal_1.png", _external=True) }}" class="team-kit" alt="Arsenal"/>
-        		<span class="team-name clearfix">Chelsea</span>
-        		<span class="team-form clearfix">WLWLWW</span>
-        		<span class="team-last-result">3:0 Norwich</span>
-	
-        	</div>
-        	<div class="team-name col-xs-1 text-muted text-center"><span>VS</span><span class="clearfix">15:00</span></div>
-        	<div class="away-team team col-xs-4 col-xs-offset-1 text-center">
-        		<img src="{{url_for('static', filename="img/kits/everton_2.png", _external=True) }}" class="team-kit" alt="Everton"/>
-        		<span class="team-name clearfix">Everton</span>
-        		<span class="team-form clearfix">WLWLWW</span>
-        		<span class="team-last-result">3:0 Norwich</span>
-        	</div>
-        	<div class="btn-group-xs pull-right" role="group">
-        		<a class="btn btn-primary">View game > </a>
-            	<a class="btn btn-primary">Comments ></a>
-            	<a class="btn btn-primary">Save</a>
-            </div>
-            </div>
-    	</div>
-    	<!--/match-->
 
-    	<!--match-->
-        <div class="match row panel panel-default" data="234">
-        	<div class="panel-body">
         	<div class="home-team team col-xs-4 col-md-offset-1 text-center">
-        		<img src="{{url_for('static', filename="img/kits/arsenal_1.png", _external=True) }}" class="team-kit" alt="Arsenal"/>
-        		<span class="team-name clearfix">Chelsea</span>
+        		<img src="{{url_for('static', filename="img/kits/chelsea_1.png", _external=True) }}" class="team-kit" alt="Arsenal"/>
+        		<span class="team-name clearfix">{{match.hometeam_id}}</span>
         		<span class="team-form clearfix">WLWLWW</span>
         		<span class="team-last-result">3:0 Norwich</span>
 	
         	</div>
-        	<div class="team-name col-xs-1 text-muted text-center"><span>VS</span><span class="clearfix">15:00</span></div>
+        	<div class="team-name col-xs-1 text-muted text-center"><span>VS</span><span class="clearfix">{{match.time}}</span></div>
         	<div class="away-team team col-xs-4 col-xs-offset-1 text-center">
         		<img src="{{url_for('static', filename="img/kits/everton_2.png", _external=True) }}" class="team-kit" alt="Everton"/>
-        		<span class="team-name clearfix">Everton</span>
+        		<span class="team-name clearfix">{{match.awayteam_id}}</span>
         		<span class="team-form clearfix">WLWLWW</span>
         		<span class="team-last-result">3:0 Norwich</span>
         	</div>
@@ -56,6 +32,7 @@
             </div>
     	</div>
     	<!--/match-->
+        {% endfor %}
 
     	</div>
     </div>

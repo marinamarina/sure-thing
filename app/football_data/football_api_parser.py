@@ -24,10 +24,11 @@ class FootballAPIWrapper:
         self.__base_url = 'http://football-api.com/api/?Action='
 
     def init_app(self, app):
-        if hasattr(app, 'teardown_appcontext'):
+        '''if hasattr(app, 'teardown_appcontext'):
             app.teardown_appcontext(self.teardown)
         else:
-            app.teardown_request(self.teardown)
+            app.teardown_request(self.teardown)'''
+        pass
 
     @staticmethod
     def get_beginning_year(current_month, current_year):
@@ -90,7 +91,6 @@ class FootballAPIWrapper:
         'Create an team name -> id relationship'
         action = 'standings'
         data_standings = self.call_api(action)
-        output_data = {}
 
         # feeding the dictionary
         output_data = {
@@ -100,20 +100,40 @@ class FootballAPIWrapper:
 
         return output_data
 
-    def output_all_matches(self):
+    def get_all_matches(self):
         action = 'fixtures'
         params = {'from_date': '01.08.' + str(self.date_tuple.beginning_year), 'to_date' : '31.05.' + str(self.date_tuple.end_year)}
         all_matches = self.call_api(action, **params)
         return all_matches
 
 
-    def feed_all_matches_array(self):
+    def feed_all_and_unplayed_matches(self):
         '''
         Create an named tuple with all matches for the season
         This is for the initial feed of the database
         '''
-        all_matches = self.output_all_matches()
-        pprint(all_)
+        matches_data = self.get_all_matches()
+        MatchInfo = namedtuple('MatchInfo', 'id date time hometeam_id awayteam_id hometeam_score awayteam_score')
+        all_matches = []
+        unplayed_matches = []
+        MatchesAllAndUnplayed = namedtuple('MatchesAllAndUnplayed', 'all unplayed')
+
+        for m in matches_data["matches"]:
+
+            matchInfo = MatchInfo(int(m['match_id']),
+                                  datetime.datetime.strptime(m['match_formatted_date'], '%d.%m.%Y'),
+                                  datetime.datetime.strptime(m['match_time'], '%H:%M'),
+                                  int(m['match_localteam_id']),
+                                  int(m['match_visitorteam_id']),
+                                  m['match_localteam_score'],
+                                  m['match_visitorteam_score']
+            )
+            all_matches.append(matchInfo)
+
+            if (matchInfo.awayteam_score == "?"):
+                unplayed_matches.append(matchInfo)
+
+        return MatchesAllAndUnplayed(all_matches, unplayed_matches)
 
     def form_and_tendency(self):
         'I need to output last 5 matches for a team for the team (tendency and result)'
@@ -176,6 +196,11 @@ class FootballAPIWrapper:
         return self.ids_names
 
     @property
+    def all_and_unplayed_matches(self):
+        self.all_and_unplayed_matches = self.feed_all_and_unplayed_matches()
+        return self.all_and_unplayed_matches
+
+    @property
     def league_table(self):
         self.league_table = self.feed_league_table()
         return self.league_table
@@ -186,7 +211,7 @@ class FootballAPIWrapper:
         today_formatted = today.strftime("%d.%m.%Y")
 
         beginning_year = self.get_beginning_year(today.month, today.year)
-        end_year = self.get_beginning_year(today.month, today.year)
+        end_year = self.get_end_year(today.month, today.year)
 
         Dates = namedtuple("Dates", "today month beginning_year end_year")
         return Dates(today_formatted, today.month, beginning_year, end_year)

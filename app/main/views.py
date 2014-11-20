@@ -4,11 +4,10 @@ from flask_login import login_required, current_user
 from . import main
 from .forms import BlogPostForm, CommentPostForm
 from .. import db
-from ..models import User, Permission #Post, Comment
+from ..models import User, Permission, Team, Match #Post, Comment
 from ..email import send_email
 from ..decorators_me import permission_required, templated
 from flask import abort
-from ..football_data.football_api_parser import FootballAPIWrapper
 
 @main.app_context_processor
 def inject_permissions():
@@ -30,6 +29,11 @@ def index():
         my_query = current_user.followed_posts
     else:
         my_query = Post.query'''
+
+    Match.insert_all_matches()
+
+    #display only played matches
+    matches = Match.query.filter_by(played=False).all()
 
     # define the form
     '''form = BlogPostForm()
@@ -53,7 +57,7 @@ def index():
 
     posts = my_query.order_by(Post.timestamp.desc()).all()'''
 
-    return dict(  user=current_user) #posts=posts, form=form,
+    return dict(  user=current_user, matches=matches) #posts=posts, form=form,
 
 #route decorators
 @main.route('/dashboard', methods=['POST', 'GET'])
