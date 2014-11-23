@@ -88,7 +88,7 @@ class FootballAPIWrapper:
         return output_data
 
     def feed_ids_names(self):
-        'Create an team name -> id relationship'
+        'Create an team id -> name relationship'
         action = 'standings'
         data_standings = self.call_api(action)
 
@@ -111,6 +111,7 @@ class FootballAPIWrapper:
         '''
         Create an named tuple with all matches for the season
         This is for the initial feed of the database
+        :return tuple of two arrays of tuples
         '''
         matches_data = self.get_all_matches()
         MatchInfo = namedtuple('MatchInfo', 'id date time hometeam_id awayteam_id hometeam_score awayteam_score')
@@ -121,8 +122,8 @@ class FootballAPIWrapper:
         for m in matches_data["matches"]:
 
             matchInfo = MatchInfo(int(m['match_id']),
-                                  datetime.datetime.strptime(m['match_formatted_date'], '%d.%m.%Y'),
-                                  datetime.datetime.strptime(m['match_time'], '%H:%M'),
+                                  m['match_formatted_date'],
+                                  m['match_time'],
                                   int(m['match_localteam_id']),
                                   int(m['match_visitorteam_id']),
                                   m['match_localteam_score'],

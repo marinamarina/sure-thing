@@ -2,12 +2,12 @@ from flask import Flask
 from flask_bootstrap import Bootstrap
 from flask_sqlalchemy import SQLAlchemy
 from flask_mail import Mail
-from config import config
 from flask_login import LoginManager
 from flask_shorturl import ShortUrl
+
+from config import config
 from football_data.football_api_parser import FootballAPIWrapper
-import os
-from config import basedir
+
 
 bootstrap = Bootstrap()
 mail = Mail()

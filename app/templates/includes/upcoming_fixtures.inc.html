@@ -7,20 +7,20 @@
 
         {% for match in matches %}
         <!--match-->
-        <div class="match row panel panel-default" data="234">
+        <div class="match row panel panel-default" data="{{match.id}}">
         	<div class="panel-body">
 
         	<div class="home-team team col-xs-4 col-md-offset-1 text-center">
-        		<img src="{{url_for('static', filename="img/kits/chelsea_1.png", _external=True) }}" class="team-kit" alt="Arsenal"/>
-        		<span class="team-name clearfix">{{match.hometeam_id}}</span>
+        		<img src="{{url_for('static', filename="img/kits/chelsea_1.png", _external=True) }}" class="team-kit" alt="{{match.hometeam.name}}"/>
+        		<span class="team-name clearfix">{{match.hometeam.name}}</span>
         		<span class="team-form clearfix">WLWLWW</span>
         		<span class="team-last-result">3:0 Norwich</span>
 	
         	</div>
         	<div class="team-name col-xs-1 text-muted text-center"><span>VS</span><span class="clearfix">{{match.time}}</span></div>
         	<div class="away-team team col-xs-4 col-xs-offset-1 text-center">
-        		<img src="{{url_for('static', filename="img/kits/everton_2.png", _external=True) }}" class="team-kit" alt="Everton"/>
-        		<span class="team-name clearfix">{{match.awayteam_id}}</span>
+        		<img src="{{url_for('static', filename="img/kits/everton_2.png", _external=True) }}" class="team-kit" alt="{{match.awayteam.name}}"/>
+        		<span class="team-name clearfix">{{match.awayteam.name}}</span>
         		<span class="team-form clearfix">WLWLWW</span>
         		<span class="team-last-result">3:0 Norwich</span>
         	</div>

@@ -91,7 +91,7 @@ class Role(db.Model):
 
 #db.event.listen(Post.body, 'set', Post.on_changed_body)
 
-class Game(db.Model):
+class Comments(db.Model):
         __tablename__ = 'comments'
         id = db.Column(db.Integer, primary_key=True)
         body = db.Column(db.Text)
@@ -123,6 +123,12 @@ class Game(db.Model):
 
 #db.event.listen(Comment.body, 'set', Comment.on_changed_body)
 '''
+
+'''matches saved by users, association table'''
+savedforlater = db.Table('savedforlater',
+    db.Column('users_id', db.Integer, db.ForeignKey('users.id'), primary_key=True),
+    db.Column('match_id', db.Integer, db.ForeignKey('matches.id'), primary_key=True),
+)
 
 class Follow(db.Model):
     __tablename__='follows'
@@ -164,6 +170,15 @@ class User (UserMixin, db.Model):
                                 lazy='dynamic',
                                 cascade='all, delete-orphan')
 
+    #I saved those matches for a review
+    matches = db.relationship('Match',
+                              secondary=savedforlater,
+                              backref=db.backref('users', lazy='joined'),
+                              lazy='dynamic'
+                              )
+    '''matches = db.relationship('Match', secondary=savedforlater, lazy='select', backref='users')
+    matches_dynamic = db.relationship('Match', passive_deletes=True, secondary=savedforlater, lazy='dynamic')'''
+
     def __init__(self, **kwargs):
         super(User, self).__init__(**kwargs)
         print Role.query.filter_by(permissions=0xff).first()
@@ -175,7 +190,7 @@ class User (UserMixin, db.Model):
                 self.role = Role.query.filter_by(default=True).first()
                 flash('COMMONER, can I write articles? %r' % self.can(Permission.WRITE_ARTICLES))
 
-            self.location='Old Aberdeen'
+            self.location='Aberdeen'
             self.follow(self)
 
     def generate_confirmation_token(self, expiration=3600):
@@ -221,7 +236,6 @@ class User (UserMixin, db.Model):
             db.session.add(f)
 
     def unfollow(self, user):
-
         f=self.followed.filter_by(followed_id=user.id).first()
         if f:
             db.session.delete(f)
@@ -233,10 +247,26 @@ class User (UserMixin, db.Model):
     def is_followed_by(self, user):
         return self.follower.filter_by(follower_id=user.user_id).first() is not None
 
-    '''@property
-    def followed_posts(self):
-        return Post.query.join(Follow, Follow.followed_id == Post.author_id).filter(Follow.follower_id==self.id)'''
+    def save_match(self, match):
+        '''add restriction to only save matches that have not yet been played'''
+        if not self.is_match_saved(match):
+            self.matches.append(match)
+            db.session.add(self)
+            db.session.commit()
 
+    def remove_match(self, match):
+        if match in self.matches:
+            print 'It is!'
+            self.matches.remove(match)
+            db.session.add(self)
+            db.session.commit()
+
+
+    def is_match_saved(self, match):
+        return self.matches.filter_by(id=match.id).first() is not None
+
+    def list_matches(self):
+        return self.matches.all()
 
     # using property because I want to protect the password
     @property
@@ -259,7 +289,11 @@ class User (UserMixin, db.Model):
 
     def __repr__(self):
         'user representation'
-        return '<User (username={}, real_name={}, location={})>'.format(self.username, self.real_name, self.location)
+        return '<User (username={}, real_name={}, location={})>'\
+            .format(self.username,
+                    self.real_name,
+                    self.location
+        )
 
 class AnonymousUser(AnonymousUserMixin):
     'class is assigned to the current user when the user is not logged in'
@@ -290,13 +324,27 @@ def load_user(user_id):
     return User.query.get(int(user_id))
 
 class Team(db.Model):
-    '''
-   represents a football team
-   '''
+    '''represents a football team'''
     __tablename__ = 'teams'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64), unique=True)
     league_position = db.Column(db.Integer, unique=True)
+    hometeam = db.relationship('Match', backref=db.backref('hometeam'), lazy='dynamic', primaryjoin="Match.hometeam_id==Team.id")
+    awayteam = db.relationship('Match', backref=db.backref('awayteam'), lazy='dynamic', primaryjoin="Match.awayteam_id==Team.id")
+
+    def __init__(self, **kwargs):
+        super(Team, self).__init__(**kwargs)
+        #self.league_position = 1
+        '''if self.role is None:
+            if self.email == 'shchukina.marina@gmail.com': #current_app.config['FOOTY_ADMIN']:
+                self.role = Role.query.filter_by(permissions=0xff).first()
+                flash('SUPER POWERS, can I write articles? %r' % self.can(Permission.WRITE_ARTICLES))
+            else:
+                self.role = Role.query.filter_by(default=True).first()
+                flash('COMMONER, can I write articles? %r' % self.can(Permission.WRITE_ARTICLES))'''
+
+        #self.location='Aberdeen'
+        #self.follow(self)
 
     @staticmethod
     def insert_teams():
@@ -322,42 +370,36 @@ class Team(db.Model):
             )
 
 class Match(db.Model):
-    '''
-    represents a football match
-    '''
+    'represents a football match'
     __tablename__ = 'matches'
     id = db.Column(db.Integer, primary_key=True)
-    date = db.Column(db.DateTime())
-    time = db.Column(db.DateTime())
+    date = db.Column(db.String(16))
+    time = db.Column(db.String(16))
     played = db.Column(db.Boolean)
     hometeam_id = db.Column(db.Integer, db.ForeignKey('teams.id'), nullable=False)
     awayteam_id = db.Column(db.Integer, db.ForeignKey('teams.id'), nullable=False)
     hometeam_score = db.Column(db.String(4))
     awayteam_score = db.Column(db.String(4))
-    #users = db.relationship('User', backref='role', lazy='dynamic')
+    comments = db.relationship('Comment', backref='match', lazy='dynamic')
 
 
     @staticmethod
     def insert_all_matches():
-        '''
-        Inserting all the matches to the database (initial insert)
-        '''
+        'Inserting all the matches to the database (initial insert)'
         matches = faw.all_and_unplayed_matches.all
-
 
         for m in matches:
             match = Match.query.filter_by(id=m.id).first()
             if match is None:
                 match = Match()
 
-            #time hometeam_id awayteam_id hometeam_score awayteam_score
-            #match.id = m.id
-            #match.date = m.date
-            #match.time = m.time
-            #match.hometeam_id = m.hometeam_id
-            #match.awayteam_id = m.awayteam_id
-            #match.hometeam_score = m.hometeam_score
-            #match.awayteam_score = m.awayteam_score
+            match.id = m.id
+            match.date = m.date
+            match.time = m.time
+            match.hometeam_id = m.hometeam_id
+            match.awayteam_id = m.awayteam_id
+            match.hometeam_score = m.hometeam_score
+            match.awayteam_score = m.awayteam_score
             if (match.hometeam_score != '?'):
                 match.played = True
             else:
@@ -366,35 +408,30 @@ class Match(db.Model):
             db.session.add(match)
         db.session.commit()
 
-
     def __repr__(self):
-        return "<Match> date:{} home_team_id:{} away_team_id:{} score:{}-{} played?:{}".format(
+        return "<Match> date:{} id:{}".format(
             self.date,
-            self.hometeam_id,
-            self.awayteam_id,
-            self.hometeam_score,
-            self.awayteam_score,
-            self.played
+            self.id
+            #self.awayteam_id,
+            #self.hometeam_score,
+            #self.awayteam_score,
+            #self.played
             )
 
-'''class Follow(db.Model):
-    __tablename__='follows'
-    follower_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
-    followed_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
-    timestamp = db.Column(db.DateTime, default=datetime.utcnow)
+class Comments(db.Model):
+        __tablename__ = 'comments'
+        id = db.Column(db.Integer, primary_key=True)
+        body = db.Column(db.Text)
+        timestamp = db.Column(db.DateTime(), index=True, default = datetime.utcnow)
 
-registrations  =  db.Table('registrations' ,
-db . Column ( 'student_id' ,  db . Integer ,  db . ForeignKey ( 'students.id' )),
-db . Column ( 'class_id' ,  db . Integer ,  db . ForeignKey ( 'classes.id' )) )
+        #will be used by moderators to supress comments that are offensive
+        disabled = db.Column(db.Boolean, default=False)
+        edited = db.Column(db.Boolean, default=False)
+        author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+        match_id = db.Column(db.Integer, db.ForeignKey('matches.id'))
 
-class Play (db.Model):
-    __tablename='plays'
-
-    localteam_id = db.Column(db.Integer, db.ForeignKey('matches.id')
-    Match,match_table,properties={
-      'team1':relationship(Team, foreign_keys=[match_table.c.matchTeam1],
-          primaryjoin=match_table.c.matchTeam1==team_table.teamID),
-      'team2':relationship(Team, foreign_keys=[match_table.c.matchTeam2],
-          primaryjoin=match_table.c.matchTeam2==team_table.teamID),
-    })'''
+        def __repr__(self):
+            return "<Comment> id:{}".format(
+                self.id
+            )
 
