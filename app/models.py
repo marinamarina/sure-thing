@@ -124,11 +124,19 @@ class Comments(db.Model):
 #db.event.listen(Comment.body, 'set', Comment.on_changed_body)
 '''
 
-'''matches saved by users, association table'''
-savedforlater = db.Table('savedforlater',
-    db.Column('users_id', db.Integer, db.ForeignKey('users.id'), primary_key=True),
-    db.Column('match_id', db.Integer, db.ForeignKey('matches.id'), primary_key=True),
-)
+'''matches saved by users, association model'''
+class SavedForLater(db.Model):
+    __tablename__='savedforlater'
+    users_id=db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
+    match_id=db.Column(db.Integer, db.ForeignKey('matches.id'), primary_key=True)
+    match = db.relationship( "Match", backref = "user_assocs")
+
+    def __repr__(self):
+        return "<SavedForLater> userid: {}, matchid: {}".format(
+            self.users_id,
+            self.match_id
+        )
+
 
 class Follow(db.Model):
     __tablename__='follows'
@@ -171,11 +179,12 @@ class User (UserMixin, db.Model):
                                 cascade='all, delete-orphan')
 
     #I saved those matches for a review
-    matches = db.relationship('Match',
-                              secondary=savedforlater,
-                              backref=db.backref('users', lazy='joined'),
-                              lazy='dynamic'
-                              )
+    saved_matches = db.relationship('SavedForLater',
+                                    foreign_keys=[SavedForLater.users_id],
+                                    backref=db.backref('user', lazy='joined'),
+                                    lazy='dynamic',
+                                    cascade='all, delete-orphan'
+                                    )
     '''matches = db.relationship('Match', secondary=savedforlater, lazy='select', backref='users')
     matches_dynamic = db.relationship('Match', passive_deletes=True, secondary=savedforlater, lazy='dynamic')'''
 
@@ -250,23 +259,24 @@ class User (UserMixin, db.Model):
     def save_match(self, match):
         '''add restriction to only save matches that have not yet been played'''
         if not self.is_match_saved(match):
-            self.matches.append(match)
+            #self.saved_matches.append(match)
+            s = SavedForLater(user=self, match=match)
             db.session.add(self)
             db.session.commit()
 
     def remove_match(self, match):
-        if match in self.matches:
-            print 'It is!'
-            self.matches.remove(match)
-            db.session.add(self)
+        s = self.saved_matches.filter_by(match_id=match.id).first()
+            #print 'It is!'
+            #self.saved_matches.remove(match)
+        if s:
+            db.session.delete(s)
             db.session.commit()
 
-
     def is_match_saved(self, match):
-        return self.matches.filter_by(id=match.id).first() is not None
+        return self.saved_matches.filter_by(match_id=match.id).first() is not None
 
     def list_matches(self):
-        return self.matches.all()
+        return self.saved_matches.all()
 
     # using property because I want to protect the password
     @property
@@ -418,7 +428,7 @@ class Match(db.Model):
             #self.played
             )
 
-class Comments(db.Model):
+class Comment(db.Model):
         __tablename__ = 'comments'
         id = db.Column(db.Integer, primary_key=True)
         body = db.Column(db.Text)
@@ -434,4 +444,3 @@ class Comments(db.Model):
             return "<Comment> id:{}".format(
                 self.id
             )
-
