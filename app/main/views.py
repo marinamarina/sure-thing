@@ -19,7 +19,7 @@ def inject_permissions():
 @main.route('/index', methods=['POST', 'GET'])
 @templated()
 def index():
-    show_followed=False
+    show_followed = False
 
     if current_user.is_authenticated():
         #we get the value of the show_followed cookie from the request cookie dictionary
@@ -31,7 +31,7 @@ def index():
     else:
         my_query = Post.query'''
 
-    Match.insert_all_matches()
+    #Match.insert_all_matches()
 
     #display only played matches
     matches = Match.query.filter_by(played=False).all()
@@ -59,6 +59,21 @@ def index():
     posts = my_query.order_by(Post.timestamp.desc()).all()'''
 
     return dict(  user=current_user, matches=matches) #posts=posts, form=form,
+
+@main.route('/save_match/<int:match_id>')
+@login_required
+def save_match(match_id):
+    me = current_user
+    match = Match.query.filter_by(id=match_id).first()
+
+
+    if me.is_match_saved(match):
+        flash("You have already saved this match to  your dashboard.")
+        return redirect(url_for('.index'))
+
+    me.save_match(match)
+    flash("Congratulations, you have saved a match to your dashboard!")
+    return redirect(url_for('.index') )
 
 #route decorators
 @main.route('/dashboard', methods=['POST', 'GET'])
@@ -98,6 +113,7 @@ def dashboard():
                 flash ("You have now been authorized!" + str(current_user.role))
 
     posts = my_query.order_by(Post.timestamp.desc()).all()'''
+    saved_matches = current_user.saved_matches
 
     return dict(  user=current_user) #posts=posts, form=form,
 
