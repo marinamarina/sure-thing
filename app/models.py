@@ -124,8 +124,8 @@ class Comments(db.Model):
 #db.event.listen(Comment.body, 'set', Comment.on_changed_body)
 '''
 
-'''matches saved by users, association model'''
 class SavedForLater(db.Model):
+    'matches saved by users, association table'
     __tablename__='savedforlater'
     users_id=db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
     match_id=db.Column(db.Integer, db.ForeignKey('matches.id'), primary_key=True)
@@ -137,8 +137,8 @@ class SavedForLater(db.Model):
             self.match_id
         )
 
-
 class Follow(db.Model):
+    'following-follower feature'
     __tablename__='follows'
     follower_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
     followed_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
@@ -167,18 +167,18 @@ class User (UserMixin, db.Model):
     #foreign key is an optional argument, backreferences in this case are applied to the Follow model,
     #not to each other
 
-    #I am followed by those users
+    # I am followed by those users
     followed = db.relationship('Follow', foreign_keys=[Follow.follower_id],
                                backref=db.backref('follower', lazy='joined'),
                                lazy='dynamic',
                                cascade='all, delete-orphan')
-    #I follow those users
+    # I follow those users
     followers = db.relationship('Follow', foreign_keys=[Follow.followed_id],
                                 backref=db.backref('followed', lazy='joined'),
                                 lazy='dynamic',
                                 cascade='all, delete-orphan')
 
-    #I saved those matches for a review
+    # I saved those matches for a review
     saved_matches = db.relationship('SavedForLater',
                                     foreign_keys=[SavedForLater.users_id],
                                     backref=db.backref('user', lazy='joined'),
@@ -400,6 +400,7 @@ class Match(db.Model):
 
         for m in matches:
             match = Match.query.filter_by(id=m.id).first()
+
             if match is None:
                 match = Match()
 

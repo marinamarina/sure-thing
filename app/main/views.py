@@ -31,7 +31,7 @@ def index():
     else:
         my_query = Post.query'''
 
-    #Match.insert_all_matches()
+    Match.insert_all_matches()
 
     #display only played matches
     matches = Match.query.filter_by(played=False).all()

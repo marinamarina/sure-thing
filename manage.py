@@ -9,7 +9,6 @@ import unittest
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 
-
 cov = None
 if (os.environ.get('FLASK_COVERAGE')):
     import coverage
