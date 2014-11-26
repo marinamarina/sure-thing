@@ -3,8 +3,7 @@
 import urllib2
 import json
 import datetime
-from collections import namedtuple
-from collections import OrderedDict
+from collections import namedtuple, OrderedDict
 import urllib
 from flask import url_for
 
@@ -13,15 +12,15 @@ from flask import url_for
     http://api2.football-api.com/api/?Action=team&APIKey=[YOUR_API_KEY]&team_id=[team]
 '''
 class FootballAPIWrapper:
-    def __init__(self, app=None):
-        self.app = app
+    def __init__(self):
+        '''self.app = app
         if app is not None:
-            self.init_app(app)
+            self.init_app(app)'''
 
         self.__premier_league_id = '1204'
         self.__base_url = 'http://football-api.com/api/?Action='
         #self.__all_matches_data = url_for('data.all_matches')
-        self.proxy_on = True
+        self.proxy_on = False
 
     def init_app(self, app):
         '''if hasattr(app, 'teardown_appcontext'):
@@ -137,9 +136,10 @@ class FootballAPIWrapper:
         MatchInfo = namedtuple('MatchInfo', 'id date time hometeam_id awayteam_id hometeam_score awayteam_score')
         all_matches = []
         unplayed_matches = []
-        MatchesAllAndUnplayed = namedtuple('MatchesAllAndUnplayed', 'all unplayed')
+        played_matches = []
+        MatchesAllAndUnplayed = namedtuple('MatchesAllAndUnplayed', 'all unplayed played')
 
-        for m in matches_data:
+        for m in matches_data["matches"]:
 
             matchInfo = MatchInfo(int(m['match_id']),
                                   m['match_formatted_date'],
@@ -153,8 +153,10 @@ class FootballAPIWrapper:
 
             if (matchInfo.awayteam_score == "?"):
                 unplayed_matches.append(matchInfo)
+            else:
+                played_matches.append(matchInfo)
 
-        return MatchesAllAndUnplayed(all_matches, unplayed_matches)
+        return MatchesAllAndUnplayed(all_matches, unplayed_matches, played_matches)
 
     def form_and_tendency(self):
         'I need to output last 5 matches for a team for the team (tendency and result)'
@@ -213,6 +215,11 @@ class FootballAPIWrapper:
     def unplayed_matches(self):
         self.unplayed_matches = self.feed_all_and_unplayed_matches().unplayed
         return self.unplayed_matches
+
+    @property
+    def played_matches(self):
+        self.played_matches = self.feed_all_and_unplayed_matches().played
+        return self.played_matches
 
     @property
     def date_tuple(self):

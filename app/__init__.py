@@ -7,8 +7,9 @@ from flask_shorturl import ShortUrl
 from config import config
 import threading
 import atexit
+from datetime import datetime
 
-from football_data.football_api_parser import FootballAPIWrapper
+from football_data.football_api_wrapper import FootballAPIWrapper
 
 #gunicorn -b 0.0.0.0:5000 --log-config log.conf --pid=app.pid myfile:app
 
@@ -62,7 +63,7 @@ def create_app(config_name):
         global yourThread
         global dataLock
         with dataLock:
-            print('data reloaded')
+            print('Data reloaded at ' + datetime.today().strftime("%Y-%m-%d %H:%M:%S"))
             faw.write_data()
 
         # Set the next thread to happen

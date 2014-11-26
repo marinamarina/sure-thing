@@ -1,1 +1,1 @@
-from . import football_api_parser
+from . import football_api_wrapper

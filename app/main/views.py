@@ -8,7 +8,7 @@ from ..models import User, Permission, Team, Match #Post, Comment
 from ..email import send_email
 from ..decorators_me import permission_required, templated
 from flask import abort
-from ..football_data.football_api_parser import FootballAPIWrapper
+from ..football_data.football_api_wrapper import FootballAPIWrapper
 
 @main.app_context_processor
 def inject_permissions():

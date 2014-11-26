@@ -1,5 +1,5 @@
 #! usr/bin/python
-from football_api_parser import FootballAPIWrapper
+from football_api_wrapper import FootballAPIWrapper
 from pprint import pprint
 
 # example usage
@@ -11,5 +11,5 @@ wrap.api_key = '2890be06-81bd-b6d7-1dcb4b5983a0'
 dict1 = dict()
 ids_dict = {'Manchester': 1, 'Aston Villa': 3}
 
-wrap.write_data()
+pprint(wrap.played_matches)
 #print (wrap.date_tuple)

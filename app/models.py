@@ -395,10 +395,13 @@ class Match(db.Model):
 
     @staticmethod
     def insert_all_matches():
-        'Inserting all the matches to the database (initial insert)'
-        matches = faw.all_and_unplayed_matches.all
+        'Inserting all the matches to the database'
+        matches = faw.all_matches
 
         for m in matches:
+            # if match
+            # hope this will not be a bottleneck, find a smarter way to check what is already in the database??
+            #store last inserted match id in a variable?
             match = Match.query.filter_by(id=m.id).first()
 
             if match is None:
