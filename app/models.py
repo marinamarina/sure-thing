@@ -406,23 +406,23 @@ class Match(db.Model):
             #store last inserted match id in a variable?
             match = Match.query.filter_by(id=m.id).first()
 
-            #if match is None:
-            #    match = Match()
+            if match is None:
+                match = Match()
 
 
-            #match.id = m.id
-            #match.date = m.date
-            #match.time = m.time
+            match.id = m.id
+            match.date = m.date
+            match.time = m.time
             match.date_stamp = m.date_stamp
             match.time_stamp = m.time_stamp
-            #match.hometeam_id = m.hometeam_id
-            #match.awayteam_id = m.awayteam_id
-            #match.hometeam_score = m.hometeam_score
-            #match.awayteam_score = m.awayteam_score
-            #if (match.hometeam_score != '?'):
-            #    match.played = True
-            #else:
-            #    match.played = False
+            match.hometeam_id = m.hometeam_id
+            match.awayteam_id = m.awayteam_id
+            match.hometeam_score = m.hometeam_score
+            match.awayteam_score = m.awayteam_score
+            if (match.hometeam_score != '?'):
+                match.played = True
+            else:
+                match.played = False
 
             db.session.add(match)
         db.session.commit()
@@ -453,3 +453,43 @@ class Comment(db.Model):
             return "<Comment> id:{}".format(
                 self.id
             )
+
+class PredictionModule(db.Model):
+    __tablename__ = 'prediction_modules'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(), index=True)
+    description = db.Column(db.String())
+    default_weight = db.Column(db.Float())
+
+    #author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    #match_id = db.Column(db.Integer, db.ForeignKey('matches.id'))
+    @staticmethod
+    def insert_modules():
+        modules = {
+            'League_position': 0.50,
+            'Form': 0.30,
+            'Home_away': 0.20
+        }
+        for m in modules:
+            module = PredictionModule.query.filter_by(name=m).first()
+            if module is None:
+                module = PredictionModule(name=m)
+            module.default_weight = modules[m]
+            db.session.add(module)
+        db.session.commit()
+
+    def __repr__(self):
+        return "<PredictionModule> id:{} name:{} weight:{}".format(
+                self.id,
+                self.name,
+                self.default_weight
+        )
+
+'''
+todo this next time
+class CustomisedPredictionModule(db.Model):
+    __tablename__ = 'customised_prediction_module'
+    module_id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer())
+    custom_weight = db.Column(db.Float())
+    match_id = db.Column(db.Float())'''

@@ -1,0 +1,39 @@
+<!--modules -->
+{% from 'includes/__formhelpers.html' import render_field %}
+
+<div class="jumbotron top-space container">
+    <div class="matches-for-date">
+        <h3 class="match-date row">Sat, 22 Nov</h3>
+
+        {% for match in matches %}
+        <!--match-->
+        <div class="match row panel panel-default" data="{{match.id}}">
+        	<div class="panel-body">
+
+        	<div class="home-team team col-xs-4 col-md-offset-1 text-center">
+        		<img src="{{url_for('static', filename="img/kits/chelsea_1.png", _external=True) }}" class="team-kit" alt="{{match.hometeam.name}}"/>
+        		<span class="team-name clearfix">{{match.hometeam.name}}</span>
+        		<span class="team-form clearfix">WLWLWW</span>
+        		<span class="team-last-result">3:0 Norwich</span>
+	
+        	</div>
+        	<div class="team-name col-xs-1 text-muted text-center"><span>VS</span><span class="clearfix">ID: {{match.id}} DATE: {{match.date}} TIME: {{match.time}}</span></div>
+        	<div class="away-team team col-xs-4 col-xs-offset-1 text-center">
+        		<img src="{{url_for('static', filename="img/kits/everton_2.png", _external=True) }}" class="team-kit" alt="{{match.awayteam.name}}"/>
+        		<span class="team-name clearfix">{{match.awayteam.name}}</span>
+        		<span class="team-form clearfix">WLWLWW</span>
+        		<span class="team-last-result">3:0 Norwich</span>
+        	</div>
+        	<div class="btn-group-xs pull-right" role="group">
+        		<a class="btn btn-primary">View game > </a>
+            	<a class="btn btn-primary">Comments ></a>
+            	<a href="{{ url_for('.save_match', match_id=match.id) }}" class="btn btn-primary">Save</a>
+            </div>
+            </div>
+    	</div>
+    	<!--/match-->
+        {% endfor %}
+
+    	</div>
+    </div>
+<!--/modules-->
