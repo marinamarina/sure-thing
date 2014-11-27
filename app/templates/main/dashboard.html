@@ -37,8 +37,12 @@
 			    <div class="page-content inset col-md-10 col-md-offset-1">
         		<!-- Keep all page content within the page-content inset div! -->
           				<div class="row well">
-              				<p>This is your dashboard!</p>
-              				<p>Start saving your matches now!<a href="/">HOME</a></p>
+                      {% if matches.length != 0 %}
+                          {% include 'includes/saved_matches.inc.html' %}
+                      {% else %}
+                          <p>This is your dashboard!</p>
+                          <p>Start saving your matches now!<a href="/">HOME</a></p>
+                      {% endif %}
 
               			</div>	
               			<div class="row well">

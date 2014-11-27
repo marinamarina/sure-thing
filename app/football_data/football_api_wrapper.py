@@ -12,7 +12,7 @@ from flask import url_for
     http://api2.football-api.com/api/?Action=team&APIKey=[YOUR_API_KEY]&team_id=[team]
 '''
 class FootballAPIWrapper:
-    def __init__(self):
+    def __init__(self, methodName='runTest'):
         '''self.app = app
         if app is not None:
             self.init_app(app)'''
@@ -232,6 +232,7 @@ class FootballAPIWrapper:
 
         Dates = namedtuple("Dates", "today current_time month beginning_year end_year")
         return Dates(today_formatted, current_time, today.month, beginning_year, end_year)
+
 
 
 '''

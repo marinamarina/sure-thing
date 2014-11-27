@@ -66,7 +66,6 @@ def save_match(match_id):
     me = current_user
     match = Match.query.filter_by(id=match_id).first()
 
-
     if me.is_match_saved(match):
         flash("You have already saved this match to  your dashboard.")
         return redirect(url_for('.index'))
@@ -75,7 +74,7 @@ def save_match(match_id):
     flash("Congratulations, you have saved a match to your dashboard!")
     return redirect(url_for('.index') )
 
-#route decorators
+
 @main.route('/dashboard', methods=['POST', 'GET'])
 @templated()
 @login_required
@@ -115,7 +114,18 @@ def dashboard():
     posts = my_query.order_by(Post.timestamp.desc()).all()'''
     saved_matches = current_user.saved_matches
 
-    return dict(  user=current_user) #posts=posts, form=form,
+    return dict(  user=current_user, matches=saved_matches) #posts=posts, form=form,
+
+@main.route('/remove_match')
+@login_required
+def remove_match():
+    return redirect(url_for('.index'))
+
+
+@main.route('/keek')
+@login_required
+def keek():
+    return redirect(url_for('.index'))
 
 '''
 @main.route('/show_all_posts')

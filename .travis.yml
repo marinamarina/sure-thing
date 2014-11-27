@@ -11,4 +11,4 @@ install:
 
 
 # command to run tests
-script: python -m unittest discover
+script: python manage.py test
