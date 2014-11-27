@@ -19,22 +19,22 @@ def inject_permissions():
 @main.route('/index', methods=['POST', 'GET'])
 @templated()
 def index():
-    show_followed = False
-
-    if current_user.is_authenticated():
-        #we get the value of the show_followed cookie from the request cookie dictionary
-        #and convert it to boolean
-        show_followed = bool(request.cookies.get('show_followed', ''))
-
-    '''if show_followed:
-        my_query = current_user.followed_posts
-    else:
-        my_query = Post.query'''
+    show_played_matches = False
 
     Match.insert_all_matches()
 
-    #display only played matches
-    matches = Match.query.filter_by(played=False).all()
+    #we get the value of the show_followed cookie from the request cookie dictionary
+    #and convert it to boolean
+    show_played_matches = bool(request.cookies.get('show_played_matches', ''))
+
+    if show_played_matches:
+        my_query = Match.query.filter_by(played=True)
+    else:
+        my_query = Match.query.filter_by(played=False)
+
+
+    #switch between displaying past and future matches
+    matches = my_query.order_by(Match.date_stamp.asc(), Match.time_stamp.asc()).all()
 
     # define the form
     '''form = BlogPostForm()
@@ -60,6 +60,20 @@ def index():
 
     return dict(  user=current_user, matches=matches) #posts=posts, form=form,
 
+@main.route('/show_unplayed')
+def show_unplayed():
+    redirect_to_index = redirect(url_for('.index'))
+    response = current_app.make_response(redirect_to_index)
+    response.set_cookie('show_played_matches',value='')
+    return response
+
+@main.route('/show_played')
+def show_played():
+    redirect_to_index = redirect(url_for('.index'))
+    response = current_app.make_response(redirect_to_index)
+    response.set_cookie('show_played_matches',value='1')
+    return response
+
 @main.route('/save_match/<int:match_id>')
 @login_required
 def save_match(match_id):
@@ -79,71 +93,30 @@ def save_match(match_id):
 @templated()
 @login_required
 def dashboard():
-    show_followed=False
 
-    if current_user.is_authenticated():
-        #we get the value of the show_followed cookie from the request cookie dictionary
-        #and convert it to boolean
-        show_followed = bool(request.cookies.get('show_followed', ''))
-
-    '''if show_followed:
-        my_query = current_user.followed_posts
-    else:
-        my_query = Post.query'''
-
-    # define the form
-    '''form = BlogPostForm()
-    if (current_user.can(Permission.WRITE_ARTICLES)):
-        if form.is_submitted():
-            print "submitted"
-        if form.validate():
-            print "valid"
-            print form.errors
-        if form.validate_on_submit():
-            # redirect loop
-            post = Post(body_html=form.body_html.data, title=form.title.data, author_id=current_user.id)
-            try:
-                #add new post
-                db.session.add(post)
-                return redirect(url_for('.index'))
-            except Exception:
-                db.session.flush()
-            finally:
-                flash ("You have now been authorized!" + str(current_user.role))
-
-    posts = my_query.order_by(Post.timestamp.desc()).all()'''
     saved_matches = current_user.saved_matches
 
     return dict(  user=current_user, matches=saved_matches) #posts=posts, form=form,
 
-@main.route('/remove_match')
+@main.route('/remove_match/<int:match_id>')
 @login_required
-def remove_match():
-    return redirect(url_for('.index'))
+def remove_match(match_id):
+    me = current_user
+    match = Match.query.filter_by(id=match_id).first()
+
+
+    me.remove_match(match)
+    flash("Congratulations, you have removed this match from your dashboard!")
+    saved_matches = me.saved_matches
+
+
+    return redirect(url_for('.dashboard', matches=saved_matches))
 
 
 @main.route('/keek')
 @login_required
 def keek():
     return redirect(url_for('.index'))
-
-'''
-@main.route('/show_all_posts')
-@login_required
-def show_all_posts():
-    redirect_to_index = redirect(url_for('.index'))
-    response = current_app.make_response(redirect_to_index)
-    response.set_cookie('show_followed',value='')
-    return response
-
-@main.route('/show_followed_users_posts')
-@login_required
-def show_followed_users_posts():
-    redirect_to_index = redirect(url_for('.index'))
-    response = current_app.make_response(redirect_to_index)
-    response.set_cookie('show_followed',value='1')
-    return response
-'''
 
 @main.route('/leagueTable')
 @templated()

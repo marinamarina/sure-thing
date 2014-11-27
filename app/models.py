@@ -385,6 +385,8 @@ class Match(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     date = db.Column(db.String(16))
     time = db.Column(db.String(16))
+    date_stamp = db.Column(db.Date())
+    time_stamp = db.Column(db.Time())
     played = db.Column(db.Boolean)
     hometeam_id = db.Column(db.Integer, db.ForeignKey('teams.id'), nullable=False)
     awayteam_id = db.Column(db.Integer, db.ForeignKey('teams.id'), nullable=False)
@@ -404,20 +406,23 @@ class Match(db.Model):
             #store last inserted match id in a variable?
             match = Match.query.filter_by(id=m.id).first()
 
-            if match is None:
-                match = Match()
+            #if match is None:
+            #    match = Match()
 
-            match.id = m.id
-            match.date = m.date
-            match.time = m.time
-            match.hometeam_id = m.hometeam_id
-            match.awayteam_id = m.awayteam_id
-            match.hometeam_score = m.hometeam_score
-            match.awayteam_score = m.awayteam_score
-            if (match.hometeam_score != '?'):
-                match.played = True
-            else:
-                match.played = False
+
+            #match.id = m.id
+            #match.date = m.date
+            #match.time = m.time
+            match.date_stamp = m.date_stamp
+            match.time_stamp = m.time_stamp
+            #match.hometeam_id = m.hometeam_id
+            #match.awayteam_id = m.awayteam_id
+            #match.hometeam_score = m.hometeam_score
+            #match.awayteam_score = m.awayteam_score
+            #if (match.hometeam_score != '?'):
+            #    match.played = True
+            #else:
+            #    match.played = False
 
             db.session.add(match)
         db.session.commit()

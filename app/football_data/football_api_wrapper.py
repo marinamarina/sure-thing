@@ -2,7 +2,7 @@
 
 import urllib2
 import json
-import datetime
+from datetime import datetime
 from collections import namedtuple, OrderedDict
 import urllib
 from flask import url_for
@@ -19,7 +19,6 @@ class FootballAPIWrapper:
 
         self.__premier_league_id = '1204'
         self.__base_url = 'http://football-api.com/api/?Action='
-        #self.__all_matches_data = url_for('data.all_matches')
         self.proxy_on = False
 
     def init_app(self, app):
@@ -118,7 +117,7 @@ class FootballAPIWrapper:
         raw_data["matches"] = self.get_all_matches()["matches"]
 
 
-        with open('app/data/all_matches.json', mode = 'w') as outfile:
+        with open(self.data_dir + '/all_matches.json', mode = 'w') as outfile:
             json.dump(raw_data, outfile)
         outfile.close()
 
@@ -129,11 +128,11 @@ class FootballAPIWrapper:
         :return tuple of two arrays of tuples
         '''
 
-        with open('app/data/all_matches.json', 'r') as localfile:
+        with open(self.data_dir + '/all_matches.json', 'r') as localfile:
             matches_data = json.load(localfile)
         localfile.close()
 
-        MatchInfo = namedtuple('MatchInfo', 'id date time hometeam_id awayteam_id hometeam_score awayteam_score')
+        MatchInfo = namedtuple('MatchInfo', 'id date time date_stamp time_stamp hometeam_id awayteam_id hometeam_score awayteam_score')
         all_matches = []
         unplayed_matches = []
         played_matches = []
@@ -144,14 +143,19 @@ class FootballAPIWrapper:
             matchInfo = MatchInfo(int(m['match_id']),
                                   m['match_formatted_date'],
                                   m['match_time'],
+                                  datetime.strptime(m['match_formatted_date'], "%d.%m.%Y").date(),
+                                  datetime.strptime(m['match_time'], "%H:%M").time(),
                                   int(m['match_localteam_id']),
                                   int(m['match_visitorteam_id']),
                                   m['match_localteam_score'],
                                   m['match_visitorteam_score']
             )
+
+            print (type(matchInfo.time_stamp))
+
             all_matches.append(matchInfo)
 
-            if (matchInfo.awayteam_score == "?"):
+            if datetime.strptime(matchInfo.date, "%d.%m.%Y").date() >= datetime.now().date():
                 unplayed_matches.append(matchInfo)
             else:
                 played_matches.append(matchInfo)
@@ -202,6 +206,14 @@ class FootballAPIWrapper:
         self.api_key = value
 
     @property
+    def data_dir(self):
+        return 'app/data'
+
+    @data_dir.setter
+    def data_dir(self, value):
+        self.data_dir = value
+
+    @property
     def ids_names(self):
         self.ids_names = self.feed_ids_names()
         return self.ids_names
@@ -223,7 +235,7 @@ class FootballAPIWrapper:
 
     @property
     def date_tuple(self):
-        today = datetime.datetime.now()
+        today = datetime.now()
         today_formatted = today.strftime("%d.%m.%Y")
         current_time = today.strftime("%H:%M")
 
@@ -232,21 +244,3 @@ class FootballAPIWrapper:
 
         Dates = namedtuple("Dates", "today current_time month beginning_year end_year")
         return Dates(today_formatted, current_time, today.month, beginning_year, end_year)
-
-
-
-'''
-# cracking a standard league table
-# position, win, draw, loss, points, last 10 games (tendency)
-
-Example endpoints
-api/?Action=competitions&APIKey=####
-api/?Action=standings&comp_id=1204&APIKey=####
-api/?Action=today&comp_id=1204&APIKey=####
-api/?Action=fixtures&comp_id=1024&&match_date=[DATE_IN_d.m.Y_FORMAT]&APIKey=####
-api/?Action=commentaries&APIKey=###&match_id=[MATCH_ID]
-
-API2:
-http://api2.football-api.com/api/?Action=player&APIKey=[YOUR_API_KEY]&player_id=193
-http://api2.football-api.com/api/?Action=team&APIKey=[YOUR_API_KEY]&team_id=[team]
-'''

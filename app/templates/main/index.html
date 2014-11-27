@@ -13,7 +13,10 @@
         <p class="text-muted">This is the index page</p>
     </div>
     <!-- /introduction -->
-    
+        <ul class="nav nav-tabs">
+            <li><a href="{{ url_for('.show_unplayed') }}">Upcoming fixtures</a></li>
+            <li><a href="{{ url_for('.show_played') }}">History</a></li>
+    </ul>
     {% include 'includes/upcoming_fixtures.inc.html' %}
 
         <p>Welcome to my website,

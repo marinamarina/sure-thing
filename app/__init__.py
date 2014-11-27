@@ -23,7 +23,7 @@ login_manager.session_protection = 'strong'
 login_manager.login_view = 'auth.login'
 su = ShortUrl()
 faw = FootballAPIWrapper()
-faw.api_key = '2890be06-81bd-b6d7-1dcb4b5983a0'
+faw.api_key = '2890be06-81bd-b6d7-1dcb4b5983a0' # set as an environment variable
 
 POOL_TIME = 600 #seconds equals 10 minutes
 
