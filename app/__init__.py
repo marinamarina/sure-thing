@@ -25,7 +25,7 @@ su = ShortUrl()
 faw = FootballAPIWrapper()
 faw.api_key = '2890be06-81bd-b6d7-1dcb4b5983a0' # set as an environment variable
 
-POOL_TIME = 600 #seconds equals 10 minutes
+POOL_TIME = 120 #600 #seconds equals 10 minutes
 
 # variables that are accessible from anywhere
 commonDataStruct = {}
@@ -34,7 +34,7 @@ commonDataStruct = {}
 dataLock = threading.Lock()
 
 # thread handler
-yourThread = threading.Thread()
+mathesDataThread = threading.Thread()
 
 
 def create_app(config_name):
@@ -55,30 +55,30 @@ def create_app(config_name):
 
     # take care of a multithreading
     def interrupt():
-        global yourThread
-        yourThread.cancel()
+        global matchesDataThread
+        dataThread.cancel()
 
-    def doStuff():
+    def loadData():
         global commonDataStruct
-        global yourThread
+        global dataThread
         global dataLock
         with dataLock:
             print('Data reloaded at ' + datetime.today().strftime("%Y-%m-%d %H:%M:%S"))
-            faw.write_data()
+            #faw.write_data()
 
         # Set the next thread to happen
-        yourThread = threading.Timer(POOL_TIME, doStuff, ())
-        yourThread.start()
+        dataThread = threading.Timer(POOL_TIME, loadData, ())
+        dataThread.start()
 
-    def doStuffStart():
+    def loadDataStart():
         # Do initialisation stuff here
-        global yourThread
+        global dataThread
         # Create your thread
-        yourThread = threading.Timer(POOL_TIME, doStuff, ())
-        yourThread.start()
+        dataThread = threading.Timer(POOL_TIME, loadData, ())
+        dataThread.start()
 
     # Initiate
-    doStuffStart()
+    loadDataStart()
     # When you kill Flask (SIGTERM), clear the trigger for the next thread
     atexit.register(interrupt)
 

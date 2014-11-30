@@ -89,51 +89,12 @@ def save_match(match_id):
     flash("Congratulations, you have saved a match to your dashboard!")
     return redirect(url_for('.index') )
 
-#route decorators
-@main.route('/match_view', methods=['POST', 'GET'])
-@templated()
-def match_view():
-    '''show_played_matches = False
+@main.route('/view_match/<int:match_id>')
+def view_match(match_id):
+    me = current_user
+    match = Match.query.filter_by(id=match_id).first()
 
-    Match.insert_all_matches()
-
-    #we get the value of the show_followed cookie from the request cookie dictionary
-    #and convert it to boolean
-    show_played_matches = bool(request.cookies.get('show_played_matches', ''))
-
-    if show_played_matches:
-        my_query = Match.query.filter_by(played=True)
-    else:
-        my_query = Match.query.filter_by(played=False)
-
-
-    #switch between displaying past and future matches
-    #order matches first by the date and then by the time
-    matches = my_query.order_by(Match.date_stamp.asc(), Match.time_stamp.asc()).all()
-
-    # define the form
-    form = BlogPostForm()
-    if (current_user.can(Permission.WRITE_ARTICLES)):
-        if form.is_submitted():
-            print "submitted"
-        if form.validate():
-            print "valid"
-            print form.errors
-        if form.validate_on_submit():
-            # redirect loop
-            post = Post(body_html=form.body_html.data, title=form.title.data, author_id=current_user.id)
-            try:
-                #add new post
-                db.session.add(post)
-                return redirect(url_for('.index'))
-            except Exception:
-                db.session.flush()
-            finally:
-                flash ("You have now been authorized!" + str(current_user.role))
-
-    posts = my_query.order_by(Post.timestamp.desc()).all()
-'''
-    return dict(  user=current_user) #, matches=matches) #posts=posts, form=form,
+    return render_template('main/view_match.html', match=match )
 
 
 @main.route('/dashboard', methods=['POST', 'GET'])
@@ -143,7 +104,7 @@ def dashboard():
 
     saved_matches = current_user.saved_matches
 
-    return dict(  user=current_user, matches=saved_matches) #posts=posts, form=form,
+    return dict(user=current_user, matches=saved_matches) #posts=posts, form=form,
 
 @main.route('/remove_match/<int:match_id>')
 @login_required

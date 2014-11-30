@@ -185,8 +185,6 @@ class User (UserMixin, db.Model):
                                     lazy='dynamic',
                                     cascade='all, delete-orphan'
                                     )
-    '''matches = db.relationship('Match', secondary=savedforlater, lazy='select', backref='users')
-    matches_dynamic = db.relationship('Match', passive_deletes=True, secondary=savedforlater, lazy='dynamic')'''
 
     def __init__(self, **kwargs):
         super(User, self).__init__(**kwargs)
@@ -338,9 +336,18 @@ class Team(db.Model):
     __tablename__ = 'teams'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64), unique=True)
-    league_position = db.Column(db.Integer, unique=True)
     hometeam = db.relationship('Match', backref=db.backref('hometeam'), lazy='dynamic', primaryjoin="Match.hometeam_id==Team.id")
     awayteam = db.relationship('Match', backref=db.backref('awayteam'), lazy='dynamic', primaryjoin="Match.awayteam_id==Team.id")
+
+    @property
+    def position(self):
+       current_position = faw.league_table[str(self.id)].position
+       return current_position
+
+    @property
+    def form(self):
+       current_form = faw.league_table[str(self.id)].form
+       return current_form
 
     def __init__(self, **kwargs):
         super(Team, self).__init__(**kwargs)
@@ -379,6 +386,14 @@ class Team(db.Model):
             self.league_position
             )
 
+class Prediction(db.Model):
+    __tablename__ = 'predictions'
+    match_id = db.Column(db.Integer, db.ForeignKey('matches.id'), primary_key=True)
+    module_id = db.Column(db.String(), db.ForeignKey('prediction_modules.id'), primary_key=True)
+    prediction = db.Column(db.Enum('home', 'away', 'draw'))
+    prediction_module = db.relationship( "PredictionModule", backref = "match_assocs")
+
+
 class Match(db.Model):
     'represents a football match'
     __tablename__ = 'matches'
@@ -393,7 +408,12 @@ class Match(db.Model):
     hometeam_score = db.Column(db.String(4))
     awayteam_score = db.Column(db.String(4))
     comments = db.relationship('Comment', backref='match', lazy='dynamic')
-
+    predictions = db.relationship('Prediction',
+                                    foreign_keys=[Prediction.match_id],
+                                    backref=db.backref('match', lazy='joined'),
+                                    lazy='dynamic',
+                                    cascade='all, delete-orphan'
+                                    )
 
     @staticmethod
     def insert_all_matches():
@@ -461,8 +481,8 @@ class PredictionModule(db.Model):
     description = db.Column(db.String())
     default_weight = db.Column(db.Float())
 
-    #author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    #match_id = db.Column(db.Integer, db.ForeignKey('matches.id'))
+
+
     @staticmethod
     def insert_modules():
         modules = {
@@ -485,8 +505,9 @@ class PredictionModule(db.Model):
                 self.default_weight
         )
 
+
+
 '''
-todo this next time
 class CustomisedPredictionModule(db.Model):
     __tablename__ = 'customised_prediction_module'
     module_id = db.Column(db.Integer, primary_key=True)

@@ -33,3 +33,9 @@ class TestFootballAPIWrapper(unittest.TestCase):
         for m in matches:
             self.assertTrue(datetime.strptime(m.date, "%d.%m.%Y").date() <= datetime.now().date(),
                             "All the matches dates should be IN THE PAST compared to today")
+
+    def test_standings(self):
+        league_table = self.faw.league_table
+        print ("\n")
+        for kkey, tuple in league_table.items():
+            print kkey, tuple.position

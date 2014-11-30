@@ -1,6 +1,4 @@
 <!--matches -->
-{% from 'includes/__formhelpers.html' import render_field %}
-
 <div class="jumbotron top-space container">
     <div class="matches-for-date">
         <h3 class="match-date row">Sat, 22 Nov</h3>
@@ -25,9 +23,11 @@
         		<span class="team-last-result">3:0 Norwich</span>
         	</div>
         	<div class="btn-group-xs pull-right" role="group">
-        		<a class="btn btn-primary">View game > </a>
-            	<a class="btn btn-primary">Comments ></a>
-            	<a href="{{ url_for('.save_match', match_id=match.id) }}" class="btn btn-primary">Save</a>
+                <a class="btn btn-primary">Comments ></a>
+                {% if not match.played == True %}
+        		    <a href="{{ url_for('.view_match', match_id=match.id) }}" class="btn btn-primary">View game > </a>
+                    <a href="{{ url_for('.save_match', match_id=match.id) }}" class="btn btn-primary">Save</a>
+                {% endif %}
             </div>
             </div>
     	</div>

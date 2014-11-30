@@ -5,7 +5,6 @@ import json
 from datetime import datetime
 from collections import namedtuple, OrderedDict
 import urllib
-from flask import url_for
 
 '''
     TODO: switch to API version 2
@@ -110,20 +109,44 @@ class FootballAPIWrapper:
         all_matches = self.call_api(action, **params)
         return all_matches
 
-    def write_data (self):
+    def get_standings(self):
+        'Get the standings json from the API'
+        action = 'standings'
+        data_standings = self.call_api(action)
+        return data_standings
+
+    def write_matches_data (self):
         'Write matches json to the local file'
-        raw_data = {}
+        raw_data = dict()
         raw_data["date-time"] = self.date_tuple.today + ' ' + self.date_tuple.current_time
         raw_data["matches"] = self.get_all_matches()["matches"]
-
 
         with open(self.data_dir + '/all_matches.json', mode = 'w') as outfile:
             json.dump(raw_data, outfile)
         outfile.close()
+        print ('matches called!')
+
+    def write_standings_data (self):
+        'Write standings json to the local file'
+        raw_data = dict()
+        raw_data["date-time"] = self.date_tuple.today + ' ' + self.date_tuple.current_time
+        raw_data["standings"] = self.get_standings()["teams"]
+
+        with open(self.data_dir + '/standings.json', mode = 'w') as outfile:
+            json.dump(raw_data, outfile)
+        outfile.close()
+        print ('league table called!')
+
+    def write_data(self):
+        import time
+
+        self.write_matches_data()
+        time.sleep(10)
+        self.write_standings_data()
 
     def feed_all_and_unplayed_matches(self):
         '''
-        Create an named tuple with all matches for the season
+        Create a named tuple with all matches for the season
         Read the data from a local file
         :return tuple of two arrays of tuples
         '''
@@ -151,8 +174,6 @@ class FootballAPIWrapper:
                                   m['match_visitorteam_score']
             )
 
-            print (type(matchInfo.time_stamp))
-
             all_matches.append(matchInfo)
 
             if datetime.strptime(matchInfo.date, "%d.%m.%Y").date() >= datetime.now().date():
@@ -161,6 +182,30 @@ class FootballAPIWrapper:
                 played_matches.append(matchInfo)
 
         return MatchesAllAndUnplayed(all_matches, unplayed_matches, played_matches)
+
+
+    def feed_league_table(self):
+        '''
+        Create a dictionary with the current standings
+        Read the data from a local file
+        :return league_table dictionary
+        '''
+
+        with open(self.data_dir + '/standings.json', 'r') as localfile:
+            standings_data = json.load(localfile)
+        localfile.close()
+        league_table = OrderedDict()
+        TeamInfo = namedtuple('TeamInfo', 'position team_name matches_played w d l goals_for goals_against gp points form')
+
+     #   for sortedKey in sorted(dictionary):
+    #print dictionary[sortedKeY] # gives the values sorted by key
+
+        for team in standings_data['standings']:
+            league_table[team['stand_team_id']] = TeamInfo(team['stand_position'], team['stand_team_name'], team['stand_round'],
+                           team['stand_overall_w'], team['stand_overall_d'], team['stand_overall_l'],
+                           team['stand_overall_gs'], team['stand_overall_ga'], team['stand_gd'], team['stand_points'], team['stand_recent_form'])
+
+        return league_table
 
     def form_and_tendency(self):
         'I need to output last 5 matches for a team for the team (tendency and result)'
@@ -174,27 +219,6 @@ class FootballAPIWrapper:
                 if match["match_localteam_id"] == '9260' or match["match_visitorteam_id"] == '9260':
                     pass
                     #print match["match_formatted_date"], match["match_localteam_name"], match["match_visitorteam_name"], match["match_ft_score"]
-
-
-    def feed_league_table(self):
-        'cracking a standard league table (a dictionary ordered by position)'
-        action = 'standings'
-        data_standings = self.call_api(action)
-        league_table = {}
-        TeamInfo = namedtuple('TeamInfo', 'position team_name matches_played w d l goals_for goals_against gp points')
-
-     #   for sortedKey in sorted(dictionary):
-    #print dictionary[sortedKeY] # gives the values sorted by key
-
-        for team in data_standings['teams']:
-            league_table[team['stand_team_id']] = TeamInfo(team['stand_position'], team['stand_team_name'], team['stand_round'],
-                           team['stand_overall_w'], team['stand_overall_d'], team['stand_overall_l'],
-                           team['stand_overall_gs'], team['stand_overall_ga'], team['stand_gd'], team['stand_points'])
-
-        #for sortedValue in sorted(league_table['position'].values()):
-        #    print sortedValue # gives the values sorted by value
-
-        return league_table
 
 
     @property
@@ -244,3 +268,7 @@ class FootballAPIWrapper:
 
         Dates = namedtuple("Dates", "today current_time month beginning_year end_year")
         return Dates(today_formatted, current_time, today.month, beginning_year, end_year)
+
+    @property
+    def league_table(self):
+        return self.feed_league_table()

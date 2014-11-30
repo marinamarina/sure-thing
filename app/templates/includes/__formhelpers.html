@@ -31,3 +31,8 @@
   </div>
 {% endmacro %}
 
+{% macro teamkitimage(teamname='Chelsea', where=1, match) %}
+    {{teamname}}
+    <img src="{{url_for('static', filename='img/kits/Chelsea_' + str(where) + '.png', _external=True) }}" class="team-kit" alt="{{match.awayteam.name}}"/>
+{% endmacro %}
+
