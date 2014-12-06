@@ -4,10 +4,9 @@ from flask_script import Manager, Shell
 from app import create_app, db
 from app.models import User, Role, Permission, Follow, Team, Match, SavedForLater, PredictionModule
 from flask_migrate import Migrate, MigrateCommand
-import unittest
+from app import socketio
 
 basedir = os.path.abspath(os.path.dirname(__file__))
-
 
 cov = None
 if (os.environ.get('FLASK_COVERAGE')):
@@ -59,4 +58,5 @@ def test(coverage=False):
 
 
 if __name__ == '__main__':
+    socketio.run(app)
     manager.run()

@@ -1,5 +1,5 @@
 from datetime import datetime
-from flask import render_template, redirect, url_for, session, flash, current_app, request
+from flask import render_template, redirect, url_for, abort, flash, session, current_app, request
 from flask_login import login_required, current_user
 from . import main
 from .forms import BlogPostForm, CommentPostForm
@@ -7,8 +7,15 @@ from .. import db
 from ..models import User, Permission, Team, Match #Post, Comment
 from ..email import send_email
 from ..decorators_me import permission_required, templated
-from flask import abort
+from time import sleep
 from ..football_data.football_api_wrapper import FootballAPIWrapper
+from .. import socketio
+from threading import Thread, Event
+from ..threads.data_handle_threads import RandomThread
+
+#random number Generator Thread
+thread = Thread()
+thread_stop_event = Event()
 
 @main.app_context_processor
 def inject_permissions():
@@ -19,6 +26,7 @@ def inject_permissions():
 @main.route('/index', methods=['POST', 'GET'])
 @templated()
 def index():
+
     show_played_matches = False
 
     Match.insert_all_matches()
@@ -60,6 +68,7 @@ def index():
     posts = my_query.order_by(Post.timestamp.desc()).all()'''
 
     return dict(  user=current_user, matches=matches) #posts=posts, form=form,
+
 
 @main.route('/show_unplayed')
 def show_unplayed():
@@ -306,3 +315,51 @@ def moderate_disable(id):
     comment.disabled = True
     db.session.add(comment)
     return redirect(url_for('.moderate'))'''
+
+'''@threads.on('my event', namespace='/test')
+def test_message(message):
+    session['receive_count'] = session.get('receive_count', 0) + 1
+    emit('my response',
+         {'data': message['data'], 'count': session['receive_count']})
+
+
+@threads.on('my broadcast event', namespace='/test')
+def test_message(message):
+    session['receive_count'] = session.get('receive_count', 0) + 1
+    emit('my response',
+         {'data': message['data'], 'count': session['receive_count']},
+         broadcast=True)
+
+@threads.on('join', namespace='/test')
+def join(message):
+    join_room(message['room'])
+    session['receive_count'] = session.get('receive_count', 0) + 1
+    emit('my response',
+         {'data': 'In rooms: ' + ', '.join(request.namespace.rooms),
+          'count': session['receive_count']})
+
+
+@threads.on('connect', namespace='/test')
+def test_connect():
+    emit('my response', {'data': 'Connected', 'count': 0})
+
+
+@threads.on('disconnect', namespace='/test')
+def test_disconnect():
+    print('Client disconnected')'''
+
+@socketio.on('connect', namespace='/test')
+def test_connect():
+    # need visibility of the global thread object
+    global thread
+    print('Client connected')
+
+    #Start the random number generator thread only if the thread has not been started before.
+    if not thread.isAlive():
+        print "Starting Thread"
+        thread = RandomThread()
+        thread.start()
+
+@socketio.on('disconnect', namespace='/test')
+def test_disconnect():
+    print('Client disconnected')

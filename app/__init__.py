@@ -5,14 +5,16 @@ from flask_mail import Mail
 from flask_login import LoginManager
 from flask_shorturl import ShortUrl
 from config import config
-import threading
+from gevent import monkey
+from threading import Thread, Event
+from flask_socketio import SocketIO
+import random
 import atexit
-from datetime import datetime
-
 from football_data.football_api_wrapper import FootballAPIWrapper
 
 #gunicorn -b 0.0.0.0:5000 --log-config log.conf --pid=app.pid myfile:app
 
+monkey.patch_all()
 
 bootstrap = Bootstrap()
 mail = Mail()
@@ -24,8 +26,10 @@ login_manager.login_view = 'auth.login'
 su = ShortUrl()
 faw = FootballAPIWrapper()
 faw.api_key = '2890be06-81bd-b6d7-1dcb4b5983a0' # set as an environment variable
+socketio = SocketIO()
 
-POOL_TIME = 120 #600 #seconds equals 10 minutes
+
+'''POOL_TIME = 120 #600 #seconds equals 10 minutes
 
 # variables that are accessible from anywhere
 commonDataStruct = {}
@@ -34,7 +38,17 @@ commonDataStruct = {}
 dataLock = threading.Lock()
 
 # thread handler
-mathesDataThread = threading.Thread()
+mathesDataThread = threading.Thread()'''
+
+'''def background_thread():
+    """Example of how to send server generated events to clients."""
+    count = 0
+    while True:
+        time.sleep(10)
+        count += 1
+        threads.emit('my response',
+                      {'data': 'Data updated', 'count': count},
+                      namespace='/test')'''
 
 
 def create_app(config_name):
@@ -52,8 +66,18 @@ def create_app(config_name):
     faw.init_app(app)
     login_manager.init_app(app)
     su.init_app(app)
+    socketio.init_app(app)
 
-    # take care of a multithreading
+    #attach routes and custom error pages here
+    from main import main as main_blueprint
+    app.register_blueprint(main_blueprint)
+
+    from .auth import auth as auth_blueprint
+    app.register_blueprint(auth_blueprint, url_prefix='/auth')
+
+    return app
+
+''' # take care of a multithreading
     def interrupt():
         global matchesDataThread
         dataThread.cancel()
@@ -80,14 +104,4 @@ def create_app(config_name):
     # Initiate
     loadDataStart()
     # When you kill Flask (SIGTERM), clear the trigger for the next thread
-    atexit.register(interrupt)
-
-
-    #attach routes and custom error pages here
-    from main import main as main_blueprint
-    app.register_blueprint(main_blueprint)
-
-    from .auth import auth as auth_blueprint
-    app.register_blueprint(auth_blueprint, url_prefix='/auth')
-
-    return app
+    atexit.register(interrupt)'''
