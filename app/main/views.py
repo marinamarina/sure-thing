@@ -1,18 +1,27 @@
 from datetime import datetime
-from flask import render_template, redirect, url_for, session, flash, current_app, request
+from flask import render_template, redirect, url_for, abort, flash, session, current_app, request
 from flask_login import login_required, current_user
 from . import main
 from .forms import BlogPostForm, CommentPostForm
 from .. import db
-from ..models import User, Permission, Team, Match #Post, Comment
+from ..models import User, Permission, Team, Match  # Post, Comment
 from ..email import send_email
 from ..decorators_me import permission_required, templated
-from flask import abort
+from time import sleep
 from ..football_data.football_api_wrapper import FootballAPIWrapper
+from .. import socketio
+from threading import Thread, Event
+from ..threads.data_handle_threads import RandomThread, DataUpdateThread
+
+# random number Generator Thread
+thread = Thread()
+thread_stop_event = Event()
+
 
 @main.app_context_processor
 def inject_permissions():
     return dict(Permission=Permission, pokus='keek')
+
 
 #route decorators
 @main.route('/', methods=['POST', 'GET'])
@@ -20,22 +29,21 @@ def inject_permissions():
 @templated()
 def index():
     show_played_matches = False
-
-    Match.insert_all_matches()
+    Match.update_all_matches()
 
     #we get the value of the show_followed cookie from the request cookie dictionary
     #and convert it to boolean
     show_played_matches = bool(request.cookies.get('show_played_matches', ''))
 
     if show_played_matches:
-        my_query = Match.query.filter_by(played=True)
+        my_query = Match.query.filter_by(played=True).order_by(Match.date_stamp.desc(), Match.time_stamp.asc())
     else:
-        my_query = Match.query.filter_by(played=False)
+        my_query = Match.query.filter_by(played=False).order_by(Match.date_stamp.asc(), Match.time_stamp.asc())
 
 
     #switch between displaying past and future matches
     #order matches first by the date and then by the time
-    matches = my_query.order_by(Match.date_stamp.asc(), Match.time_stamp.asc()).all()
+    matches = my_query.all()
 
     # define the form
     '''form = BlogPostForm()
@@ -59,21 +67,24 @@ def index():
 
     posts = my_query.order_by(Post.timestamp.desc()).all()'''
 
-    return dict(  user=current_user, matches=matches) #posts=posts, form=form,
+    return dict(user=current_user, matches=matches)  #posts=posts, form=form,
+
 
 @main.route('/show_unplayed')
 def show_unplayed():
     redirect_to_index = redirect(url_for('.index'))
     response = current_app.make_response(redirect_to_index)
-    response.set_cookie('show_played_matches',value='')
+    response.set_cookie('show_played_matches', value='')
     return response
+
 
 @main.route('/show_played')
 def show_played():
     redirect_to_index = redirect(url_for('.index'))
     response = current_app.make_response(redirect_to_index)
-    response.set_cookie('show_played_matches',value='1')
+    response.set_cookie('show_played_matches', value='1')
     return response
+
 
 @main.route('/save_match/<int:match_id>')
 @login_required
@@ -87,24 +98,44 @@ def save_match(match_id):
 
     me.save_match(match)
     flash("Congratulations, you have saved a match to your dashboard!")
-    return redirect(url_for('.index') )
+    return redirect(url_for('.index'))
+
 
 @main.route('/view_match/<int:match_id>')
 def view_match(match_id):
     me = current_user
     match = Match.query.filter_by(id=match_id).first()
 
-    return render_template('main/view_match.html', match=match )
+    return render_template('main/view_match.html', match=match, user=current_user)
 
 
 @main.route('/dashboard', methods=['POST', 'GET'])
 @templated()
 @login_required
 def dashboard():
-
     saved_matches = current_user.saved_matches
 
-    return dict(user=current_user, matches=saved_matches) #posts=posts, form=form,
+    return dict(user=current_user, matches=saved_matches)  #posts=posts, form=form,
+
+
+@main.route('/view_match_dashboard/<int:match_id>')
+def view_match_dashboard(match_id):
+    me = current_user
+    match = Match.query.filter_by(id=match_id).first()
+
+    return render_template('main/view_match_dashboard.html', savedmatch=match, user=current_user)
+
+
+@main.route('/commit_match/<int:match_id>')
+@login_required
+def commit_match(match_id):
+    me = current_user
+    saved_matches = current_user.saved_matches
+
+    flash("Congratulations, you have commited your bet!")
+
+    return redirect(url_for('.dashboard', matches=saved_matches))
+
 
 @main.route('/remove_match/<int:match_id>')
 @login_required
@@ -112,11 +143,9 @@ def remove_match(match_id):
     me = current_user
     match = Match.query.filter_by(id=match_id).first()
 
-
     me.remove_match(match)
     flash("Congratulations, you have removed this match from your dashboard!")
     saved_matches = me.saved_matches
-
 
     return redirect(url_for('.dashboard', matches=saved_matches))
 
@@ -125,6 +154,7 @@ def remove_match(match_id):
 @login_required
 def keek():
     return redirect(url_for('.index'))
+
 
 @main.route('/leagueTable')
 @templated()
@@ -163,7 +193,8 @@ def user(username):
         abort(404)
     #posts = Post.query.filter_by(author=user).order_by(Post.timestamp.desc()).all()
 
-    return dict(user=user) #posts=posts
+    return dict(user=user)  #posts=posts
+
 
 '''
 # a unique url to each blogpost
@@ -216,6 +247,7 @@ def post_editor(id):
     return render_template( 'main/post_editor.html', form=form, posts=[post])
 '''
 
+
 @main.route('/follow/<username>')
 @login_required
 def follow(username):
@@ -232,6 +264,7 @@ def follow(username):
     me.follow(other_user)
     flash("Congratulations, you are now following " + username)
     return redirect(url_for('main.user', username=username))
+
 
 @main.route('/unfollow/<username>')
 @login_required
@@ -250,6 +283,7 @@ def unfollow(username):
     flash("Congratulations, you are now not following " + username)
     return redirect(url_for('main.user', username=username))
 
+
 #a route to show the users following our selected user
 @main.route('/show_followers/<username>')
 @login_required
@@ -260,12 +294,16 @@ def show_followers(username):
         return redirect(url_for('.index'))
 
     # my own code, generator (as opposed to list from a book with added condition to exclude the user himself)
-    follows = ({'user': item.follower, 'timestamp': item.timestamp} for item in followed_user.followers if item.follower!=followed_user)
+    follows = ({'user': item.follower, 'timestamp': item.timestamp} for item in followed_user.followers if
+               item.follower != followed_user)
 
     from pprint import pprint
+
     pprint(follows)
 
-    return render_template('main/followers.html', user=followed_user, title=str(username) + "'s followers", follows=follows)
+    return render_template('main/followers.html', user=followed_user, title=str(username) + "'s followers",
+                           follows=follows)
+
 
 #a route to show the users followed by our selected user
 @main.route('/show_followed_users/<username>')
@@ -278,8 +316,11 @@ def show_followed_users(username):
         return redirect(url_for('.index'))
 
     # my own code, generator (as opposed to list from a book with added condition to exclude the user himself)
-    followed = ({'user': item.followed, 'timestamp': item.timestamp} for item in following_user.followed if item.followed!=following_user)
-    return render_template('main/followed.html', user=following_user, title=str(username) + "'s followers", follows=followed)
+    followed = ({'user': item.followed, 'timestamp': item.timestamp} for item in following_user.followed if
+                item.followed != following_user)
+    return render_template('main/followed.html', user=following_user, title=str(username) + "'s followers",
+                           follows=followed)
+
 
 '''
 @main.route('/moderate')
@@ -306,3 +347,53 @@ def moderate_disable(id):
     comment.disabled = True
     db.session.add(comment)
     return redirect(url_for('.moderate'))'''
+
+'''@threads.on('my event', namespace='/test')
+def test_message(message):
+    session['receive_count'] = session.get('receive_count', 0) + 1
+    emit('my response',
+         {'data': message['data'], 'count': session['receive_count']})
+
+
+@threads.on('my broadcast event', namespace='/test')
+def test_message(message):
+    session['receive_count'] = session.get('receive_count', 0) + 1
+    emit('my response',
+         {'data': message['data'], 'count': session['receive_count']},
+         broadcast=True)
+
+@threads.on('join', namespace='/test')
+def join(message):
+    join_room(message['room'])
+    session['receive_count'] = session.get('receive_count', 0) + 1
+    emit('my response',
+         {'data': 'In rooms: ' + ', '.join(request.namespace.rooms),
+          'count': session['receive_count']})
+
+
+@threads.on('connect', namespace='/test')
+def test_connect():
+    emit('my response', {'data': 'Connected', 'count': 0})
+
+
+@threads.on('disconnect', namespace='/test')
+def test_disconnect():
+    print('Client disconnected')'''
+
+
+@socketio.on('connect', namespace='/test')
+def test_connect():
+    # need visibility of the global thread object
+    global thread
+    print('Client connected')
+
+    #Start the random number generator thread only if the thread has not been started before.
+    if not thread.isAlive():
+        print "Starting Thread"
+        thread = DataUpdateThread()
+        thread.start()
+
+
+@socketio.on('disconnect', namespace='/test')
+def test_disconnect():
+    print('Client disconnected')
