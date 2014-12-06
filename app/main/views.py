@@ -103,7 +103,7 @@ def view_match(match_id):
     me = current_user
     match = Match.query.filter_by(id=match_id).first()
 
-    return render_template('main/view_match.html', match=match )
+    return render_template('main/view_match.html', match=match, user=current_user)
 
 
 @main.route('/dashboard', methods=['POST', 'GET'])

@@ -390,6 +390,7 @@ class Prediction(db.Model):
     __tablename__ = 'predictions'
     match_id = db.Column(db.Integer, db.ForeignKey('matches.id'), primary_key=True)
     module_id = db.Column(db.String(), db.ForeignKey('prediction_modules.id'), primary_key=True)
+    winner_id = db.Column(db.Integer(), db.ForeignKey('teams.id'))
     prediction = db.Column(db.Enum('home', 'away', 'draw'))
     prediction_module = db.relationship( "PredictionModule", backref = "match_assocs")
 
@@ -446,6 +447,11 @@ class Match(db.Model):
 
             db.session.add(match)
         db.session.commit()
+
+    '''def prediction_league_position(self):
+        'calculate the winner for the league position.'
+        prediction = Prediction.query.filter_by()
+        prediction = Prediction()'''
 
     def __repr__(self):
         return "<Match> date:{} id:{}".format(
