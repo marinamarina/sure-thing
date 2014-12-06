@@ -2,7 +2,7 @@
 import os
 from flask_script import Manager, Shell
 from app import create_app, db
-from app.models import User, Role, Permission, Follow, Team, Match, SavedForLater, PredictionModule
+from app.models import User, Role, Permission, Follow, Team, Match, SavedForLater, PredictionModule, Prediction
 from flask_migrate import Migrate, MigrateCommand
 from app import socketio
 
@@ -26,6 +26,7 @@ def make_shell_context():
                 Follow=Follow,
                 Team=Team, Match=Match,
                 SavedForLater=SavedForLater,
+                Prediction = Prediction,
                 PredictionModule=PredictionModule)
 
 manager.add_command("shell", Shell(make_context=make_shell_context))
@@ -59,5 +60,5 @@ def test(coverage=False):
 
 
 if __name__ == '__main__':
-    #manager.run()
-    socketio.run(app)
+    manager.run()
+    #socketio.run(app)

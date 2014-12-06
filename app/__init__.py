@@ -8,7 +8,6 @@ from config import config
 from gevent import monkey
 from threading import Thread, Event
 from flask_socketio import SocketIO
-import random
 import atexit
 from football_data.football_api_wrapper import FootballAPIWrapper
 
@@ -20,6 +19,7 @@ bootstrap = Bootstrap()
 mail = Mail()
 #database representation
 db = SQLAlchemy()
+
 login_manager = LoginManager()
 login_manager.session_protection = 'strong'
 login_manager.login_view = 'auth.login'
@@ -63,6 +63,11 @@ def create_app(config_name):
     bootstrap.init_app(app)
     mail.init_app(app)
     db.init_app(app)
+    with app.app_context():
+        # Extensions like Flask-SQLAlchemy now know what the "current" app
+        # is while within this block. Therefore, you can now run........
+        db.create_all()
+
     faw.init_app(app)
     login_manager.init_app(app)
     su.init_app(app)

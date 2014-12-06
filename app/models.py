@@ -383,7 +383,7 @@ class Team(db.Model):
         return '<Team> {}/{} league_position:{}'.format(
             self.id,
             self.name,
-            self.league_position
+            self.position
             )
 
 class Prediction(db.Model):
@@ -394,6 +394,15 @@ class Prediction(db.Model):
     prediction = db.Column(db.Enum('home', 'away', 'draw'))
     prediction_module = db.relationship( "PredictionModule", backref = "match_assocs")
 
+    def clean_old_predictions(self):
+        pass
+
+    def __repr__(self):
+        return '<Prediction> {}/{} prediction:{}'.format(
+            self.match_id,
+            self.module_id,
+            self.prediction
+        )
 
 class Match(db.Model):
     'represents a football match'
@@ -408,7 +417,9 @@ class Match(db.Model):
     awayteam_id = db.Column(db.Integer, db.ForeignKey('teams.id'), nullable=False)
     hometeam_score = db.Column(db.String(4))
     awayteam_score = db.Column(db.String(4))
+    '''teams = db.relationship('Team', backref='teams', lazy='dynamic', foreign_keys=[Team.id])'''
     comments = db.relationship('Comment', backref='match', lazy='dynamic')
+
     predictions = db.relationship('Prediction',
                                     foreign_keys=[Prediction.match_id],
                                     backref=db.backref('match', lazy='joined'),
@@ -417,7 +428,7 @@ class Match(db.Model):
                                     )
 
     @staticmethod
-    def insert_all_matches():
+    def update_all_matches():
         'Inserting all the matches to the database'
         matches = faw.all_matches
 
@@ -425,33 +436,53 @@ class Match(db.Model):
             # if match
             # hope this will not be a bottleneck, find a smarter way to check what is already in the database??
             #store last inserted match id in a variable?
+
+            'find the match in the database'
             match = Match.query.filter_by(id=m.id).first()
+            print match
 
+            'if not in the database, create a new match'
             if match is None:
-                match = Match()
+                match = Match(id=m.id, hometeam_id = m.hometeam_id, awayteam_id = m.awayteam_id, date = m.date, time = m.time,
+                        date_stamp = m.date_stamp, time_stamp = m.time_stamp)
+                print match
 
+                match.hometeam_score = m.hometeam_score
+                match.awayteam_score = m.awayteam_score
 
-            match.id = m.id
-            match.date = m.date
-            match.time = m.time
-            match.date_stamp = m.date_stamp
-            match.time_stamp = m.time_stamp
-            match.hometeam_id = m.hometeam_id
-            match.awayteam_id = m.awayteam_id
-            match.hometeam_score = m.hometeam_score
-            match.awayteam_score = m.awayteam_score
-            if (match.hometeam_score != '?'):
-                match.played = True
-            else:
-                match.played = False
+                if (match.hometeam_score != '?'):
+                    match.played = True
+                else:
+                    match.played = False
 
             db.session.add(match)
         db.session.commit()
 
-    '''def prediction_league_position(self):
-        'calculate the winner for the league position.'
-        prediction = Prediction.query.filter_by()
-        prediction = Prediction()'''
+    @property
+    def prediction_league_position(self):
+        'calculate the winner for the league position prediction module'
+
+        if (self.hometeam.position < self.awayteam.position):
+            return self.hometeam
+        else:
+            return self.awayteam
+
+    @property
+    def prediction_homeaway(self):
+        '''calculate the winner for the home/away prediction module
+            to be improved
+        '''
+
+        return self.hometeam
+
+    @property
+    def prediction_form(self):
+        '''calculate the winner for the form prediction module
+            to be improved
+        '''
+
+        return self.hometeam
+
 
     def __repr__(self):
         return "<Match> date:{} id:{}".format(

@@ -141,8 +141,8 @@ class FootballAPIWrapper:
         import time
 
         self.write_matches_data()
-        time.sleep(10)
-        self.write_standings_data()
+        #time.sleep(10)
+        #self.write_standings_data()
 
     def feed_all_and_unplayed_matches(self):
         '''
