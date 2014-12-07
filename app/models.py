@@ -48,6 +48,7 @@ class Role(db.Model):
             role.default = roles[r][1]
             db.session.add(role)
         db.session.commit()
+        db.session.close()
 
     def __repr__(self):
         return '<Role (name={})>'.format(self.name)
@@ -220,6 +221,8 @@ class User (UserMixin, db.Model):
     def measure_time(self):
         self.last_seen = datetime.utcnow()
         db.session.add(self)
+        #db.session.commit()
+        #db.session.close()
 
     def avatar(self, size=230, default='retro', rating='g'):
         'size is in pixels'
@@ -260,7 +263,6 @@ class User (UserMixin, db.Model):
             #self.saved_matches.append(match)
             s = SavedForLater(user=self, match=match)
             db.session.add(self)
-            db.session.commit()
 
     def remove_match(self, match):
         s = self.saved_matches.filter_by(match_id=match.id).first()
@@ -268,7 +270,6 @@ class User (UserMixin, db.Model):
             #self.saved_matches.remove(match)
         if s:
             db.session.delete(s)
-            db.session.commit()
 
     def is_match_saved(self, match):
         return self.saved_matches.filter_by(match_id=match.id).first() is not None
@@ -292,8 +293,8 @@ class User (UserMixin, db.Model):
             user.follow(user)
             db.session.add(user)
             print user.followers.count()
-        db.session.commit()
-        db.session.close()
+        #db.session.commit()
+        #db.session.close()
 
     def __repr__(self):
         'user representation'
@@ -378,6 +379,7 @@ class Team(db.Model):
             team.name = name
             db.session.add(team)
         db.session.commit()
+        db.session.close()
 
     def __repr__(self):
         return '<Team> {}/{} league_position:{}'.format(
@@ -456,7 +458,12 @@ class Match(db.Model):
                     match.played = False
 
             db.session.add(match)
-        db.session.commit()
+        try:
+            db.session.commit()
+        except:
+            db.session.rollback()
+            raise
+        db.session.close()
 
     @property
     def prediction_league_position(self):
@@ -518,14 +525,12 @@ class PredictionModule(db.Model):
     description = db.Column(db.String())
     default_weight = db.Column(db.Float())
 
-
-
     @staticmethod
     def insert_modules():
         modules = {
-            'League_position': 0.50,
-            'Form': 0.30,
-            'Home_away': 0.20
+            'league_position': 0.50,
+            'form': 0.30,
+            'home_away': 0.20
         }
         for m in modules:
             module = PredictionModule.query.filter_by(name=m).first()
@@ -534,6 +539,7 @@ class PredictionModule(db.Model):
             module.default_weight = modules[m]
             db.session.add(module)
         db.session.commit()
+        db.session.close()
 
     def __repr__(self):
         return "<PredictionModule> id:{} name:{} weight:{}".format(

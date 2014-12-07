@@ -58,7 +58,6 @@ def test(coverage=False):
         print('HTML version: file://%s/index.html' % covdir)
         cov.erase()
 
-
 if __name__ == '__main__':
-    manager.run()
-    #socketio.run(app)
+    #manager.run()
+    socketio.run(app)

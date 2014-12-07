@@ -11,12 +11,6 @@ class CSRFDisabledForm(Form):
         kwargs['csrf_enabled'] = False
         super(CSRFDisabledForm, self).__init__(*args, **kwargs)
 
-# aboutMe form asking for a name from the user
-class NameForm(CSRFDisabledForm):
-    name = StringField('What is your name?', validators=[DataRequired()])
-    breed = StringField('What is your breed?')
-    submit = SubmitField('Submit form')
-
 class LoginForm(CSRFDisabledForm):
     email = StringField('Email address', validators = [DataRequired(message= "Please enter your email!"), Email()])
     password = PasswordField('Password')

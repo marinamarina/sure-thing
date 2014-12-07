@@ -1,21 +1,21 @@
 <!-- User profile strip -->
-<div class="user-profile row" data-user="{{user.id}}" itemtype="http://schema.org/Person" > 
-	<div class="user-profile_image">
-		<img class="avatar img-circle" data-user="{{ user.id }}" src="{{ user.avatar() }}" alt="{{user.id}}" />
-	</div>
-	<div class="user-profile_fixed">
-    	<div class="profile-buttons pull-right">
-    		<a class="btn btn-action" role="button" href="{{url_for('auth.manage_profile') }}">MANAGE PROFILE</a>
-    		<a class="btn btn-action" role="button" href="#">SETTINGS</a>
-    	</div>
-    	<div class="user-profile_divider">
-    		<hr />
-    	</div>
+<div class="user-profile row" data-user="{{user.id}}" itemtype="http://schema.org/Person">
+    <div class="user-profile_image">
+        <img class="avatar img-circle" data-user="{{ user.id }}" src="{{ user.avatar() }}" alt="{{user.id}}"/>
+    </div>
+    <div class="user-profile_fixed">
+        <div class="profile-buttons pull-right">
+            <a class="btn btn-action" role="button" href="{{url_for('auth.manage_profile') }}">MANAGE PROFILE</a>
+            <a class="btn btn-action" role="button" href="#">SETTINGS</a>
+        </div>
+        <div class="user-profile_divider">
+            <hr/>
+        </div>
 
     </div>
     <div class="user-profile_info">
-    	<ul class="user-profile_infoMain">
-        	<li class="user-profile_info-item">
+        <ul class="user-profile_infoMain">
+            <li class="user-profile_info-item">
         		<span class="name">
         			{% if user.real_name %}
         				{{user.real_name}}
@@ -23,25 +23,25 @@
         				{{user.username}}
         			{% endif %}
         		</span>
-        	</li>
-        	<li class="user-profile_info-item">
-        		<span class="location">{{user.location}}</span>
-        	</li>
+            </li>
+            <li class="user-profile_info-item">
+                <span class="location">{{user.location}}</span>
+            </li>
 
         </ul>
         <ul class="user-profile_infoMore">
-        	<li class="user-profile_infoMore-item">
-        		<span class="groups">1 group</span>
-        	</li>
-        	<li class="user-profile_infoMore-item">
-        		<span class="games">3 games</span>
-        	</li>
-        	<li class="user-profile_infoMore-item">
-        		<span class="followers">3 followers</span>
-        	</li>
-        	<li class="user-profile_infoMore-item">
-        		<span class="following">7 following</span>
-        	</li>
+            <li class="user-profile_infoMore-item">
+                <span class="groups">1 group</span>
+            </li>
+            <li class="user-profile_infoMore-item">
+                <span class="games">3 games</span>
+            </li>
+            <li class="user-profile_infoMore-item">
+                <span class="followers">3 followers</span>
+            </li>
+            <li class="user-profile_infoMore-item">
+                <span class="following">7 following</span>
+            </li>
 
         </ul>
     </div>

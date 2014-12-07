@@ -4,44 +4,158 @@
 {% block title %}Match view{% endblock %}
 
 {% block header %}
-    <header id="head" class="secondary"></header>
+<header id="head" class="secondary"></header>
 {% endblock header %}
 
 {% block inner_wrapper %}
 
-	<div class="container">
+<div class="container">
 
-		<ol class="breadcrumb">
-			<li><a href="index.html">Home</a></li>
-			<li class="active">Saved Match View</li>
-		</ol>
-        <!-- modules -->
+    <ol class="breadcrumb">
+        <li><a href="{{ url_for('.index') }}">Home</a></li>
+        <li><a href="{{url_for('.dashboard') }}">Dashboard</a></li>
+        <li class="active">Saved Match</li>
+    </ol>
+    <!-- modules -->
 
-        <!--module-->
-        <div class="module row panel panel-default" data="{{savedmatch.id}}">
-        	    <div class="panel-body">
+    <!-- module intro -->
+    <div class="module row panel panel-default" data="{{savedmatch.match_id}}">
+        <div class="panel-body">
 
-        	        <div class="away-team team col-xs-2 col-xs-offset-1 text-center">
-        		        <img src="{{url_for('static', filename="img/kits/chelsea_1.png", _external=True) }}" class="team-kit" alt="{{savedmatch.match.hometeam.name}}"/>
-        		        <span class="team-name clearfix">{{savedmatch.match.hometeam.name}}</span>
-        		        <span class="team-form clearfix">WLWLWW</span>
-        		        <span class="team-last-result">3:0 Norwich</span>
-        	        </div>
-                    <div class="away-team team col-xs-2 col-xs-offset-1 text-center">
-        		        <img src="{{url_for('static', filename="img/kits/everton_2.png", _external=True) }}" class="team-kit" alt="{{savedmatch.match.awayteam.name}}"/>
-        		        <span class="team-name clearfix">{{savedmatch.match.awayteam.name}}</span>
-        		        <span class="team-form clearfix">WLWLWW</span>
-        		        <span class="team-last-result">3:0 Norwich</span>
-        	        </div>
-
-                </div>
+            <div class="away-team team col-xs-2 col-xs-offset-1 text-center">
+                <img src="{{url_for('static', filename="img/kits/chelsea_1.png", _external=True) }}" class="team-kit"
+                alt="{{savedmatch.match.hometeam.name}}"/>
+                <span class="team-name clearfix">{{savedmatch.match.hometeam.name}}</span>
+                <span class="team-form clearfix">WLWLWW</span>
+                <span class="team-last-result">3:0 Norwich</span>
             </div>
-            <!-- /module -->
+            <div class="away-team team col-xs-2 col-xs-offset-1 text-center">
+                <img src="{{url_for('static', filename="img/kits/everton_2.png", _external=True) }}" class="team-kit"
+                alt="{{savedmatch.match.awayteam.name}}"/>
+                <span class="team-name clearfix">{{savedmatch.match.awayteam.name}}</span>
+                <span class="team-form clearfix">WLWLWW</span>
+                <span class="team-last-result">3:0 Norwich</span>
+            </div>
 
-        <!--  /modules  -->
-        <a href="{{ url_for('.commit_match', match_id=savedmatch.match.id) }}" class="btn btn-primary">Commit</a>
+        </div>
+    </div>
+    <!-- /module intro -->
 
+    <!--module league position-->
+    <div class="module row panel panel-default" data="{{ savedmatch.match.match_id }}">
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                <h3 class="panel-title">League Position</h3>
+            </div>
 
+            <div class="home-team team col-xs-2 col-xs-offset-1 text-center">
+
+                <span class="team-form clearfix">Position: {{ savedmatch.match.hometeam.position }} </span>
+                <span class="team-last-result">3:0 Norwich</span>
+            </div>
+            <div class="away-team team col-xs-2 col-xs-offset-1 text-center">
+                <span class="team-form clearfix">Position: {{ savedmatch.match.awayteam.position }} </span>
+                <span class="team-last-result">3:0 Norwich</span>
+            </div>
+            <div class="away-team team col-xs-2 col-xs-offset-1 text-center">
+                <span class="clearfix">Winner: {{ savedmatch.match.prediction_league_position.name }}</span>
+            </div>
+
+        </div>
+    </div>
+    <!-- /module league position -->
+
+    <!-- module home/away -->
+    <div class="module row panel panel-default" data="{{savedmatch.match.match_id}}">
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                <h3 class="panel-title">Home/Away</h3>
+            </div>
+
+            <div class="home-team team col-xs-2 col-xs-offset-1 text-center">
+                <span class="team-form clearfix">Home Team: {{ savedmatch.match.hometeam.name }} </span>
+            </div>
+            <div class="away-team team col-xs-2 col-xs-offset-1 text-center">
+                <span class="team-form clearfix">Away Team: {{ savedmatch.match.awayteam.name }} </span>
+            </div>
+            <div class="away-team team col-xs-2 col-xs-offset-1 text-center">
+                <span class="clearfix">Winner: {{ savedmatch.match.prediction_homeaway.name }}</span>
+            </div>
+        </div>
+    </div>
+    <!-- module home/away -->
+
+    <!--module form-->
+    <div class="module row panel panel-default" data="{{savedmatch.match.match_id}}">
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                <h3 class="panel-title">Form</h3>
+            </div>
+
+            <div class="home-team team col-xs-2 col-xs-offset-1 text-center">
+                <span class="team-form clearfix">Form: {{ savedmatch.match.hometeam.form }} </span>
+
+                <span class="team-last-result">3:0 Norwich</span>
+            </div>
+            <div class="away-team team col-xs-2 col-xs-offset-1 text-center">
+                <span class="team-form clearfix">Form: {{ savedmatch.match.awayteam.form }} </span>
+                <span class="team-last-result">3:0 Norwich</span>
+            </div>
+            <div class="away-team team col-xs-2 col-xs-offset-1 text-center">
+                <span class="clearfix">Winner: {{ savedmatch.match.prediction_form.name }}</span>
+            </div>
+
+        </div>
+    </div>
+    <!-- /module form -->
+
+</div>
+
+<!-- prediction weight form -->
+  <form class="form-horizontal" role="form">
+
+  <!-- league position percentage -->
+  <div class="form-group" ng-app>
+    <label for="inputLeaguePosition" class="col-sm-2 control-label">League Position</label>
+    <div class="col-sm-2">
+      <input id="inputLeaguePosition" type="text" ng-model="leaguePositionWeight" placeholder="Change your %" class="ng-valid ng-dirty ng-valid-parse ng-touched form-control">
+      <h1 class="ng-binding col-sm-2 control-label">{{ leaguePositionWeight }}</h1>
 
     </div>
+  </div>
+  <!-- /league position percentage -->
+
+  <!-- form percentage -->
+  <div class="form-group">
+    <label for="inputForm" class="col-sm-2 control-label">Form</label>
+    <div class="col-sm-2">
+      <input type="number" class="form-control" id="inputForm" placeholder="%" value="100%">
+    </div>
+  </div>
+  <!-- /form percentage -->
+
+  <!-- home away percentage -->
+  <div class="form-group">
+    <label for="inputHomeAway" class="col-sm-2 control-label">Home/Away</label>
+    <div class="col-sm-2">
+      <input type="number" class="form-control" id="inputHomeAway" placeholder="%" value="100%">
+    </div>
+  </div>
+  <!-- /home away percentage -->
+
+  <div class="form-group">
+    <div class="col-sm-offset-2 col-sm-2">
+      <button type="submit" class="btn btn-default">Save</button>
+    </div>
+  </div>
+</form>
+<!-- / percentage form -->
+
+<!--  /modules  -->
+<!-- overall winner -->
+     <h2>Winner</h2>
+<!-- /overall winner -->
+<a href="{{ url_for('.commit_match', match_id=savedmatch.match.id) }}" class="btn btn-primary">Commit</a>
+
+</div>
 {% endblock inner_wrapper %}

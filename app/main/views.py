@@ -4,14 +4,14 @@ from flask_login import login_required, current_user
 from . import main
 from .forms import BlogPostForm, CommentPostForm
 from .. import db
-from ..models import User, Permission, Team, Match  # Post, Comment
+from ..models import User, Permission, Team, Match, SavedForLater, PredictionModule # Post, Comment
 from ..email import send_email
 from ..decorators_me import permission_required, templated
-from time import sleep
 from ..football_data.football_api_wrapper import FootballAPIWrapper
 from .. import socketio
 from threading import Thread, Event
 from ..threads.data_handle_threads import RandomThread, DataUpdateThread
+from collections import namedtuple
 
 # random number Generator Thread
 thread = Thread()
@@ -121,9 +121,20 @@ def dashboard():
 @main.route('/view_match_dashboard/<int:match_id>')
 def view_match_dashboard(match_id):
     me = current_user
-    match = Match.query.filter_by(id=match_id).first()
+    savedmatch = SavedForLater.query.filter_by(match_id=match_id).first()
+    winner = 0
 
-    return render_template('main/view_match_dashboard.html', savedmatch=match, user=current_user)
+    dbModules = PredictionModule.query.all()
+    modules_winners = [savedmatch.match.prediction_league_position, savedmatch.match.prediction_form, savedmatch.match.prediction_homeaway]
+
+    weights_winners = []
+
+    for i in range( 0, len (PredictionModule.query.all()) ):
+        weight=dbModules[i].default_weight
+        #winner_bool =
+        '''print modules_winners'''
+
+    return render_template('main/view_match_dashboard.html', savedmatch=savedmatch, user=current_user)
 
 
 @main.route('/commit_match/<int:match_id>')

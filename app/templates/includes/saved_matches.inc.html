@@ -7,28 +7,30 @@
         {% for match in matches %}
         <!--match-->
         <div class="match row panel panel-default" data="{{match.id}}">
-        	<div class="panel-body">
+            <div class="panel-body">
 
-        	<div class="home-team team col-xs-4 col-md-offset-1 text-center">
-        		<img src="{{url_for('static', filename="img/kits/chelsea_1.png", _external=True) }}" class="team-kit" alt="{{match.match_id}}"/>
-        		<span class="team-name clearfix">{{match.match_id}}</span>
-        		<span class="team-form clearfix">WLWLWW</span>
-        		<span class="team-last-result">3:0 Norwich</span>
-	
-        	</div>
-        	
-        	<div class="btn-group-xs pull-right" role="group">
-                {% if not match.played %}
-        		    <a href="{{ url_for('.view_match_dashboard', match_id=match.id) }}" class="btn btn-primary">View game > </a>
-                {% endif %}
-                <a class="btn btn-primary">Comments ></a>
-                <a href="{{ url_for('.remove_match', match_id=match.match_id) }}" class="btn btn-primary">Remove</a>
+                <div class="home-team team col-xs-4 col-md-offset-1 text-center">
+                    <img src="{{url_for('static', filename="img/kits/chelsea_1.png", _external=True) }}"
+                    class="team-kit" alt="{{match.match_id}}"/>
+                    <span class="team-name clearfix">{{match.match_id}}</span>
+                    <span class="team-form clearfix">WLWLWW</span>
+                    <span class="team-last-result">3:0 Norwich</span>
+
+                </div>
+
+                <div class="btn-group-xs pull-right" role="group">
+                    {% if not match.played %}
+                    <a href="{{ url_for('.view_match_dashboard', match_id=match.match_id) }}" class="btn btn-primary">View
+                        game > </a>
+                    {% endif %}
+                    <a class="btn btn-primary">Comments ></a>
+                    <a href="{{ url_for('.remove_match', match_id=match.match_id) }}" class="btn btn-primary">Remove</a>
+                </div>
             </div>
-            </div>
-    	</div>
-    	<!--/match-->
+        </div>
+        <!--/match-->
         {% endfor %}
 
-    	</div>
     </div>
+</div>
 <!--/matches-->

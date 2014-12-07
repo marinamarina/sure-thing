@@ -35,6 +35,8 @@
                             <form method="POST" class= "form-login" role="form">
                                 {{ render_field(form.email) }}
                                 {{ render_field(form.password) }}
+                                {{ form.hidden_tag() }}
+
                                 <hr />
                                 <div class="top-margin row">  
                                     {{ render_checkbox(form.rememberMe) }}
