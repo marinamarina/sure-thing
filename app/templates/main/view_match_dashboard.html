@@ -154,6 +154,7 @@
 <!--  /modules  -->
 <!-- overall winner -->
      <h2>Winner</h2>
+      <h2>{{ predicted_winner }} {{ winner_probability }}%</h2>
 <!-- /overall winner -->
 <a href="{{ url_for('.commit_match', match_id=savedmatch.match.id) }}" class="btn btn-primary">Commit</a>
 

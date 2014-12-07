@@ -25,14 +25,12 @@ def login():
 
     #is form submission valid?
     if form.validate_on_submit():
-        flash ('form is valid')
         user = User.query.filter_by(email = form.email.data).first()
 
         if user is None:
             flash('There is not a such user in database')
 
         if user is not None and user.verify_password(form.password.data):
-            flash ('stay cool, user')
 
             try:
                 login_user(user, remember=form.rememberMe.data)
@@ -44,8 +42,6 @@ def login():
                 flash ("You have now been authorized!" + str(current_user.role))
                 return redirect(request.args.get('next') or url_for('main.index'))
 
-    else:
-        flash('something went wrong')
 
     return render_template('auth/login.html', form = form, title='Sign In')
 

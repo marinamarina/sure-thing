@@ -122,19 +122,32 @@ def dashboard():
 def view_match_dashboard(match_id):
     me = current_user
     savedmatch = SavedForLater.query.filter_by(match_id=match_id).first()
-    winner = 0
 
     dbModules = PredictionModule.query.all()
     modules_winners = [savedmatch.match.prediction_league_position, savedmatch.match.prediction_form, savedmatch.match.prediction_homeaway]
 
-    weights_winners = []
+    total_weight = 0
 
     for i in range( 0, len (PredictionModule.query.all()) ):
         weight=dbModules[i].default_weight
-        #winner_bool =
-        '''print modules_winners'''
 
-    return render_template('main/view_match_dashboard.html', savedmatch=savedmatch, user=current_user)
+        if( savedmatch.match.hometeam_id == modules_winners[i].id ):
+            total_weight += weight
+
+    winner_probability = int(total_weight * 100)
+
+    if total_weight > 0.5:
+        predicted_winner = savedmatch.match.hometeam.name
+    elif total_weight < 0.5:
+        predicted_winner = savedmatch.match.awayteam.name
+        winner_probability = 100-total_weight
+    else:
+        predicted_winner = 'To Close To Call...'
+        winner_probability = 50
+
+
+    return render_template('main/view_match_dashboard.html', savedmatch=savedmatch,  user=current_user,
+                           predicted_winner=predicted_winner,winner_probability=winner_probability)
 
 
 @main.route('/commit_match/<int:match_id>')

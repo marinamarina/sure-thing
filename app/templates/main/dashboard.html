@@ -4,60 +4,76 @@
 {% block title %}Dashboard{% endblock %}
 
 {% block header %}
-    <header id="head" class="secondary"></header>
+<header id="head" class="secondary"></header>
 {% endblock header %}
 
 {% block inner_wrapper %}
 
-	<div class="container">
-		
-		<ol class="breadcrumb">
-			<li><a href="{{ url_for('.index') }}">Home</a></li>
-			<li class="active">Dashboard</li>
-		</ol>
+<div class="container">
 
-		<div class="wrapper active">			
-			<!-- sidebar -->
+    <ol class="breadcrumb">
+        <li><a href="{{ url_for('.index') }}">Home</a></li>
+        <li class="active">Dashboard</li>
+    </ol>
 
-			<div id="sidebar-wrapper" class="">
-      			<ul id="sidebar_menu" class="sidebar-nav">
-           			<li class="sidebar-brand">
-           				<a id="menu-toggle" href="#">Menu<span id="main_icon" class="glyphicon glyphicon-align-justify"></span></a>
-           			</li>
-      			</ul>
-        		<ul class="sidebar-nav" id="sidebar">     
-          			<li><a>Link1<span class="sub_icon glyphicon glyphicon-link"></span></a></li>
-          			<li><a>link2<span class="sub_icon glyphicon glyphicon-link"></span></a></li>
-        		</ul>
-      		</div>
-			<!-- /sidebar -->
+    <div class="wrapper active">
+        <!-- sidebar -->
 
-			<!-- Article main content -->
-			<div id="page-content-wrapper">
-			    <div class="page-content inset col-md-10 col-md-offset-1">
-        		<!-- Keep all page content within the page-content inset div! -->
-          				<div class="row well">
-                      {% if matches.length != 0 %}
-                          {% include 'includes/saved_matches.inc.html' %}
-                      {% else %}
-                          <p>This is your dashboard!</p>
-                          <p>Start saving your matches now!<a href="/">HOME</a></p>
-                      {% endif %}
+        <div id="sidebar-wrapper" class="">
+            <ul id="sidebar_menu" class="sidebar-nav">
+                <li class="sidebar-brand">
+                    <a id="menu-toggle" href="#">Menu<span id="main_icon"
+                                                           class="glyphicon glyphicon-align-justify"></span></a>
+                </li>
+            </ul>
+            <ul class="sidebar-nav" id="sidebar">
+                <li><a>Link1<span class="sub_icon glyphicon glyphicon-link"></span></a></li>
+                <li><a>link2<span class="sub_icon glyphicon glyphicon-link"></span></a></li>
+            </ul>
+        </div>
+        <!-- /sidebar -->
 
-              			</div>	
-              			<div class="row well">
-              				<p>Betting system settings</p>
-              			</div> 
-            			<div class="row well">
-              				<h3>News feed</h3>
-              					Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi. Nam liber tempor cum soluta nobis eleifend option congue nihil imperdiet doming id quod mazim placerat facer possim assum. Typi non habent claritatem insitam; est usus legentis in iis qui facit eorum claritatem. Investigationes demonstraverunt lectores legere me lius quod ii legunt saepius. Claritas est etiam processus dynamicus, qui sequitur mutationem consuetudium lectorum. Mirum est notare quam littera gothica, quam nunc putamus parum claram, anteposuerit litterarum formas humanitatis per seacula quarta decima et quinta decima. Eodem modo typi, qui nunc nobis videntur parum clari, fiant sollemnes in futurum.
-              				</div>
-          		</div>
-        			
-      		</div><!--container wrapper-->
+        <!-- Article main content -->
+        <div id="page-content-wrapper">
+            <div class="page-content inset col-md-10 col-md-offset-1">
+                <!-- Keep all page content within the page-content inset div! -->
+                <div class="row well">
+                    {% if matches.length != 0 %}
+                    {% include 'includes/saved_matches.inc.html' %}
+                    {% else %}
+                    <p>This is your dashboard!</p>
 
-		</div><!--/wrapper active-->
-	</div><!--container-->
+                    <p>Start saving your matches now!<a href="/">HOME</a></p>
+                    {% endif %}
+
+                </div>
+                <div class="row well">
+                    <p>Betting system settings</p>
+
+                </div>
+                <div class="row well">
+                    <h3>News feed</h3>
+                    Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut
+                    laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation
+                    ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure
+                    dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla
+                    facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril
+                    delenit augue duis dolore te feugait nulla facilisi. Nam liber tempor cum soluta nobis eleifend
+                    option congue nihil imperdiet doming id quod mazim placerat facer possim assum. Typi non habent
+                    claritatem insitam; est usus legentis in iis qui facit eorum claritatem. Investigationes
+                    demonstraverunt lectores legere me lius quod ii legunt saepius. Claritas est etiam processus
+                    dynamicus, qui sequitur mutationem consuetudium lectorum. Mirum est notare quam littera gothica,
+                    quam nunc putamus parum claram, anteposuerit litterarum formas humanitatis per seacula quarta decima
+                    et quinta decima. Eodem modo typi, qui nunc nobis videntur parum clari, fiant sollemnes in futurum.
+                </div>
+            </div>
+
+        </div>
+        <!--container wrapper-->
+
+    </div>
+    <!--/wrapper active-->
+</div><!--container-->
 
 
 {% endblock inner_wrapper %}
