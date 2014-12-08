@@ -113,9 +113,9 @@ def view_match(match_id):
 @templated()
 @login_required
 def dashboard():
-    saved_matches = current_user.saved_matches
+    savedmatches = current_user.saved_matches
 
-    return dict(user=current_user, matches=saved_matches)  #posts=posts, form=form,
+    return dict(user=current_user, savedmatches=savedmatches)  #posts=posts, form=form,
 
 
 @main.route('/view_match_dashboard/<int:match_id>')

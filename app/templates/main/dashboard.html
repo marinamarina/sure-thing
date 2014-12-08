@@ -38,8 +38,8 @@
             <div class="page-content inset col-md-10 col-md-offset-1">
                 <!-- Keep all page content within the page-content inset div! -->
                 <div class="row well">
-                    {% if matches.length != 0 %}
-                    {% include 'includes/saved_matches.inc.html' %}
+                    {% if savedmatches.length != 0 %}
+                        {% include 'includes/saved_matches.inc.html' %}
                     {% else %}
                     <p>This is your dashboard!</p>
 
@@ -50,6 +50,7 @@
                 <div class="row well">
                     <p>Betting system settings</p>
 
+                    {% include 'includes/user_default_settings.inc.html' %}
                 </div>
                 <div class="row well">
                     <h3>News feed</h3>

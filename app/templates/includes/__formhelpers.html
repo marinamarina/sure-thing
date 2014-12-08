@@ -32,9 +32,15 @@
 </div>
 {% endmacro %}
 
-{% macro teamkitimage(teamname='Chelsea', where=1, match) %}
-{{teamname}}
-<img src="{{url_for('static', filename='img/kits/Chelsea_' + str(where) + '.png', _external=True) }}" class="team-kit"
-     alt="{{match.awayteam.name}}"/>
+{# Macro to render a team image #}
+{% macro teamkitimage(match, home=1) %}
+    {% set img_url = '' %}
+
+    {% if home == 1 %}
+        {% set img_url = 'img/kits/' + match.hometeam.id ~ '_1.png' %}
+    {% else %}
+        {% set img_url = 'img/kits/' + match.awayteam.id ~ '_2.png' %}
+    {% endif %}
+    <img src="{{ url_for('static', filename=img_url, _external=True) }}" class="team-kit" alt="{{match.awayteam.name}}" />
 {% endmacro %}
 

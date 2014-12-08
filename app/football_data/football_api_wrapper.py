@@ -220,6 +220,18 @@ class FootballAPIWrapper:
                     pass
                     #print match["match_formatted_date"], match["match_localteam_name"], match["match_visitorteam_name"], match["match_ft_score"]
 
+    class KitNameIdAdapter:
+        def _str_date(self, date):
+            return date.strftime("%Y-%m-%d")
+
+        def __init__(self, birthday):
+            self.faw = FootballAPIWrapper()
+            self.footballAPIteam_ids = self.faw.ids_names
+
+        '''def get_ids(self, date):
+            date = self._str_date(date)
+            return self.calculator.calculate_age(date)'''
+
 
     @property
     def api_key(self):

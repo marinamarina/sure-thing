@@ -21,6 +21,8 @@
         console.log("received data update event!" + msg.time);
         $('#log').append('<p> Data updated at: ' + msg.time + '</p>');
 
+
     });
+
 
  });
