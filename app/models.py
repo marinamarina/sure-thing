@@ -388,7 +388,7 @@ class Team(db.Model):
             self.position
             )
 
-class Prediction(db.Model):
+'''class Prediction(db.Model):
     __tablename__ = 'predictions'
     match_id = db.Column(db.Integer, db.ForeignKey('matches.id'), primary_key=True)
     module_id = db.Column(db.String(), db.ForeignKey('prediction_modules.id'), primary_key=True)
@@ -405,6 +405,7 @@ class Prediction(db.Model):
             self.module_id,
             self.prediction
         )
+'''
 
 class Match(db.Model):
     'represents a football match'
@@ -422,12 +423,12 @@ class Match(db.Model):
     '''teams = db.relationship('Team', backref='teams', lazy='dynamic', foreign_keys=[Team.id])'''
     comments = db.relationship('Comment', backref='match', lazy='dynamic')
 
-    predictions = db.relationship('Prediction',
+    '''predictions = db.relationship('Prediction',
                                     foreign_keys=[Prediction.match_id],
                                     backref=db.backref('match', lazy='joined'),
                                     lazy='dynamic',
                                     cascade='all, delete-orphan'
-                                    )
+                                    )'''
 
     @staticmethod
     def update_all_matches():
@@ -549,11 +550,17 @@ class PredictionModule(db.Model):
         )
 
 
+class ModuleUserSettings(db.Model):
+    'to add later'
+    __tablename__='moduleusersettings'
+    user_id=db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
+    module_id=db.Column(db.Integer, db.ForeignKey('prediction_modules.id'), primary_key=True)
+    weight = db.Column(db.Float())
+    user_settings = db.relationship( "PredictionModule", backref = "predictionmodule_assocs")
 
-'''
-class CustomisedPredictionModule(db.Model):
-    __tablename__ = 'customised_prediction_module'
-    module_id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer())
-    custom_weight = db.Column(db.Float())
-    match_id = db.Column(db.Float())'''
+    def __repr__(self):
+        return "<ModuleUserSettings> userid: {}, matchid: {}, weight:{}".format(
+            self.user_id,
+            self.module_id,
+            self.weight
+        )
