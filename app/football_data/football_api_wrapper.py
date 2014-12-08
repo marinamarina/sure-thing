@@ -89,16 +89,17 @@ class FootballAPIWrapper:
 
         return output_data
 
-    'CHANGE THIS METHOD SO IT TAKES DATA FROM THE SAVED DATA FILES!!!'
     def feed_ids_names(self):
         'Create an team id -> name relationship'
-        action = 'standings'
-        data_standings = self.call_api(action)
+
+        with open(self.data_dir + '/standings.json', 'r') as localfile:
+            standings_data = json.load(localfile)
+        localfile.close()
 
         # feeding the dictionary
         output_data = {
             team["stand_team_id"] : team["stand_team_name"]
-            for team in data_standings['teams']
+            for team in standings_data['standings']
         }
 
         return output_data
