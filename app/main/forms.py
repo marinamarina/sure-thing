@@ -1,5 +1,5 @@
 from flask_wtf import Form
-from wtforms import StringField, PasswordField, BooleanField, SubmitField, TextAreaField, SelectField
+from wtforms import StringField, PasswordField, BooleanField, SubmitField, TextAreaField, SelectField, FloatField
 from wtforms.validators import DataRequired, Email, Length, ValidationError, EqualTo
 from ..models import User, Role
 from .validators import validator_user_already_registered
@@ -62,6 +62,14 @@ class AdminManageProfiles(CSRFDisabledForm):
     def validate_username(self, field):
         if field.data != self.username and User.query.filter_by(username=field.data).first():
             raise ValidationError('Username is already registered.')
+
+
+class UserBettingDefaultSettings(CSRFDisabledForm):
+    league_position_weight = FloatField('League Position', description='League Position')
+    form_weight = FloatField('Form', description='Form')
+    home_away_weight = FloatField('Home/Away', description='Home/Away')
+    submit = SubmitField('Save')
+
 
 class BlogPostForm(CSRFDisabledForm):
     title = StringField('Post title', validators=[DataRequired()])

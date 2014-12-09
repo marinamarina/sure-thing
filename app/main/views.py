@@ -2,9 +2,9 @@ from datetime import datetime
 from flask import render_template, redirect, url_for, abort, flash, session, current_app, request
 from flask_login import login_required, current_user
 from . import main
-from .forms import BlogPostForm, CommentPostForm
+from .forms import BlogPostForm, CommentPostForm, UserBettingDefaultSettings
 from .. import db
-from ..models import User, Permission, Team, Match, SavedForLater, PredictionModule # Post, Comment
+from ..models import User, Permission, Team, Match, SavedForLater, PredictionModule, ModuleUserSettings # Post, Comment
 from ..email import send_email
 from ..decorators_me import permission_required, templated
 from ..football_data.football_api_wrapper import FootballAPIWrapper
@@ -114,8 +114,29 @@ def view_match(match_id):
 @login_required
 def dashboard():
     savedmatches = current_user.saved_matches
+    form = UserBettingDefaultSettings()
+    me = current_user
 
-    return dict(user=current_user, savedmatches=savedmatches)  #posts=posts, form=form,
+    #post = Post.query.get_or_404(id)
+
+    #if current_user.id != post.author_id and not current_user.can(Permission.ADMINISTER):
+    # abort(403)
+
+    if form.validate_on_submit():
+        settings = ModuleUserSettings(user_id=me.id)
+        settings.module_id=
+        post.title=form.title.data
+        post.edited=True
+        try:
+            #save new settings
+            db.session.add(post)
+            return redirect(url_for('.index'))
+        except Exception:
+            db.session.flush()
+        finally:
+            flash('You have saved your default prediction settings, congratulations!')
+
+    return dict(user=current_user, savedmatches=savedmatches, form=form)
 
 
 @main.route('/view_match_dashboard/<int:match_id>')

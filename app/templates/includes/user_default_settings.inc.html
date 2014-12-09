@@ -1,8 +1,14 @@
+{% from 'includes/__formhelpers.html' import render_field, render_submit_field %}
+
 <!-- prediction weight form -->
 <form class="form-horizontal" role="form">
 
+    {{ render_field(form.title) }}
+    {{ render_field(form.body_html) }}
+    {{ form.submit() }}
+</form>
     <!-- league position percentage -->
-    <div class="form-group" ng-app>
+    <!--div class="form-group" ng-app>
         <label for="inputLeaguePosition" class="col-sm-2 control-label">League Position</label>
 
         <div class="col-sm-2">
@@ -16,30 +22,29 @@
     </div>
     <!-- /league position percentage -->
     <!-- form percentage -->
-    <div class="form-group">
+    <!--div class="form-group">
         <label for="inputForm" class="col-sm-2 control-label">Form</label>
 
         <div class="col-sm-2">
             <input type="number" class="form-control" id="inputForm" placeholder="%" value="100%">
         </div>
-    </div>
+    </div-->
     <!-- /form percentage -->
 
     <!-- home away percentage -->
-    <div class="form-group">
+    <!--div class="form-group">
         <label for="inputHomeAway" class="col-sm-2 control-label">Home/Away</label>
 
         <div class="col-sm-2">
             <input type="number" class="form-control" id="inputHomeAway" placeholder="%"
                    value="100%">
         </div>
-    </div>
+    </div-->
     <!-- /home away percentage -->
 
-    <div class="form-group">
+    <!--div class="form-group">
         <div class="col-sm-offset-2 col-sm-2">
             <button type="submit" class="btn btn-default">Save</button>
         </div>
-    </div>
-</form>
+    </div-->
 <!-- / default user weight form -->

@@ -277,6 +277,12 @@ class User (UserMixin, db.Model):
     def list_matches(self):
         return self.saved_matches.all()
 
+    '''def user_betting_settings(self, match):
+        if not self.is_match_saved(match):
+            #self.saved_matches.append(match)
+            s = SavedForLater(user=self, match=match)
+            db.session.add(self)'''
+
     # using property because I want to protect the password
     @property
     def password(self):
