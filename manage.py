@@ -2,7 +2,8 @@
 import os
 from flask_script import Manager, Shell
 from app import create_app, db
-from app.models import User, Role, Permission, Follow, Team, Match, SavedForLater, PredictionModule, ModuleUserSettings
+from app.models import User, Role, Permission, Follow, Team, Match, SavedForLater, PredictionModule, ModuleUserSettings, \
+    ModuleUserSettingsSet
 from flask_migrate import Migrate, MigrateCommand
 from app import socketio
 
@@ -27,7 +28,8 @@ def make_shell_context():
                 Team=Team, Match=Match,
                 SavedForLater=SavedForLater,
                 PredictionModule=PredictionModule,
-                ModuleUserSettings=ModuleUserSettings)
+                ModuleUserSettings=ModuleUserSettings,
+                ModuleUserSettingsSet=ModuleUserSettingsSet)
 
 manager.add_command("shell", Shell(make_context=make_shell_context))
 manager.add_command("db", MigrateCommand)

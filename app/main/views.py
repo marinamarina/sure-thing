@@ -124,7 +124,7 @@ def dashboard():
 
     if form.validate_on_submit():
         settings = ModuleUserSettings(user_id=me.id)
-        settings.module_id=
+        '''settings.module_id=
         post.title=form.title.data
         post.edited=True
         try:
@@ -134,7 +134,7 @@ def dashboard():
         except Exception:
             db.session.flush()
         finally:
-            flash('You have saved your default prediction settings, congratulations!')
+            flash('You have saved your default prediction settings, congratulations!')'''
 
     return dict(user=current_user, savedmatches=savedmatches, form=form)
 

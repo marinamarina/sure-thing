@@ -9,6 +9,9 @@ import hashlib
 from flask import flash
 from markdown import markdown
 import bleach
+from sqlalchemy.orm.collections import attribute_mapped_collection
+from sqlalchemy.ext.associationproxy import association_proxy
+from sqlalchemy.orm import relation
 
 
 """Database models representation"""
@@ -559,14 +562,31 @@ class PredictionModule(db.Model):
 class ModuleUserSettings(db.Model):
     'to add later'
     __tablename__='moduleusersettings'
-    user_id=db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
+    user_id=db.Column(db.Integer, db.ForeignKey('moduleusersettingsset.user_id'), primary_key=True)
+    ModuleUserSettingsSet = db.relation('ModuleUserSettingsSet')
+    module_id = db.Column(db.Integer, primary_key=True)
+    weight = db.Column(db.Float())
+
+    '''user_id=db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
     module_id=db.Column(db.Integer, db.ForeignKey('prediction_modules.id'), primary_key=True)
     weight = db.Column(db.Float())
-    user_settings = db.relationship( "PredictionModule", backref = "predictionmodule_assocs")
+    user_settings = db.relationship( "PredictionModule", backref = "predictionmodule_assocs")'''
+
+    @staticmethod
+    def _create_item(module_id, weight):
+
+        return ModuleUserSettings(module_id=module_id, weight=weight)
 
     def __repr__(self):
-        return "<ModuleUserSettings> userid: {}, matchid: {}, weight:{}".format(
+        return "<ModuleUserSettings> user_id: {}, module_id: {}, weight:{}".format(
             self.user_id,
             self.module_id,
             self.weight
         )
+
+
+class ModuleUserSettingsSet(db.Model):
+    __tablename__ = 'moduleusersettingsset'
+    user_id = db.Column(db.Integer, primary_key=True, nullable=False)
+    _weights = db.relation(ModuleUserSettings, collection_class=attribute_mapped_collection('module_id'))
+    weights = association_proxy('_weights', 'weight', creator=ModuleUserSettings._create_item)# Use PickleType?
