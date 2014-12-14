@@ -1,3 +1,4 @@
+#reference for pivoting stuff
 class Item(Base):
 
     __tablename__ = 'Item'

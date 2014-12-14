@@ -65,9 +65,9 @@ class AdminManageProfiles(CSRFDisabledForm):
 
 
 class UserBettingDefaultSettings(CSRFDisabledForm):
-    league_position_weight = FloatField('League Position', description='League Position')
-    form_weight = FloatField('Form', description='Form')
-    home_away_weight = FloatField('Home/Away', description='Home/Away')
+    league_position_weight = StringField('League Position')
+    form_weight = StringField('Form')
+    home_away_weight = StringField('Home/Away')
     submit = SubmitField('Save')
 
 

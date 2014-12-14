@@ -1,10 +1,13 @@
 from datetime import datetime
-from flask import render_template, redirect, url_for, abort, flash, session, current_app, request
+from flask import render_template, redirect, url_for, abort, flash, \
+    session, current_app, request
 from flask_login import login_required, current_user
 from . import main
 from .forms import BlogPostForm, CommentPostForm, UserBettingDefaultSettings
 from .. import db
-from ..models import User, Permission, Team, Match, SavedForLater, PredictionModule, ModuleUserSettings # Post, Comment
+from ..models import User, Permission, Team, \
+    Match, SavedForLater, PredictionModule, \
+    ModuleUserSettings, ModuleUserSettingsSet
 from ..email import send_email
 from ..decorators_me import permission_required, templated
 from ..football_data.football_api_wrapper import FootballAPIWrapper
@@ -16,7 +19,6 @@ from collections import namedtuple
 # random number Generator Thread
 thread = Thread()
 thread_stop_event = Event()
-
 
 @main.app_context_processor
 def inject_permissions():
@@ -109,66 +111,88 @@ def view_match(match_id):
     return render_template('main/view_match.html', match=match, user=current_user)
 
 
-@main.route('/dashboard', methods=['POST', 'GET'])
-@templated()
+@main.route('/dashboard')
 @login_required
 def dashboard():
     savedmatches = current_user.saved_matches
-    form = UserBettingDefaultSettings()
-    me = current_user
 
     #post = Post.query.get_or_404(id)
 
     #if current_user.id != post.author_id and not current_user.can(Permission.ADMINISTER):
     # abort(403)
 
-    if form.validate_on_submit():
-        settings = ModuleUserSettings(user_id=me.id)
-        '''settings.module_id=
-        post.title=form.title.data
-        post.edited=True
+
+    # if user has already saved these settings at least once, any module number is good
+    '''
+        s = ModuleUserSettings.query.filter_by(user_id=me.id, module_id=1).first()
+        if s is not None:
+            s = ModuleUserSettings.query.filter_by(user_id=me.id, module_id=1).first().weight = form.league_position_weight
+            ModuleUserSettings.query.filter_by(user_id=me.id, module_id=2).first().weight = form.form_weight
+            ModuleUserSettings.query.filter_by(user_id=me.id, module_id=3).first().weight = form.home_away_weight
+        else:
+            data = {"user_id": 2, 1: 0.2, 2: 0.4, 3: 0.4}
+            s = ModuleUserSettingsSet(user_id=data.pop('user_id'))
+            s.weights = data
+
         try:
             #save new settings
-            db.session.add(post)
-            return redirect(url_for('.index'))
+            db.session.add(s)
+            return redirect(url_for('.dashboard'))
         except Exception:
             db.session.flush()
         finally:
-            flash('You have saved your default prediction settings, congratulations!')'''
+            flash('You have saved your default prediction settings, congratulations!')
 
-    return dict(user=current_user, savedmatches=savedmatches, form=form)
+     #db.session.commit()'''
 
+
+    return render_template('main/dashboard.html', savedmatches=savedmatches, user=current_user, title='Dashboard')
+
+# a unique url to the editor for a blogpost
+@main.route('/prediction_settings', methods=['GET','POST'])
+@login_required
+def prediction_settings():
+    me = current_user
+    form = UserBettingDefaultSettings()
+
+    if form.validate_on_submit():
+
+
+        if ModuleUserSettings.query.filter_by(user_id=me.id).first() is not None:
+            for pm in PredictionModule.query.all():
+                ModuleUserSettings.query.filter_by(user_id=me.id, module_id=pm.id).first().weight = form[pm.name + '_weight'].data
+
+
+            for i in range(1,3):
+                try:
+                    db.session.add(ModuleUserSettings.query.filter_by(user_id=me.id, module_id=i).first())
+                    return redirect(url_for('.prediction_settings'))
+                except Exception:
+                    db.session.flush()
+                finally:
+                    flash('You have saved your default prediction settings, congratulations!')
+        else:
+            data = {1: form.league_position_weight.data, 2: form.form_weight.data, 3: form.home_away_weight.data}
+            s = ModuleUserSettingsSet(user_id=me.id)
+            s.weights = data
+            db.session.add(s)
+        db.session.commit()
+
+    return render_template( 'main/prediction_settings.html', user=me, form=form)#, posts=[post])
 
 @main.route('/view_match_dashboard/<int:match_id>')
+@login_required
 def view_match_dashboard(match_id):
     me = current_user
     savedmatch = SavedForLater.query.filter_by(match_id=match_id).first()
-
-    dbModules = PredictionModule.query.all()
     modules_winners = [savedmatch.match.prediction_league_position, savedmatch.match.prediction_form, savedmatch.match.prediction_homeaway]
 
-    total_weight = 0
-
-    for i in range( 0, len (PredictionModule.query.all()) ):
-        weight=dbModules[i].default_weight
-
-        if( savedmatch.match.hometeam_id == modules_winners[i].id ):
-            total_weight += weight
-
-    winner_probability = int(total_weight * 100)
-
-    if total_weight > 0.5:
-        predicted_winner = savedmatch.match.hometeam.name
-    elif total_weight < 0.5:
-        predicted_winner = savedmatch.match.awayteam.name
-        winner_probability = 100-total_weight
-    else:
-        predicted_winner = 'To Close To Call...'
-        winner_probability = 50
+    winner = Match.predicted_winner(savedmatch.match, modules_winners, user=me)
 
 
-    return render_template('main/view_match_dashboard.html', savedmatch=savedmatch,  user=current_user,
-                           predicted_winner=predicted_winner,winner_probability=winner_probability)
+    return render_template('main/view_match_dashboard.html', savedmatch=savedmatch,  user=current_user, team_winner=winner[0],
+                           probability = winner[1]
+                           )
 
 
 @main.route('/commit_match/<int:match_id>')

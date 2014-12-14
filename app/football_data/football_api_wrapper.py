@@ -137,7 +137,7 @@ class FootballAPIWrapper:
         with open(self.data_dir + '/standings.json', mode = 'w') as outfile:
             json.dump(raw_data, outfile)
         outfile.close()
-        print ('league table called!')
+        print ('league table data updated!')
 
     def write_data(self):
         import time
@@ -157,7 +157,7 @@ class FootballAPIWrapper:
             matches_data = json.load(localfile)
         localfile.close()
 
-        MatchInfo = namedtuple('MatchInfo', 'id date time date_stamp time_stamp hometeam_id awayteam_id hometeam_score awayteam_score')
+        MatchInfo = namedtuple('MatchInfo', 'id date time date_stamp time_stamp hometeam_id awayteam_id hometeam_score awayteam_score ft_score')
         all_matches = []
         unplayed_matches = []
         played_matches = []
@@ -173,12 +173,13 @@ class FootballAPIWrapper:
                                   int(m['match_localteam_id']),
                                   int(m['match_visitorteam_id']),
                                   m['match_localteam_score'],
-                                  m['match_visitorteam_score']
+                                  m['match_visitorteam_score'],
+                                  m['match_ft_score']
             )
 
             all_matches.append(matchInfo)
 
-            if datetime.strptime(matchInfo.date, "%d.%m.%Y").date() >= datetime.now().date():
+            if matchInfo.ft_score=='':
                 unplayed_matches.append(matchInfo)
             else:
                 played_matches.append(matchInfo)
@@ -222,17 +223,7 @@ class FootballAPIWrapper:
                     pass
                     #print match["match_formatted_date"], match["match_localteam_name"], match["match_visitorteam_name"], match["match_ft_score"]
 
-    class KitNameIdAdapter:
-        def _str_date(self, date):
-            return date.strftime("%Y-%m-%d")
 
-        def __init__(self, birthday):
-            self.faw = FootballAPIWrapper()
-            self.footballAPIteam_ids = self.faw.ids_names
-
-        '''def get_ids(self, date):
-            date = self._str_date(date)
-            return self.calculator.calculate_age(date)'''
 
 
     @property
@@ -285,4 +276,5 @@ class FootballAPIWrapper:
 
     @property
     def league_table(self):
-        return self.feed_league_table()
+        self.league_table = self.feed_league_table()
+        return self.league_table

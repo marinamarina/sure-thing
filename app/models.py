@@ -12,6 +12,8 @@ import bleach
 from sqlalchemy.orm.collections import attribute_mapped_collection
 from sqlalchemy.ext.associationproxy import association_proxy
 from sqlalchemy.orm import relation
+from collections import namedtuple
+
 
 
 """Database models representation"""
@@ -445,27 +447,23 @@ class Match(db.Model):
         matches = faw.all_matches
 
         for m in matches:
-            # if match
             # hope this will not be a bottleneck, find a smarter way to check what is already in the database??
             #store last inserted match id in a variable?
 
             'find the match in the database'
             match = Match.query.filter_by(id=m.id).first()
-            print match
 
             'if not in the database, create a new match'
             if match is None:
                 match = Match(id=m.id, hometeam_id = m.hometeam_id, awayteam_id = m.awayteam_id, date = m.date, time = m.time,
                         date_stamp = m.date_stamp, time_stamp = m.time_stamp)
-                print match
+                #print match
 
                 match.hometeam_score = m.hometeam_score
                 match.awayteam_score = m.awayteam_score
 
-                if (match.hometeam_score != '?'):
-                    match.played = True
-                else:
-                    match.played = False
+            if(m.ft_score != ''):
+                match.played = True
 
             db.session.add(match)
         try:
@@ -479,7 +477,7 @@ class Match(db.Model):
     def prediction_league_position(self):
         'calculate the winner for the league position prediction module'
 
-        if (self.hometeam.position < self.awayteam.position):
+        if (int(self.hometeam.position) < int(self.awayteam.position)):
             return self.hometeam
         else:
             return self.awayteam
@@ -498,7 +496,44 @@ class Match(db.Model):
             to be improved
         '''
 
-        return self.hometeam
+        return self.awayteam
+
+    @staticmethod
+    def predicted_winner(match, module_winners, user=None):
+
+        module_winners = module_winners
+        total_weight = 0
+        dbModules = PredictionModule.query.all()
+        Winner = namedtuple("Winner", "team_winner, probability")
+
+        if user is not None:
+            user_prediction_settings=ModuleUserSettings.query.filter_by(user_id=user.id).all()
+            print  user_prediction_settings
+
+            if len(user_prediction_settings) != 0:
+                for i in range( 0, len (user_prediction_settings) ):
+                    weight=user_prediction_settings[i].weight
+                    if( match.hometeam_id == module_winners[i].id ):
+                        print weight
+                        total_weight += weight
+            else:
+                for i in range( 0, len (PredictionModule.query.all()) ):
+                    weight=dbModules[i].default_weight
+                    if( match.hometeam_id == module_winners[i].id ):
+                        total_weight += weight
+
+
+        winner_probability = float( total_weight )
+
+        if total_weight > 0.5:
+            return Winner(match.hometeam.name, winner_probability)
+        elif total_weight < 0.5:
+            return Winner(match.awayteam.name, 1-winner_probability)
+        else:
+            return ('To Close To Call...', 0.5)
+
+        #user_prediction_settings=ModuleUserSettings.query.filter_by(user_id=me.id).all()
+
 
 
     def __repr__(self):

@@ -1,11 +1,14 @@
 #!/usr/bin/env python
 import os
-from flask_script import Manager, Shell
+from flask_script import Manager, Shell, Server
 from app import create_app, db
 from app.models import User, Role, Permission, Follow, Team, Match, SavedForLater, PredictionModule, ModuleUserSettings, \
     ModuleUserSettingsSet
 from flask_migrate import Migrate, MigrateCommand
 from app import socketio
+from gevent import monkey
+
+monkey.patch_all()
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
@@ -31,9 +34,9 @@ def make_shell_context():
                 ModuleUserSettings=ModuleUserSettings,
                 ModuleUserSettingsSet=ModuleUserSettingsSet)
 
-manager.add_command("shell", Shell(make_context=make_shell_context))
+manager.add_command("shell", Shell(make_context=make_shell_context, use_bpython=True))
 manager.add_command("db", MigrateCommand)
-#manager.add_command("runserver", socketio.run(app))
+manager.add_command("runserver", socketio.run(app))
 
 @manager.command
 def test(coverage=False):
@@ -45,7 +48,7 @@ def test(coverage=False):
     import unittest
     tests = unittest.TestLoader().discover('tests')
     #Run the unittests
-    unittest.TextTestRunner(verbosity=2).run(
+    unittest.TextTestRunner(verbosity=1).run(
         tests
     )
 

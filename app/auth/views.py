@@ -11,13 +11,14 @@ from ..decorators_me import admin_required
 
 @auth.before_app_request
 def before_request():
-    #DEBUG THIS
+
     '''if current_user.is_authenticated():
         current_user.measure_time()
 
         if not current_user.confirmed and request.endpoint[0:5] != 'auth.':
             return redirect(url_for('auth.unconfirmed'))'''
     pass
+
 
 @auth.route('/login', methods=['GET', 'POST'])
 def login():

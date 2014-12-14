@@ -1,3 +1,4 @@
+{% from 'includes/__formhelpers.html' import teamkitimage %}
 {% extends "base.html" %}
 {% from 'includes/__formhelpers.html' import render_field %}
 
@@ -16,65 +17,62 @@
         <li class="active">Dashboard</li>
     </ol>
 
-    <div class="wrapper active">
-        <!-- sidebar -->
+    <!--sidebar-->
+    {% include 'includes/sidebar.inc.html' %}
+    <!--/sidebar-->
 
-        <div id="sidebar-wrapper" class="">
-            <ul id="sidebar_menu" class="sidebar-nav">
-                <li class="sidebar-brand">
-                    <a id="menu-toggle" href="#">Menu<span id="main_icon"
-                                                           class="glyphicon glyphicon-align-justify"></span></a>
-                </li>
-            </ul>
-            <ul class="sidebar-nav" id="sidebar">
-                <li><a>Link1<span class="sub_icon glyphicon glyphicon-link"></span></a></li>
-                <li><a>link2<span class="sub_icon glyphicon glyphicon-link"></span></a></li>
-            </ul>
-        </div>
-        <!-- /sidebar -->
+    <div class="row well">
+        {% if savedmatches.length != 0 %}
 
-        <!-- Article main content -->
-        <div id="page-content-wrapper">
-            <div class="page-content inset col-md-10 col-md-offset-1">
-                <!-- Keep all page content within the page-content inset div! -->
-                <div class="row well">
-                    {% if savedmatches.length != 0 %}
-                        {% include 'includes/saved_matches.inc.html' %}
-                    {% else %}
-                    <p>This is your dashboard!</p>
+        <!-- saved matches -->
+        <div class="jumbotron top-space container">
+            <div class="matches-for-date">
+                <h3 class="match-date row">Sat, 22 Nov</h3>
 
-                    <p>Start saving your matches now!<a href="/">HOME</a></p>
-                    {% endif %}
+                {% for savedmatch in savedmatches %}
 
+                <!--match-->
+                <div class="match row panel panel-default" data="{{savedmatch.id}}">
+                    <div class="panel-body">
+
+                        <div class="home-team team col-xs-4 col-md-offset-1 text-center">
+                            {{ teamkitimage(savedmatch.match, home=1) }}
+                            <span class="team-name clearfix">{{savedmatch.match.hometeam.name}}</span>
+                            <span class="team-form clearfix">WLWLWW</span>
+                            <span class="team-last-result">3:0 Norwich</span>
+
+                        </div>
+                        <div class="away-team team col-xs-4 col-md-offset-1 text-center">
+                            {{ teamkitimage(savedmatch.match, home=2) }}
+                            <span class="team-name clearfix">{{savedmatch.match.awayteam.name}}</span>
+                            <span class="team-form clearfix">WLWLWW</span>
+                            <span class="team-last-result">3:0 Norwich</span>
+                        </div>
+
+                        <div class="btn-group-xs pull-right" role="group">
+                            {% if not savedmatch.played %}
+                            <a href="{{ url_for('.view_match_dashboard', match_id=savedmatch.match_id) }}"
+                               class="btn btn-primary">View
+                                game > </a>
+                            {% endif %}
+                            <a class="btn btn-primary">Comments ></a>
+                            <a href="{{ url_for('.remove_match', match_id=savedmatch.match_id) }}"
+                               class="btn btn-primary">Remove</a>
+                        </div>
+                    </div>
                 </div>
-                <div class="row well">
-                    <p>Betting system settings</p>
+                <!--/match-->
+                {% endfor %}
 
-                    {% include 'includes/user_default_settings.inc.html' %}
-                </div>
-                <div class="row well">
-                    <h3>News feed</h3>
-                    Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut
-                    laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation
-                    ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure
-                    dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla
-                    facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril
-                    delenit augue duis dolore te feugait nulla facilisi. Nam liber tempor cum soluta nobis eleifend
-                    option congue nihil imperdiet doming id quod mazim placerat facer possim assum. Typi non habent
-                    claritatem insitam; est usus legentis in iis qui facit eorum claritatem. Investigationes
-                    demonstraverunt lectores legere me lius quod ii legunt saepius. Claritas est etiam processus
-                    dynamicus, qui sequitur mutationem consuetudium lectorum. Mirum est notare quam littera gothica,
-                    quam nunc putamus parum claram, anteposuerit litterarum formas humanitatis per seacula quarta decima
-                    et quinta decima. Eodem modo typi, qui nunc nobis videntur parum clari, fiant sollemnes in futurum.
-                </div>
             </div>
-
         </div>
-        <!--container wrapper-->
+        <!--/ saved matches -->
 
+        {% else %}
+        <p>This is your dashboard!</p>
+
+        <p>Start saving your matches now!<a href="/">HOME</a></p>
+        {% endif %}
     </div>
-    <!--/wrapper active-->
-</div><!--container-->
-
-
-{% endblock inner_wrapper %}
+</div>
+{% endblock %}

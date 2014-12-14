@@ -1,0 +1,37 @@
+{% from 'includes/__formhelpers.html' import teamkitimage %}
+{% extends "base.html" %}
+{% from 'includes/__formhelpers.html' import render_field %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block header %}
+<header id="head" class="secondary"></header>
+{% endblock header %}
+
+{% block inner_wrapper %}
+
+<div class="container">
+
+    <ol class="breadcrumb">
+        <li><a href="{{ url_for('.index') }}">Home</a></li>
+        <li class="active">Dashboard</li>
+    </ol>
+
+    <!--sidebar-->
+    {% include 'includes/sidebar.inc.html' %}
+    <!--/sidebar-->
+    {% from 'includes/__formhelpers.html' import render_field, render_submit_field %}
+
+    <!-- prediction weight form -->
+    <form method="POST" class="form-horizontal" role="form">
+
+        {{ render_field(form.league_position_weight) }}
+        {{ render_field(form.form_weight) }}
+        {{ render_field(form.home_away_weight) }}
+        {{ form.submit() }}
+    </form>
+    <!-- /prediction weight form -->
+
+</div>
+</div>
+{% endblock %}
