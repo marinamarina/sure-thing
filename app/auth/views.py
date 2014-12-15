@@ -37,8 +37,10 @@ def login():
                 login_user(user, remember=form.rememberMe.data)
             except IntegrityError, e:
                 print "IntegrityError", e
-            else:
                 flash ("You have NOT been authorized!")
+            else:
+                pass
+                #flash ("You have NOT been authorized!")
             finally:
                 flash ("You have now been authorized!" + str(current_user.role))
                 return redirect(request.args.get('next') or url_for('main.index'))

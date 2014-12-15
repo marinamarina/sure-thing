@@ -6,9 +6,7 @@ from flask_login import LoginManager
 from flask_shorturl import ShortUrl
 from config import config
 from gevent import monkey
-from threading import Thread, Event
 from flask_socketio import SocketIO
-import atexit
 from football_data.football_api_wrapper import FootballAPIWrapper
 
 #gunicorn -b 0.0.0.0:5000 --log-config log.conf --pid=app.pid myfile:app
@@ -51,6 +49,7 @@ def create_app(config_name):
     bootstrap.init_app(app)
     mail.init_app(app)
     db.init_app(app)
+
     with app.app_context():
         # Extensions like Flask-SQLAlchemy now know what the "current" app
         # is while within this block. Therefore, you can now run........

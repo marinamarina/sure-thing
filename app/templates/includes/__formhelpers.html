@@ -1,11 +1,10 @@
 {# All macros are using bootstrap css styles #}
 
 {# Macro to render standard form fields #}
-{% macro render_field(field) %}
+{% macro render_field(field, value="") %}
 <div class="top-margin">
     {{ field.label }} <span class="text-danger">*</span>
-    {{ field(class_="form-control", required="true", autofocus="true")|safe }}
-
+    {{ field(class_="form-control", required="true", autofocus="true", value=value)|safe }}
 </div>
 {% if field.errors %}
 <ul class=errors>

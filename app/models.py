@@ -135,6 +135,7 @@ class SavedForLater(db.Model):
     __tablename__='savedforlater'
     users_id=db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
     match_id=db.Column(db.Integer, db.ForeignKey('matches.id'), primary_key=True)
+    committed = db.Column(db.Boolean, default=False)
     match = db.relationship( "Match", backref = "user_assocs")
 
     def __repr__(self):
@@ -499,10 +500,10 @@ class Match(db.Model):
         return self.awayteam
 
     @staticmethod
-    def predicted_winner(match, module_winners, user=None):
+    def predicted_winner(match, user=None):
 
-        module_winners = module_winners
         total_weight = 0
+        module_winners = [match.prediction_league_position, match.prediction_form, match.prediction_homeaway]
         dbModules = PredictionModule.query.all()
         Winner = namedtuple("Winner", "team_winner, probability")
 

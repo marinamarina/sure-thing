@@ -24,5 +24,15 @@
 
     });
 
+    var commitToBetButton = $('#commitToBet');
+
+     commitToBetButton.on('click', function () {
+            //var gender = $(this).val();
+            //calculatorModel.updateGender(gender);
+            console.log('Clicked!')
+            socket.emit('matchCommited', $('#teamWinner').text());
+
+        });
+
 
  });

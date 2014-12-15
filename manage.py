@@ -2,13 +2,17 @@
 import os
 from flask_script import Manager, Shell, Server
 from app import create_app, db
-from app.models import User, Role, Permission, Follow, Team, Match, SavedForLater, PredictionModule, ModuleUserSettings, \
+from app.models import User, Role, Permission, Follow, Team, Match, SavedForLater, \
+    PredictionModule, \
+    ModuleUserSettings, \
     ModuleUserSettingsSet
 from flask_migrate import Migrate, MigrateCommand
 from app import socketio
 from gevent import monkey
+from socketio.server import SocketIOServer
+import werkzeug.serving
 
-monkey.patch_all()
+from flask.ext.script import Manager, Command, Option
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
@@ -23,6 +27,12 @@ app = create_app(os.getenv('FLASK_CONFIG') or 'default')
 manager = Manager(app)
 migrate = Migrate(app, db)
 
+@manager.command
+def runserver(debug=False):
+    app.debug = debug
+    socketio.run(app, host='127.0.0.1', port=5000)
+
+
 def make_shell_context():
     """make app, db available to the command line"""
     return dict(app=app, db=db, User=User, Role=Role,
@@ -33,10 +43,10 @@ def make_shell_context():
                 PredictionModule=PredictionModule,
                 ModuleUserSettings=ModuleUserSettings,
                 ModuleUserSettingsSet=ModuleUserSettingsSet)
+PORT = 3000
 
 manager.add_command("shell", Shell(make_context=make_shell_context, use_bpython=True))
 manager.add_command("db", MigrateCommand)
-manager.add_command("runserver", socketio.run(app))
 
 @manager.command
 def test(coverage=False):
@@ -45,9 +55,12 @@ def test(coverage=False):
         import sys
         os.environ['FLASK_COVERAGE'] = '1'
         os.execvp(sys.executable, [sys.executable] + sys.argv)
+
     import unittest
+
     tests = unittest.TestLoader().discover('tests')
     #Run the unittests
+
     unittest.TextTestRunner(verbosity=1).run(
         tests
     )

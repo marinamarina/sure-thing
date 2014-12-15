@@ -39,21 +39,19 @@ class TestPredictionSettings(unittest.TestCase):
 
         self.assertTrue(len(self.u1.list_matches()) > 0, 'User saved a match' )
         match = self.u1.list_matches()[0].match
-         #default configuration
-        modules_winners = [match.prediction_league_position, match.prediction_form, match.prediction_homeaway]
-        #print match.hometeam, match.awayteam
-        #print match.prediction_league_position
-        #print match.prediction_form
-        #print match.prediction_homeaway
+        #default configuration
+        print match.hometeam, match.awayteam
+        print match.prediction_league_position
+        print match.prediction_form
+        print match.prediction_homeaway
 
-        print Match.predicted_winner(match, modules_winners)
+        print Match.predicted_winner(match)
 
     def test_user_prediction(self):
 
         self.assertTrue(len(self.u1.list_matches()) > 0, 'User saved a match' )
         match = self.u1.list_matches()[0].match
          #default configuration
-        modules_winners = [match.prediction_league_position, match.prediction_form, match.prediction_homeaway]
 
         m1 = ModuleUserSettings(user_id=self.u1.id, module_id=1, weight=0.12)
         m2 = ModuleUserSettings(user_id=self.u1.id, module_id=2, weight=0.32)
@@ -70,4 +68,4 @@ class TestPredictionSettings(unittest.TestCase):
         print match.prediction_form
         print match.prediction_homeaway
 
-        print Match.predicted_winner(match, modules_winners, self.u1)
+        print Match.predicted_winner(match, self.u1)

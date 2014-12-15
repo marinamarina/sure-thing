@@ -154,6 +154,8 @@ def dashboard():
 def prediction_settings():
     me = current_user
     form = UserBettingDefaultSettings()
+    current_weights = ModuleUserSettings.query.filter_by(user_id=me.id).all()
+
 
     if form.validate_on_submit():
 
@@ -178,16 +180,17 @@ def prediction_settings():
             db.session.add(s)
         db.session.commit()
 
-    return render_template( 'main/prediction_settings.html', user=me, form=form)#, posts=[post])
+        #updated_data = {1:}
+
+    return render_template( 'main/prediction_settings.html', user=me, form=form, current_weights=current_weights)#, posts=[post])
 
 @main.route('/view_match_dashboard/<int:match_id>')
 @login_required
 def view_match_dashboard(match_id):
     me = current_user
     savedmatch = SavedForLater.query.filter_by(match_id=match_id).first()
-    modules_winners = [savedmatch.match.prediction_league_position, savedmatch.match.prediction_form, savedmatch.match.prediction_homeaway]
 
-    winner = Match.predicted_winner(savedmatch.match, modules_winners, user=me)
+    winner = Match.predicted_winner(savedmatch.match, user=me)
 
 
     return render_template('main/view_match_dashboard.html', savedmatch=savedmatch,  user=current_user, team_winner=winner[0],
@@ -200,10 +203,21 @@ def view_match_dashboard(match_id):
 def commit_match(match_id):
     me = current_user
     saved_matches = current_user.saved_matches
+    match = Match.query.filter_by(id=match_id).first()
 
-    flash("Congratulations, you have commited your bet!")
+    predicted_winner=Match.predicted_winner(match, user=me)
+    #saved
+    # match-->committed
+    # adding a listener watching when this match becomes played, record winnings for the user
+
+    flash("Congratulations, you have commited your bet! Match id: " + str(match_id) + "Predicted winner: " + str(predicted_winner))
 
     return redirect(url_for('.dashboard', matches=saved_matches))
+
+'''@socketio.on('matchCommited', namespace='/test')
+def matchCommited(msg):
+    print ()'''
+
 
 
 @main.route('/remove_match/<int:match_id>')

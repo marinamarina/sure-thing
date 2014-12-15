@@ -153,9 +153,10 @@
 <!--  /modules  -->
 <!-- overall winner -->
      <h2>Winner</h2>
-      <h2>{{ team_winner }} {{ probability }}</h2>
+      <h2 id="teamWinner">{{ team_winner }}</h2>
+      <h2>{{ probability }}</h2>
 <!-- /overall winner -->
-<a href="{{ url_for('.commit_match', match_id=savedmatch.match.id) }}" class="btn btn-primary">Commit</a>
+<a href="{{ url_for('.commit_match', match_id=savedmatch.match.id) }}" class="btn btn-primary" id="commitToBet">Commit</a>
 
 </div>
 {% endblock inner_wrapper %}
