@@ -1,4 +1,4 @@
-/* CSS files concatenated |  19-11-2014 */
+/* CSS files concatenated |  17-12-2014 */
 /*******************************/
 /*         Navigation         */
 /*******************************/
@@ -421,9 +421,9 @@ hr {
   margin-left: -150px;
   left: 70px;
   width: 150px;
-  background: #222;
+  /*background: #222;*/
   position: fixed;
-  height: 100%;
+  /*height: 100%;*/
   z-index: 10000;
   transition: all .4s ease 0s;
 }
@@ -503,7 +503,6 @@ hr {
 .sidebar-nav > .sidebar-brand {
   height: 65px;
   line-height: 60px;
-  font-size: 18px;
 }
 
 .sidebar-nav > .sidebar-brand a {
@@ -558,4 +557,8 @@ hr {
     width: 150px;
     transition: all .4s ease 0s;
   }
+}
+.committed_match {
+  color: #CCC;
+  background-color: #DDD;
 }

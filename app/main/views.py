@@ -107,8 +107,12 @@ def save_match(match_id):
 def commit_match(match_id):
     me = current_user
     savedmatch = current_user.list_matches(match_id=match_id)[0]
+    winner = Match.predicted_winner(savedmatch.match, me)
+    team_winner_id = winner.team_winner_id
+    probability = winner.probability
 
     savedmatch.committed=True
+    savedmatch.predicted_winner=team_winner_id
     db.session.add(savedmatch)
     db.session.commit()
 
@@ -177,8 +181,8 @@ def view_match_dashboard(match_id):
     return render_template('main/view_match_dashboard.html',
                            savedmatch=savedmatch,
                            user=current_user,
-                           team_winner=winner[0],
-                           probability=winner[1]
+                           team_winner_name=winner[1],
+                           probability=winner[2]
                            )
 
 

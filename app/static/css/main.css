@@ -373,3 +373,7 @@ hr {
     transition: all .4s ease 0s;
   }
 }
+.committed_match {
+  color: #CCC;
+  background-color: #DDD;
+}

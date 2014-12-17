@@ -144,10 +144,11 @@ class SavedForLater(db.Model):
 
 
     def __repr__(self):
-        return "<SavedForLater> userid: {}, matchid: {}, committed:{}".format(
+        return "<SavedForLater> userid: {}, matchid: {}, committed:{}, predicted_winner:{}".format(
             self.users_id,
             self.match_id,
-            self.committed
+            self.committed,
+            self.predicted_winner
         )
 
 #db.event.listen(Comment.body, 'set', Comment.on_changed_body)
@@ -513,7 +514,7 @@ class Match(db.Model):
         total_weight = 0
         module_winners = [match.prediction_league_position, match.prediction_form, match.prediction_homeaway]
         dbModules = PredictionModule.query.all()
-        Winner = namedtuple("Winner", "team_winner, probability")
+        Winner = namedtuple("Winner", "team_winner_id, team_winner_name, probability")
 
         if user is not None:
             user_prediction_settings=ModuleUserSettings.query.filter_by(user_id=user.id).all()
@@ -535,11 +536,11 @@ class Match(db.Model):
         winner_probability = float( total_weight )
 
         if total_weight > 0.5:
-            return Winner(match.hometeam.name, winner_probability)
+            return Winner(match.hometeam.id, match.hometeam.name, winner_probability)
         elif total_weight < 0.5:
-            return Winner(match.awayteam.name, 1-winner_probability)
+            return Winner(match.hometeam.id, match.awayteam.name, 1-winner_probability)
         else:
-            return ('To Close To Call...', 0.5)
+            return (-1, 'To Close To Call...', 0.5)
 
         #user_prediction_settings=ModuleUserSettings.query.filter_by(user_id=me.id).all()
 
