@@ -136,13 +136,22 @@ class SavedForLater(db.Model):
     users_id=db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
     match_id=db.Column(db.Integer, db.ForeignKey('matches.id'), primary_key=True)
     committed = db.Column(db.Boolean, default=False)
+    weight_league_position = db.Column(db.Float, default=None)
+    weight_form = db.Column(db.Float, default=None)
+    weight_home_away = db.Column(db.Float, default=None)
+    predicted_winner = db.Column(db.Integer, default=None)
     match = db.relationship( "Match", backref = "user_assocs")
 
+
     def __repr__(self):
-        return "<SavedForLater> userid: {}, matchid: {}".format(
+        return "<SavedForLater> userid: {}, matchid: {}, committed:{}".format(
             self.users_id,
-            self.match_id
+            self.match_id,
+            self.committed
         )
+
+#db.event.listen(Comment.body, 'set', Comment.on_changed_body)
+
 
 class Follow(db.Model):
     'following-follower feature'
@@ -151,7 +160,7 @@ class Follow(db.Model):
     followed_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
 
-class User (UserMixin, db.Model):
+class User(UserMixin, db.Model):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
     # user will log with an email address
@@ -280,8 +289,8 @@ class User (UserMixin, db.Model):
     def is_match_saved(self, match):
         return self.saved_matches.filter_by(match_id=match.id).first() is not None
 
-    def list_matches(self):
-        return self.saved_matches.all()
+    def list_matches(self, **kwargs):
+        return self.saved_matches.filter_by(**kwargs).all()
 
     '''def user_betting_settings(self, match):
         if not self.is_match_saved(match):
@@ -458,7 +467,6 @@ class Match(db.Model):
             if match is None:
                 match = Match(id=m.id, hometeam_id = m.hometeam_id, awayteam_id = m.awayteam_id, date = m.date, time = m.time,
                         date_stamp = m.date_stamp, time_stamp = m.time_stamp)
-                #print match
 
                 match.hometeam_score = m.hometeam_score
                 match.awayteam_score = m.awayteam_score
@@ -536,7 +544,6 @@ class Match(db.Model):
         #user_prediction_settings=ModuleUserSettings.query.filter_by(user_id=me.id).all()
 
 
-
     def __repr__(self):
         return "<Match> date:{} id:{}".format(
             self.date,
@@ -567,9 +574,9 @@ class Comment(db.Model):
 class PredictionModule(db.Model):
     __tablename__ = 'prediction_modules'
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(), index=True)
-    description = db.Column(db.String())
-    default_weight = db.Column(db.Float())
+    name = db.Column(db.String(64), index=True)
+    description = db.Column(db.String(64))
+    default_weight = db.Column(db.Float)
 
     @staticmethod
     def insert_modules():

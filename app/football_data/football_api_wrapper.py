@@ -18,7 +18,7 @@ class FootballAPIWrapper:
 
         self.__premier_league_id = '1204'
         self.__base_url = 'http://football-api.com/api/?Action='
-        self.proxy_on = True
+        self.proxy_on = False
 
     def init_app(self, app):
         '''if hasattr(app, 'teardown_appcontext'):
@@ -121,7 +121,10 @@ class FootballAPIWrapper:
         'Write matches json to the local file'
         raw_data = dict()
         raw_data["date-time"] = self.date_tuple.today + ' ' + self.date_tuple.current_time
-        raw_data["matches"] = self.get_all_matches()["matches"]
+        try:
+            raw_data["matches"] = self.get_all_matches()["matches"]
+        except KeyError:
+            print ('Please, update your IP address!')
 
         with open(self.data_dir + '/all_matches.json', mode = 'w') as outfile:
             json.dump(raw_data, outfile)
@@ -132,19 +135,17 @@ class FootballAPIWrapper:
         'Write standings json to the local file'
         raw_data = dict()
         raw_data["date-time"] = self.date_tuple.today + ' ' + self.date_tuple.current_time
-        raw_data["standings"] = self.get_standings()["teams"]
+        try:
+            raw_data["standings"] = self.get_standings()["teams"]
+        except KeyError:
+            print ('Please, update your IP address!')
 
         with open(self.data_dir + '/standings.json', mode = 'w') as outfile:
             json.dump(raw_data, outfile)
         outfile.close()
         print ('league table data updated!')
 
-    def write_data(self):
-        import time
 
-        self.write_matches_data()
-        #time.sleep(10)
-        #self.write_standings_data()
 
     def feed_all_and_unplayed_matches(self):
         '''
@@ -193,7 +194,6 @@ class FootballAPIWrapper:
         Read the data from a local file
         :return league_table dictionary
         '''
-
         with open(self.data_dir + '/standings.json', 'r') as localfile:
             standings_data = json.load(localfile)
         localfile.close()
@@ -222,8 +222,6 @@ class FootballAPIWrapper:
                 if match["match_localteam_id"] == '9260' or match["match_visitorteam_id"] == '9260':
                     pass
                     #print match["match_formatted_date"], match["match_localteam_name"], match["match_visitorteam_name"], match["match_ft_score"]
-
-
 
 
     @property

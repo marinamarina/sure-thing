@@ -15,6 +15,7 @@ import werkzeug.serving
 from flask.ext.script import Manager, Command, Option
 
 basedir = os.path.abspath(os.path.dirname(__file__))
+port = 5000
 
 cov = None
 if (os.environ.get('FLASK_COVERAGE')):
@@ -27,11 +28,6 @@ app = create_app(os.getenv('FLASK_CONFIG') or 'default')
 manager = Manager(app)
 migrate = Migrate(app, db)
 
-@manager.command
-def runserver(debug=False):
-    app.debug = debug
-    socketio.run(app, host='127.0.0.1', port=5000)
-
 
 def make_shell_context():
     """make app, db available to the command line"""
@@ -43,10 +39,14 @@ def make_shell_context():
                 PredictionModule=PredictionModule,
                 ModuleUserSettings=ModuleUserSettings,
                 ModuleUserSettingsSet=ModuleUserSettingsSet)
-PORT = 3000
 
 manager.add_command("shell", Shell(make_context=make_shell_context, use_bpython=True))
 manager.add_command("db", MigrateCommand)
+
+@manager.command
+def runserver(debug=True): #needs to be changed to False in production
+    app.debug = debug
+    socketio.run(app, host='127.0.0.1', port=port)
 
 @manager.command
 def test(coverage=False):
@@ -61,7 +61,7 @@ def test(coverage=False):
     tests = unittest.TestLoader().discover('tests')
     #Run the unittests
 
-    unittest.TextTestRunner(verbosity=1).run(
+    unittest.TextTestRunner(verbosity=2).run(
         tests
     )
 

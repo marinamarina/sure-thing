@@ -14,7 +14,7 @@
                     {{ teamkitimage(match, home=1) }}
 
                     <span class="team-name clearfix">{{match.hometeam.name}}</span>
-                    <span class="team-form clearfix">WLWLWW</span>
+                    <span class="team-form clearfix">{{match.awayteam.form}}</span>
                     <span class="team-last-result">2:0 Norwich</span>
 
                 </div>
@@ -23,7 +23,7 @@
                 <div class="away-team team col-xs-4 col-xs-offset-1 text-center">
                      {{ teamkitimage(match, home=2) }}
                     <span class="team-name clearfix">{{match.awayteam.name}}</span>
-                    <span class="team-form clearfix">WLWLWW</span>
+                    <span class="team-form clearfix">{{match.awayteam.form}}</span>
                     <span class="team-last-result">3:0 Norwich</span>
                 </div>
                 <div class="btn-group-xs pull-right" role="group">

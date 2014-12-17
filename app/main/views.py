@@ -102,6 +102,19 @@ def save_match(match_id):
     flash("Congratulations, you have saved a match to your dashboard!")
     return redirect(url_for('.index'))
 
+@main.route('/commit_match/<int:match_id>')
+@login_required
+def commit_match(match_id):
+    me = current_user
+    savedmatch = current_user.list_matches(match_id=match_id)[0]
+
+    savedmatch.committed=True
+    db.session.add(savedmatch)
+    db.session.commit()
+
+    #predicted_winner=Match.predicted_winner(savedmatch, user=me)
+    flash("Congratulation! You have successfully committed your saved match!")
+    return redirect(url_for('.dashboard'))
 
 @main.route('/view_match/<int:match_id>')
 def view_match(match_id):
@@ -115,36 +128,6 @@ def view_match(match_id):
 @login_required
 def dashboard():
     savedmatches = current_user.saved_matches
-
-    #post = Post.query.get_or_404(id)
-
-    #if current_user.id != post.author_id and not current_user.can(Permission.ADMINISTER):
-    # abort(403)
-
-
-    # if user has already saved these settings at least once, any module number is good
-    '''
-        s = ModuleUserSettings.query.filter_by(user_id=me.id, module_id=1).first()
-        if s is not None:
-            s = ModuleUserSettings.query.filter_by(user_id=me.id, module_id=1).first().weight = form.league_position_weight
-            ModuleUserSettings.query.filter_by(user_id=me.id, module_id=2).first().weight = form.form_weight
-            ModuleUserSettings.query.filter_by(user_id=me.id, module_id=3).first().weight = form.home_away_weight
-        else:
-            data = {"user_id": 2, 1: 0.2, 2: 0.4, 3: 0.4}
-            s = ModuleUserSettingsSet(user_id=data.pop('user_id'))
-            s.weights = data
-
-        try:
-            #save new settings
-            db.session.add(s)
-            return redirect(url_for('.dashboard'))
-        except Exception:
-            db.session.flush()
-        finally:
-            flash('You have saved your default prediction settings, congratulations!')
-
-     #db.session.commit()'''
-
 
     return render_template('main/dashboard.html', savedmatches=savedmatches, user=current_user, title='Dashboard')
 
@@ -180,8 +163,6 @@ def prediction_settings():
             db.session.add(s)
         db.session.commit()
 
-        #updated_data = {1:}
-
     return render_template( 'main/prediction_settings.html', user=me, form=form, current_weights=current_weights)#, posts=[post])
 
 @main.route('/view_match_dashboard/<int:match_id>')
@@ -193,26 +174,13 @@ def view_match_dashboard(match_id):
     winner = Match.predicted_winner(savedmatch.match, user=me)
 
 
-    return render_template('main/view_match_dashboard.html', savedmatch=savedmatch,  user=current_user, team_winner=winner[0],
-                           probability = winner[1]
+    return render_template('main/view_match_dashboard.html',
+                           savedmatch=savedmatch,
+                           user=current_user,
+                           team_winner=winner[0],
+                           probability=winner[1]
                            )
 
-
-@main.route('/commit_match/<int:match_id>')
-@login_required
-def commit_match(match_id):
-    me = current_user
-    saved_matches = current_user.saved_matches
-    match = Match.query.filter_by(id=match_id).first()
-
-    predicted_winner=Match.predicted_winner(match, user=me)
-    #saved
-    # match-->committed
-    # adding a listener watching when this match becomes played, record winnings for the user
-
-    flash("Congratulations, you have commited your bet! Match id: " + str(match_id) + "Predicted winner: " + str(predicted_winner))
-
-    return redirect(url_for('.dashboard', matches=saved_matches))
 
 '''@socketio.on('matchCommited', namespace='/test')
 def matchCommited(msg):
