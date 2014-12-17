@@ -7,7 +7,7 @@ from .forms import BlogPostForm, CommentPostForm, UserBettingDefaultSettings
 from .. import db
 from ..models import User, Permission, Team, \
     Match, SavedForLater, PredictionModule, \
-    ModuleUserSettings, ModuleUserSettingsSet
+    ModuleUserSettings
 from ..email import send_email
 from ..decorators_me import permission_required, templated
 from ..football_data.football_api_wrapper import FootballAPIWrapper
@@ -113,6 +113,10 @@ def commit_match(match_id):
 
     savedmatch.committed=True
     savedmatch.predicted_winner=team_winner_id
+    #savedmatch.match.
+
+    #if (ModuleUserSettings.filter_by)
+
     db.session.add(savedmatch)
     db.session.commit()
 

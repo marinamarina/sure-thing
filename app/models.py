@@ -129,6 +129,26 @@ class Comments(db.Model):
 
 #db.event.listen(Comment.body, 'set', Comment.on_changed_body)
 '''
+class ModuleUserSettings(db.Model):
+    'to add later'
+    __tablename__='moduleusersettings'
+    user_id=db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
+    #ModuleUserSettingsSet = db.relation('ModuleUserSettingsSet')
+    module_id = db.Column(db.Integer, primary_key=True)
+    weight = db.Column(db.Float)
+    user = db.relationship( "User", backref = "user_assocs")
+
+    @staticmethod
+    def _create_item(module_id, weight):
+
+        return ModuleUserSettings(module_id=module_id, weight=weight)
+
+    def __repr__(self):
+        return "<ModuleUserSettings> user_id: {}, module_id: {}, weight:{}".format(
+            self.user_id,
+            self.module_id,
+            self.weight
+        )
 
 class SavedForLater(db.Model):
     'matches saved by users, association table'
@@ -141,6 +161,7 @@ class SavedForLater(db.Model):
     weight_home_away = db.Column(db.Float, default=None)
     predicted_winner = db.Column(db.Integer, default=None)
     match = db.relationship( "Match", backref = "user_assocs")
+    bettor = db.relationship( "User", backref="bettor")
 
 
     def __repr__(self):
@@ -202,6 +223,16 @@ class User(UserMixin, db.Model):
                                     lazy='dynamic',
                                     cascade='all, delete-orphan'
                                     )
+
+    '''prediction_weights = db.relationship('ModuleUserSettings',
+                                         primaryjoin=("User.id == ModuleUserSettings.user_id"),
+                                         backref=db.backref('user', lazy='joined'),
+                                         lazy='dynamic',
+                                         cascade='all, delete-orphan'
+                                        )'''
+    prediction_settings = db.relationship('ModuleUserSettings', backref='bettor', foreign_keys=[ModuleUserSettings.user_id], lazy='dynamic')
+
+
 
     def __init__(self, **kwargs):
         super(User, self).__init__(**kwargs)
@@ -292,6 +323,9 @@ class User(UserMixin, db.Model):
 
     def list_matches(self, **kwargs):
         return self.saved_matches.filter_by(**kwargs).all()
+
+    def list_prediction_settings(self, **kwargs):
+        return self.prediction_settings.filter_by(**kwargs).all()
 
     '''def user_betting_settings(self, match):
         if not self.is_match_saved(match):
@@ -602,35 +636,8 @@ class PredictionModule(db.Model):
                 self.default_weight
         )
 
-
-class ModuleUserSettings(db.Model):
-    'to add later'
-    __tablename__='moduleusersettings'
-    user_id=db.Column(db.Integer, db.ForeignKey('moduleusersettingsset.user_id'), primary_key=True)
-    ModuleUserSettingsSet = db.relation('ModuleUserSettingsSet')
-    module_id = db.Column(db.Integer, primary_key=True)
-    weight = db.Column(db.Float())
-
-    '''user_id=db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
-    module_id=db.Column(db.Integer, db.ForeignKey('prediction_modules.id'), primary_key=True)
-    weight = db.Column(db.Float())
-    user_settings = db.relationship( "PredictionModule", backref = "predictionmodule_assocs")'''
-
-    @staticmethod
-    def _create_item(module_id, weight):
-
-        return ModuleUserSettings(module_id=module_id, weight=weight)
-
-    def __repr__(self):
-        return "<ModuleUserSettings> user_id: {}, module_id: {}, weight:{}".format(
-            self.user_id,
-            self.module_id,
-            self.weight
-        )
-
-
 class ModuleUserSettingsSet(db.Model):
     __tablename__ = 'moduleusersettingsset'
     user_id = db.Column(db.Integer, primary_key=True, nullable=False)
-    _weights = db.relation(ModuleUserSettings, collection_class=attribute_mapped_collection('module_id'))
-    weights = association_proxy('_weights', 'weight', creator=ModuleUserSettings._create_item)# Use PickleType?
+    '''_weights = db.relation(ModuleUserSettings, collection_class=attribute_mapped_collection('module_id'))
+    weights = association_proxy('_weights', 'weight', creator=ModuleUserSettings._create_item)# Use PickleType?'''
