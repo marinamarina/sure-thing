@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% from 'includes/__formhelpers.html' import render_field, teamkitimage %}
+{% from 'includes/__formhelpers.html' import render_field, render_submit_field, teamkitimage %}
 
 
 {% block title %}Match view{% endblock %}
@@ -24,15 +24,15 @@
         <div class="panel-body">
 
             <div class="away-team team col-xs-2 col-xs-offset-1 text-center">
-                {{ teamkitimage(savedmatch.match, home=1) }}
-                <span class="team-name clearfix">{{savedmatch.match.hometeam.name}}</span>
-                <span class="team-form clearfix">{{savedmatch.match.hometeam.form}}</span>
+                {{ teamkitimage(savedmatch, home=1) }}
+                <span class="team-name clearfix">{{savedmatch.hometeam.name}}</span>
+                <span class="team-form clearfix">{{savedmatch.hometeam.form}}</span>
                 <span class="team-last-result">3:0 Norwich</span>
             </div>
             <div class="away-team team col-xs-2 col-xs-offset-1 text-center">
-                {{ teamkitimage(savedmatch.match, home=2) }}
-                <span class="team-name clearfix">{{savedmatch.match.awayteam.name}}</span>
-                <span class="team-form clearfix">{{savedmatch.match.hometeam.form}}</span>
+                {{ teamkitimage(savedmatch, home=2) }}
+                <span class="team-name clearfix">{{savedmatch.awayteam.name}}</span>
+                <span class="team-form clearfix">{{savedmatch.hometeam.form}}</span>
                 <span class="team-last-result">3:0 Norwich</span>
             </div>
 
@@ -41,7 +41,7 @@
     <!-- /module intro -->
 
     <!--module league position-->
-    <div class="module row panel panel-default" data="{{ savedmatch.match.match_id }}">
+    <div class="module row panel panel-default" data="{{ savedmatch.match_id }}">
         <div class="panel panel-info">
             <div class="panel-heading">
                 <h3 class="panel-title">League Position</h3>
@@ -49,15 +49,15 @@
 
             <div class="home-team team col-xs-2 col-xs-offset-1 text-center">
 
-                <span class="team-form clearfix">Position: {{ savedmatch.match.hometeam.position }} </span>
+                <span class="team-form clearfix">Position: {{ savedmatch.hometeam.position }} </span>
                 <span class="team-last-result">3:0 Norwich</span>
             </div>
             <div class="away-team team col-xs-2 col-xs-offset-1 text-center">
-                <span class="team-form clearfix">Position: {{ savedmatch.match.awayteam.position }} </span>
+                <span class="team-form clearfix">Position: {{ savedmatch.awayteam.position }} </span>
                 <span class="team-last-result">3:0 Norwich</span>
             </div>
             <div class="away-team team col-xs-2 col-xs-offset-1 text-center">
-                <span class="clearfix">Winner: {{ savedmatch.match.prediction_league_position.name }}</span>
+                <span class="clearfix">Winner: {{ savedmatch.prediction_league_position.name }}</span>
             </div>
 
         </div>
@@ -65,43 +65,43 @@
     <!-- /module league position -->
 
     <!-- module home/away -->
-    <div class="module row panel panel-default" data="{{savedmatch.match.match_id}}">
+    <div class="module row panel panel-default" data="{{savedmatch.match_id}}">
         <div class="panel panel-info">
             <div class="panel-heading">
                 <h3 class="panel-title">Home/Away</h3>
             </div>
 
             <div class="home-team team col-xs-2 col-xs-offset-1 text-center">
-                <span class="team-form clearfix">Home Team: {{ savedmatch.match.hometeam.name }} </span>
+                <span class="team-form clearfix">Home Team: {{ savedmatch.hometeam.name }} </span>
             </div>
             <div class="away-team team col-xs-2 col-xs-offset-1 text-center">
-                <span class="team-form clearfix">Away Team: {{ savedmatch.match.awayteam.name }} </span>
+                <span class="team-form clearfix">Away Team: {{ savedmatch.awayteam.name }} </span>
             </div>
             <div class="away-team team col-xs-2 col-xs-offset-1 text-center">
-                <span class="clearfix">Winner: {{ savedmatch.match.prediction_homeaway.name }}</span>
+                <span class="clearfix">Winner: {{ savedmatch.prediction_homeaway.name }}</span>
             </div>
         </div>
     </div>
     <!-- module home/away -->
 
     <!--module form-->
-    <div class="module row panel panel-default" data="{{savedmatch.match.match_id}}">
+    <div class="module row panel panel-default" data="{{savedmatch.match_id}}">
         <div class="panel panel-info">
             <div class="panel-heading">
                 <h3 class="panel-title">Form</h3>
             </div>
 
             <div class="home-team team col-xs-2 col-xs-offset-1 text-center">
-                <span class="team-form clearfix">Form: {{ savedmatch.match.hometeam.form }} </span>
+                <span class="team-form clearfix">Form: {{ savedmatch.hometeam.form }} </span>
 
                 <span class="team-last-result">3:0 Norwich</span>
             </div>
             <div class="away-team team col-xs-2 col-xs-offset-1 text-center">
-                <span class="team-form clearfix">Form: {{ savedmatch.match.awayteam.form }} </span>
+                <span class="team-form clearfix">Form: {{ savedmatch.awayteam.form }} </span>
                 <span class="team-last-result">3:0 Norwich</span>
             </div>
             <div class="away-team team col-xs-2 col-xs-offset-1 text-center">
-                <span class="clearfix">Winner: {{ savedmatch.match.prediction_form.name }}</span>
+                <span class="clearfix">Winner: {{ savedmatch.prediction_form.name }}</span>
             </div>
 
         </div>
@@ -110,45 +110,7 @@
 
 </div>
 
-<!-- prediction weight form -->
-  <form class="form-horizontal" role="form">
-
-  <!-- league position percentage -->
-  <div class="form-group" ng-app>
-    <label for="inputLeaguePosition" class="col-sm-2 control-label">League Position</label>
-    <div class="col-sm-2">
-      <input id="inputLeaguePosition" type="text" ng-model="leaguePositionWeight" placeholder="Change your %" class="ng-valid ng-dirty ng-valid-parse ng-touched form-control">
-      <h1 class="ng-binding col-sm-2 control-label">{{ leaguePositionWeight }}</h1>
-
-    </div>
-  </div>
-  <!-- /league position percentage -->
-
-  <!-- form percentage -->
-  <div class="form-group">
-    <label for="inputForm" class="col-sm-2 control-label">Form</label>
-    <div class="col-sm-2">
-      <input type="number" class="form-control" id="inputForm" placeholder="%" value="100%">
-    </div>
-  </div>
-  <!-- /form percentage -->
-
-  <!-- home away percentage -->
-  <div class="form-group">
-    <label for="inputHomeAway" class="col-sm-2 control-label">Home/Away</label>
-    <div class="col-sm-2">
-      <input type="number" class="form-control" id="inputHomeAway" placeholder="%" value="100%">
-    </div>
-  </div>
-  <!-- /home away percentage -->
-
-  <div class="form-group">
-    <div class="col-sm-offset-2 col-sm-2">
-      <button type="submit" class="btn btn-default">Save</button>
-    </div>
-  </div>
-</form>
-<!-- / percentage form -->
+    {% include 'includes/prediction_settings_match.inc.html' %}
 
 <!--  /modules  -->
 <!-- overall winner -->
@@ -156,7 +118,7 @@
       <h2 id="teamWinner">{{ team_winner_name }}</h2>
       <h2>{{ probability }}</h2>
 <!-- /overall winner -->
-<a href="{{ url_for('.commit_match', match_id=savedmatch.match.id) }}" class="btn btn-primary" id="commitToBet">Commit</a>
+<a href="{{ url_for('.commit_match', match_id=savedmatch.id) }}" class="btn btn-primary" id="commitToBet">Commit</a>
 
 </div>
 {% endblock inner_wrapper %}

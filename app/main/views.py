@@ -3,11 +3,11 @@ from flask import render_template, redirect, url_for, abort, flash, \
     session, current_app, request
 from flask_login import login_required, current_user
 from . import main
-from .forms import BlogPostForm, CommentPostForm, UserBettingDefaultSettings
+from .forms import BlogPostForm, CommentPostForm, UserDefaultPredictionSettings, UserMatchPredictionSettings
 from .. import db
 from ..models import User, Permission, Team, \
     Match, SavedForLater, PredictionModule, \
-    ModuleUserSettings
+    ModuleUserSettings, ModuleUserMatchSettings
 
 from ..email import send_email
 from ..decorators_me import permission_required, templated
@@ -44,8 +44,8 @@ def index():
         my_query = Match.query.filter_by(played=False).order_by(Match.date_stamp.asc(), Match.time_stamp.asc())
 
 
-    #switch between displaying past and future matches
-    #order matches first by date and then by time
+    # switch between d isplaying past and future matches
+    # order matches first by date and then by time
     matches = my_query.all()
 
     # define the form
@@ -103,25 +103,21 @@ def save_match(match_id):
     flash("Congratulations, you have saved a match to your dashboard!")
     return redirect(url_for('.index'))
 
+
 @main.route('/commit_match/<int:match_id>')
 @login_required
 def commit_match(match_id):
     me = current_user
-    savedmatch = current_user.list_matches(match_id=match_id)[0]
+    savedmatch = me.list_matches(match_id=match_id)[0]
     winner = Match.predicted_winner(savedmatch.match, me)
     team_winner_id = winner.team_winner_id
-    probability = winner.probability
 
     savedmatch.committed=True
     savedmatch.predicted_winner=team_winner_id
-    #savedmatch.match.
-
-    #if (ModuleUserSettings.filter_by)
 
     db.session.add(savedmatch)
     db.session.commit()
 
-    #predicted_winner=Match.predicted_winner(savedmatch, user=me)
     flash("Congratulation! You have successfully committed your saved match!")
     return redirect(url_for('.dashboard'))
 
@@ -140,12 +136,12 @@ def dashboard():
 
     return render_template('main/dashboard.html', savedmatches=savedmatches, user=current_user, title='Dashboard')
 
-# a unique url to the editor for a blogpost
+
 @main.route('/prediction_settings', methods=['GET','POST'])
 @login_required
 def prediction_settings():
     me = current_user
-    form = UserBettingDefaultSettings()
+    form = UserDefaultPredictionSettings()
     #current user prediction settings in the database
     current_weights = me.prediction_settings.all()
     modules= PredictionModule.query.all()
@@ -154,9 +150,8 @@ def prediction_settings():
 
     if form.validate_on_submit():
 
-        # if user already has set custom weights in the database
-
         for module in modules:
+            # if user already has set custom weights in the database
             if current_weights:
                 settings_item = ModuleUserSettings.query.filter_by(user_id=me.id, module_id=module.id).first()
             else:
@@ -170,7 +165,6 @@ def prediction_settings():
                 db.session.flush()
 
         flash('You have saved your default prediction settings, congratulations!')
-        return redirect(url_for('.prediction_settings'))
 
     # if user has no betting settings, make each current weight equal to an empty string
     if not current_weights:
@@ -179,20 +173,48 @@ def prediction_settings():
 
     return render_template( 'main/prediction_settings.html', user=me, form=form, current_weights=current_weights)
 
-@main.route('/view_match_dashboard/<int:match_id>')
+
+@main.route('/view_match_dashboard/<int:match_id>', methods=['GET','POST'])
 @login_required
 def view_match_dashboard(match_id):
     me = current_user
-    savedmatch = SavedForLater.query.filter_by(match_id=match_id).first()
+    savedmatch = me.list_matches(match_id=match_id)[0].match
+    form = UserMatchPredictionSettings()
+    current_weights = me.match_specific_settings.all()
+    modules= PredictionModule.query.all()
 
-    winner = Match.predicted_winner(savedmatch.match, user=me)
+    if form.validate_on_submit():
+
+        for module in modules:
+            # if user already has set custom weights for the match
+            if current_weights:
+                settings_item = ModuleUserMatchSettings.query.filter_by(user_id=me.id, match_id=savedmatch.id, module_id=module.id).first()
+            else:
+                settings_item = ModuleUserMatchSettings(user_id=me.id, match_id=savedmatch.id, module_id=module.id)
+
+            settings_item.weight = form[module.name + '_weight'].data
+
+            try:
+                db.session.add(settings_item)
+            except Exception:
+                db.session.flush()
+
+        flash('You have saved your match specific prediction settings, congratulations!')
+
+    # if user has no betting settings, make each current weight equal to an empty string
+    if not current_weights:
+        current_weights = ['' for i in range(0, len(modules))]
+
+    winner = Match.predicted_winner(savedmatch, user=me)
 
 
     return render_template('main/view_match_dashboard.html',
+                           form=form,
                            savedmatch=savedmatch,
                            user=current_user,
                            team_winner_name=winner[1],
-                           probability=winner[2]
+                           probability=winner[2],
+                           current_weights=current_weights
                            )
 
 

@@ -133,7 +133,7 @@ class ModuleUserSettings(db.Model):
     'set custom user %'
     __tablename__='moduleusersettings'
     user_id=db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
-    module_id = db.Column(db.Integer, primary_key=True)
+    module_id = db.Column(db.Integer, db.ForeignKey('prediction_modules.id'), primary_key=True)
     weight = db.Column(db.Float)
     user = db.relationship("User", backref = "user_assocs")
 
@@ -143,6 +143,26 @@ class ModuleUserSettings(db.Model):
             self.module_id,
             self.weight
         )
+
+
+class ModuleUserMatchSettings(db.Model):
+    'set custom user % for each match'
+    __tablename__='moduleusermatchsettings'
+    user_id=db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
+    match_id=db.Column(db.Integer, db.ForeignKey('matches.id'), primary_key=True)
+    module_id = db.Column(db.Integer, db.ForeignKey('prediction_modules.id'), primary_key=True)
+    weight = db.Column(db.Float)
+    user = db.relationship("User", backref = "user_match_assoc")
+
+    def __repr__(self):
+        return "<ModuleUserSettings> user_id: {}/match_id: {} (module_id: {}, weight:{})".format(
+            self.user_id,
+            self.match_id,
+            self.module_id,
+            self.weight
+        )
+
+
 
 class SavedForLater(db.Model):
     'matches saved by users, association table'
@@ -222,6 +242,10 @@ class User(UserMixin, db.Model):
     prediction_settings = db.relationship('ModuleUserSettings',
                                           backref='bettor',
                                           foreign_keys=[ModuleUserSettings.user_id], lazy='dynamic')
+
+    match_specific_settings = db.relationship('ModuleUserMatchSettings',
+                                          backref='bettor_match',
+                                          foreign_keys=[ModuleUserMatchSettings.user_id], lazy='dynamic')
 
 
 
@@ -535,6 +559,7 @@ class Match(db.Model):
         Winner = namedtuple("Winner", "team_winner_id, team_winner_name, probability")
 
         if user is not None:
+            #user
             user_prediction_settings=ModuleUserSettings.query.filter_by(user_id=user.id).all()
             print  user_prediction_settings
 

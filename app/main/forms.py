@@ -64,7 +64,14 @@ class AdminManageProfiles(CSRFDisabledForm):
             raise ValidationError('Username is already registered.')
 
 
-class UserBettingDefaultSettings(CSRFDisabledForm):
+class UserDefaultPredictionSettings(CSRFDisabledForm):
+    league_position_weight = StringField('League Position')
+    form_weight = StringField('Form')
+    home_away_weight = StringField('Home/Away')
+    submit = SubmitField('Save')
+
+
+class UserMatchPredictionSettings(CSRFDisabledForm):
     league_position_weight = StringField('League Position')
     form_weight = StringField('Form')
     home_away_weight = StringField('Home/Away')

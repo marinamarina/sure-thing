@@ -4,7 +4,8 @@ from flask_script import Manager, Shell, Server
 from app import create_app, db
 from app.models import User, Role, Permission, Follow, Team, Match, SavedForLater, \
     PredictionModule, \
-    ModuleUserSettings
+    ModuleUserSettings, \
+    ModuleUserMatchSettings
 
 from flask_migrate import Migrate, MigrateCommand
 from app import socketio
@@ -37,13 +38,14 @@ def make_shell_context():
                 Team=Team, Match=Match,
                 SavedForLater=SavedForLater,
                 PredictionModule=PredictionModule,
-                ModuleUserSettings=ModuleUserSettings)
+                ModuleUserSettings=ModuleUserSettings,
+                ModuleUserMatchSettings=ModuleUserMatchSettings)
 
 manager.add_command("shell", Shell(make_context=make_shell_context, use_bpython=True))
 manager.add_command("db", MigrateCommand)
 
 @manager.command
-def runserver(debug=False): #needs to be changed to False in production or for updating the data
+def runserver(debug=True): #needs to be changed to False in production or for updating the data
     app.debug = debug
     socketio.run(app, host='127.0.0.1', port=port)
 
