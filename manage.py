@@ -4,8 +4,8 @@ from flask_script import Manager, Shell, Server
 from app import create_app, db
 from app.models import User, Role, Permission, Follow, Team, Match, SavedForLater, \
     PredictionModule, \
-    ModuleUserSettings, \
-    ModuleUserSettingsSet
+    ModuleUserSettings
+
 from flask_migrate import Migrate, MigrateCommand
 from app import socketio
 from gevent import monkey
@@ -37,8 +37,7 @@ def make_shell_context():
                 Team=Team, Match=Match,
                 SavedForLater=SavedForLater,
                 PredictionModule=PredictionModule,
-                ModuleUserSettings=ModuleUserSettings,
-                ModuleUserSettingsSet=ModuleUserSettingsSet)
+                ModuleUserSettings=ModuleUserSettings)
 
 manager.add_command("shell", Shell(make_context=make_shell_context, use_bpython=True))
 manager.add_command("db", MigrateCommand)

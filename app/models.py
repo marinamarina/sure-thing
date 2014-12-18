@@ -130,18 +130,12 @@ class Comments(db.Model):
 #db.event.listen(Comment.body, 'set', Comment.on_changed_body)
 '''
 class ModuleUserSettings(db.Model):
-    'to add later'
+    'set custom user %'
     __tablename__='moduleusersettings'
     user_id=db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
-    ModuleUserSettingsSet = db.relation('ModuleUserSettingsSet', primaryjoin="ModuleUserSettingsSet.user_id==ModuleUserSettings.user_id")
     module_id = db.Column(db.Integer, primary_key=True)
     weight = db.Column(db.Float)
     user = db.relationship("User", backref = "user_assocs")
-
-
-    @staticmethod
-    def _create_item(module_id, weight):
-        return ModuleUserSettings(module_id=module_id, weight=weight)
 
     def __repr__(self):
         return "<ModuleUserSettings> user_id: {}, module_id: {}, weight:{}".format(
@@ -149,16 +143,6 @@ class ModuleUserSettings(db.Model):
             self.module_id,
             self.weight
         )
-
-class ModuleUserSettingsSet(db.Model):
-    __tablename__ = 'moduleusersettingsset'
-    user_id = db.Column(db.Integer, db.ForeignKey('moduleusersettings.user_id'), primary_key=True)
-    _weights = db.relation(ModuleUserSettings, collection_class=attribute_mapped_collection('module_id'))
-    #weights = association_proxy('_weights', 'weight', creator=ModuleUserSettings._create_item)# Use PickleType?
-    weights = association_proxy('_weights', 'weight',
-                    creator=ModuleUserSettings._create_item
-
-                )
 
 class SavedForLater(db.Model):
     'matches saved by users, association table'
@@ -235,13 +219,9 @@ class User(UserMixin, db.Model):
                                     cascade='all, delete-orphan'
                                     )
 
-    '''prediction_weights = db.relationship('ModuleUserSettings',
-                                         primaryjoin=("User.id == ModuleUserSettings.user_id"),
-                                         backref=db.backref('user', lazy='joined'),
-                                         lazy='dynamic',
-                                         cascade='all, delete-orphan'
-                                        )'''
-    prediction_settings = db.relationship('ModuleUserSettings', backref='bettor', foreign_keys=[ModuleUserSettings.user_id], lazy='dynamic')
+    prediction_settings = db.relationship('ModuleUserSettings',
+                                          backref='bettor',
+                                          foreign_keys=[ModuleUserSettings.user_id], lazy='dynamic')
 
 
 

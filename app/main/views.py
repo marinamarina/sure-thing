@@ -7,7 +7,7 @@ from .forms import BlogPostForm, CommentPostForm, UserBettingDefaultSettings
 from .. import db
 from ..models import User, Permission, Team, \
     Match, SavedForLater, PredictionModule, \
-    ModuleUserSettings, ModuleUserSettingsSet
+    ModuleUserSettings
 
 from ..email import send_email
 from ..decorators_me import permission_required, templated
@@ -147,8 +147,10 @@ def prediction_settings():
     me = current_user
     form = UserBettingDefaultSettings()
     #current user prediction settings in the database
-    current_weights = ModuleUserSettings.query.filter_by(user_id=me.id).all()
+    current_weights = me.prediction_settings.all()
     modules= PredictionModule.query.all()
+
+    print me.prediction_settings.all()
 
     if form.validate_on_submit():
 
@@ -211,32 +213,6 @@ def remove_match(match_id):
     saved_matches = me.saved_matches
 
     return redirect(url_for('.dashboard', matches=saved_matches))
-
-
-@main.route('/keek')
-@login_required
-def keek():
-    return redirect(url_for('.index'))
-
-
-@main.route('/leagueTable')
-@templated()
-def leagueTable():
-    table = dict()
-    # example usage
-    wrap = FootballAPIWrapper()
-    # set the api key
-    wrap.api_key = '2890be06-81bd-b6d7-1dcb4b5983a0'
-    league_table = wrap.league_table
-
-    my_team_id = '9427'
-    try:
-        for key, value in league_table.items():
-            print value.position
-            return dict(league_table=wrap.league_table)
-
-    except Exception:
-        return redirect(url_for('main.index'))
 
 
 @main.route('/admin', methods=['GET', 'POST'])
