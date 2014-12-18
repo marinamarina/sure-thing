@@ -133,14 +133,14 @@ class ModuleUserSettings(db.Model):
     'to add later'
     __tablename__='moduleusersettings'
     user_id=db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
-    #ModuleUserSettingsSet = db.relation('ModuleUserSettingsSet')
+    ModuleUserSettingsSet = db.relation('ModuleUserSettingsSet', primaryjoin="ModuleUserSettingsSet.user_id==ModuleUserSettings.user_id")
     module_id = db.Column(db.Integer, primary_key=True)
     weight = db.Column(db.Float)
-    user = db.relationship( "User", backref = "user_assocs")
+    user = db.relationship("User", backref = "user_assocs")
+
 
     @staticmethod
     def _create_item(module_id, weight):
-
         return ModuleUserSettings(module_id=module_id, weight=weight)
 
     def __repr__(self):
@@ -149,6 +149,16 @@ class ModuleUserSettings(db.Model):
             self.module_id,
             self.weight
         )
+
+class ModuleUserSettingsSet(db.Model):
+    __tablename__ = 'moduleusersettingsset'
+    user_id = db.Column(db.Integer, db.ForeignKey('moduleusersettings.user_id'), primary_key=True)
+    _weights = db.relation(ModuleUserSettings, collection_class=attribute_mapped_collection('module_id'))
+    #weights = association_proxy('_weights', 'weight', creator=ModuleUserSettings._create_item)# Use PickleType?
+    weights = association_proxy('_weights', 'weight',
+                    creator=ModuleUserSettings._create_item
+
+                )
 
 class SavedForLater(db.Model):
     'matches saved by users, association table'
@@ -163,6 +173,9 @@ class SavedForLater(db.Model):
     match = db.relationship( "Match", backref = "user_assocs")
     bettor = db.relationship( "User", backref="bettor")
 
+    '''@staticmethod
+    def on_changed_match_status(self,target, value, old_value, initiator):
+        pass'''
 
     def __repr__(self):
         return "<SavedForLater> userid: {}, matchid: {}, committed:{}, predicted_winner:{}".format(
@@ -171,8 +184,6 @@ class SavedForLater(db.Model):
             self.committed,
             self.predicted_winner
         )
-
-#db.event.listen(Comment.body, 'set', Comment.on_changed_body)
 
 
 class Follow(db.Model):
@@ -479,13 +490,6 @@ class Match(db.Model):
     '''teams = db.relationship('Team', backref='teams', lazy='dynamic', foreign_keys=[Team.id])'''
     comments = db.relationship('Comment', backref='match', lazy='dynamic')
 
-    '''predictions = db.relationship('Prediction',
-                                    foreign_keys=[Prediction.match_id],
-                                    backref=db.backref('match', lazy='joined'),
-                                    lazy='dynamic',
-                                    cascade='all, delete-orphan'
-                                    )'''
-
     @staticmethod
     def update_all_matches():
         'Inserting all the matches to the database'
@@ -589,6 +593,9 @@ class Match(db.Model):
             #self.played
             )
 
+#db.event.listen(Match.played, 'set', SavedForLater.on_changed_match_status)
+
+
 class Comment(db.Model):
         __tablename__ = 'comments'
         id = db.Column(db.Integer, primary_key=True)
@@ -636,8 +643,3 @@ class PredictionModule(db.Model):
                 self.default_weight
         )
 
-class ModuleUserSettingsSet(db.Model):
-    __tablename__ = 'moduleusersettingsset'
-    user_id = db.Column(db.Integer, primary_key=True, nullable=False)
-    '''_weights = db.relation(ModuleUserSettings, collection_class=attribute_mapped_collection('module_id'))
-    weights = association_proxy('_weights', 'weight', creator=ModuleUserSettings._create_item)# Use PickleType?'''

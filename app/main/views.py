@@ -7,7 +7,8 @@ from .forms import BlogPostForm, CommentPostForm, UserBettingDefaultSettings
 from .. import db
 from ..models import User, Permission, Team, \
     Match, SavedForLater, PredictionModule, \
-    ModuleUserSettings
+    ModuleUserSettings, ModuleUserSettingsSet
+
 from ..email import send_email
 from ..decorators_me import permission_required, templated
 from ..football_data.football_api_wrapper import FootballAPIWrapper
@@ -44,7 +45,7 @@ def index():
 
 
     #switch between displaying past and future matches
-    #order matches first by the date and then by the time
+    #order matches first by date and then by time
     matches = my_query.all()
 
     # define the form
@@ -146,17 +147,19 @@ def prediction_settings():
     me = current_user
     form = UserBettingDefaultSettings()
     current_weights = ModuleUserSettings.query.filter_by(user_id=me.id).all()
+    modules_amount = len(PredictionModule.query.all())
 
 
     if form.validate_on_submit():
 
 
-        if ModuleUserSettings.query.filter_by(user_id=me.id).first() is not None:
+        if current_weights:
             for pm in PredictionModule.query.all():
-                ModuleUserSettings.query.filter_by(user_id=me.id, module_id=pm.id).first().weight = form[pm.name + '_weight'].data
+                ms = ModuleUserSettings.query.filter_by(user_id=me.id, module_id=pm.id).first()
+                ms.weight = form[pm.name + '_weight'].data
 
 
-            for i in range(1,3):
+            for i in range(1,modules_amount):
                 try:
                     db.session.add(ModuleUserSettings.query.filter_by(user_id=me.id, module_id=i).first())
                     return redirect(url_for('.prediction_settings'))
@@ -166,10 +169,38 @@ def prediction_settings():
                     flash('You have saved your default prediction settings, congratulations!')
         else:
             data = {1: form.league_position_weight.data, 2: form.form_weight.data, 3: form.home_away_weight.data}
-            s = ModuleUserSettingsSet(user_id=me.id)
-            s.weights = data
-            db.session.add(s)
+            #s = ModuleUserSettingsSet(user_id=me.id)
+            print data
+
+            for i in range(1,modules_amount+1):
+                print i, data[i]
+                s = ModuleUserSettings()
+                s.user_id = me.id
+                s.module_id = i
+                s.weight = data[i]
+
+                try:
+                    db.session.add(s)
+                    return redirect(url_for('.prediction_settings'))
+                except Exception:
+                    db.session.flush()
+                finally:
+                    flash('You have saved your default prediction settings, congratulations!')
+
+            '''
+                data = {1: 0.3, 2: 0.3, 3: 0.4}
+                s = ModuleUserSettingsSet(user_id=3)
+                s.weights = data
+            '''
+
+
         db.session.commit()
+
+
+    # if user has no betting settings, make each current weight equal to an empty string
+    if not current_weights:
+        current_weights = ['' for i in range(0,modules_amount)]
+
 
     return render_template( 'main/prediction_settings.html', user=me, form=form, current_weights=current_weights)#, posts=[post])
 

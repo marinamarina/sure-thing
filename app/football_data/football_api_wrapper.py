@@ -120,31 +120,34 @@ class FootballAPIWrapper:
     def write_matches_data (self):
         'Write matches json to the local file'
         raw_data = dict()
-        raw_data["date-time"] = self.date_tuple.today + ' ' + self.date_tuple.current_time
         try:
             raw_data["matches"] = self.get_all_matches()["matches"]
+            raw_data["date-time"] = self.date_tuple.today + ' ' + self.date_tuple.current_time
+
+            with open(self.data_dir + '/all_matches.json', mode = 'w') as outfile:
+                json.dump(raw_data, outfile)
+
+            outfile.close()
+            print ('matches updated!')
         except KeyError:
             print ('Please, update your IP address!')
 
-        with open(self.data_dir + '/all_matches.json', mode = 'w') as outfile:
-            json.dump(raw_data, outfile)
-        outfile.close()
-        print ('matches called!')
 
     def write_standings_data (self):
         'Write standings json to the local file'
         raw_data = dict()
+
+        raw_data["standings"] = self.get_standings()["teams"]
         raw_data["date-time"] = self.date_tuple.today + ' ' + self.date_tuple.current_time
-        try:
-            raw_data["standings"] = self.get_standings()["teams"]
-        except KeyError:
-            print ('Please, update your IP address!')
 
         with open(self.data_dir + '/standings.json', mode = 'w') as outfile:
             json.dump(raw_data, outfile)
+
         outfile.close()
         print ('league table data updated!')
 
+        '''except KeyError:
+            print ('Please, update your IP address!')'''
 
 
     def feed_all_and_unplayed_matches(self):
