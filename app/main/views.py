@@ -146,63 +146,36 @@ def dashboard():
 def prediction_settings():
     me = current_user
     form = UserBettingDefaultSettings()
+    #current user prediction settings in the database
     current_weights = ModuleUserSettings.query.filter_by(user_id=me.id).all()
-    modules_amount = len(PredictionModule.query.all())
-
+    modules= PredictionModule.query.all()
 
     if form.validate_on_submit():
 
+        # if user already has set custom weights in the database
 
-        if current_weights:
-            for pm in PredictionModule.query.all():
-                ms = ModuleUserSettings.query.filter_by(user_id=me.id, module_id=pm.id).first()
-                ms.weight = form[pm.name + '_weight'].data
+        for module in modules:
+            if current_weights:
+                settings_item = ModuleUserSettings.query.filter_by(user_id=me.id, module_id=module.id).first()
+            else:
+                settings_item = ModuleUserSettings(user_id=me.id, module_id=module.id)
 
+            settings_item.weight = form[module.name + '_weight'].data
 
-            for i in range(1,modules_amount):
-                try:
-                    db.session.add(ModuleUserSettings.query.filter_by(user_id=me.id, module_id=i).first())
-                    return redirect(url_for('.prediction_settings'))
-                except Exception:
-                    db.session.flush()
-                finally:
-                    flash('You have saved your default prediction settings, congratulations!')
-        else:
-            data = {1: form.league_position_weight.data, 2: form.form_weight.data, 3: form.home_away_weight.data}
-            #s = ModuleUserSettingsSet(user_id=me.id)
-            print data
+            try:
+                db.session.add(settings_item)
+            except Exception:
+                db.session.flush()
 
-            for i in range(1,modules_amount+1):
-                print i, data[i]
-                s = ModuleUserSettings()
-                s.user_id = me.id
-                s.module_id = i
-                s.weight = data[i]
-
-                try:
-                    db.session.add(s)
-                    return redirect(url_for('.prediction_settings'))
-                except Exception:
-                    db.session.flush()
-                finally:
-                    flash('You have saved your default prediction settings, congratulations!')
-
-            '''
-                data = {1: 0.3, 2: 0.3, 3: 0.4}
-                s = ModuleUserSettingsSet(user_id=3)
-                s.weights = data
-            '''
-
-
-        db.session.commit()
-
+        flash('You have saved your default prediction settings, congratulations!')
+        return redirect(url_for('.prediction_settings'))
 
     # if user has no betting settings, make each current weight equal to an empty string
     if not current_weights:
-        current_weights = ['' for i in range(0,modules_amount)]
+        current_weights = ['' for i in range(0, len(modules))]
 
 
-    return render_template( 'main/prediction_settings.html', user=me, form=form, current_weights=current_weights)#, posts=[post])
+    return render_template( 'main/prediction_settings.html', user=me, form=form, current_weights=current_weights)
 
 @main.route('/view_match_dashboard/<int:match_id>')
 @login_required
