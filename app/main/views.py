@@ -189,8 +189,12 @@ def view_match_dashboard(match_id):
             # if user already has set custom weights for the match
             if current_weights:
                 settings_item = ModuleUserMatchSettings.query.filter_by(user_id=me.id, match_id=savedmatch.id, module_id=module.id).first()
+                flash(1)
+
             else:
-                settings_item = ModuleUserMatchSettings(user_id=me.id, match_id=savedmatch.id, module_id=module.id)
+                settings_item = ModuleUserSettings(user_id=me.id, match_id=savedmatch.id, module_id=module.id)
+                flash(2)
+
 
             settings_item.weight = form[module.name + '_weight'].data
 
@@ -206,7 +210,7 @@ def view_match_dashboard(match_id):
         current_weights = ['' for i in range(0, len(modules))]
 
     winner = Match.predicted_winner(savedmatch, user=me)
-
+    flash(winner)
 
     return render_template('main/view_match_dashboard.html',
                            form=form,

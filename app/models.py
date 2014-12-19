@@ -155,7 +155,7 @@ class ModuleUserMatchSettings(db.Model):
     user = db.relationship("User", backref = "user_match_assoc")
 
     def __repr__(self):
-        return "<ModuleUserSettings> user_id: {}/match_id: {} (module_id: {}, weight:{})".format(
+        return "<ModuleUserMatchSettings> user_id: {}/match_id: {} (module_id: {}, weight:{})".format(
             self.user_id,
             self.match_id,
             self.module_id,
@@ -204,7 +204,6 @@ class User(UserMixin, db.Model):
     email = db.Column(db.String(120), unique=True, index=True)
     username = db.Column(db.String(64), unique=True, index=True)
     real_name = db.Column(db.String(64))
-
     # password is stored in this field
     password_hash = db.Column(db.String(128))
     location = db.Column(db.String(64))
@@ -336,11 +335,15 @@ class User(UserMixin, db.Model):
     def is_match_saved(self, match):
         return self.saved_matches.filter_by(match_id=match.id).first() is not None
 
+    'insert your match id as a parameter in case you want to see only one match'
     def list_matches(self, **kwargs):
         return self.saved_matches.filter_by(**kwargs).all()
 
+    'insert your module id as a parameter in case you want to see only one module value'
     def list_prediction_settings(self, **kwargs):
         return self.prediction_settings.filter_by(**kwargs).all()
+
+
 
     '''def user_betting_settings(self, match):
         if not self.is_match_saved(match):
@@ -459,25 +462,6 @@ class Team(db.Model):
             self.position
             )
 
-'''class Prediction(db.Model):
-    __tablename__ = 'predictions'
-    match_id = db.Column(db.Integer, db.ForeignKey('matches.id'), primary_key=True)
-    module_id = db.Column(db.String(), db.ForeignKey('prediction_modules.id'), primary_key=True)
-    winner_id = db.Column(db.Integer(), db.ForeignKey('teams.id'))
-    prediction = db.Column(db.Enum('home', 'away', 'draw'))
-    prediction_module = db.relationship( "PredictionModule", backref = "match_assocs")
-
-    def clean_old_predictions(self):
-        pass
-
-    def __repr__(self):
-        return '<Prediction> {}/{} prediction:{}'.format(
-            self.match_id,
-            self.module_id,
-            self.prediction
-        )
-'''
-
 class Match(db.Model):
     'represents a football match'
     __tablename__ = 'matches'
@@ -523,7 +507,8 @@ class Match(db.Model):
         except:
             db.session.rollback()
             raise
-        db.session.close()
+        finally:
+            db.session.close()
 
     @property
     def prediction_league_position(self):
@@ -558,22 +543,44 @@ class Match(db.Model):
         dbModules = PredictionModule.query.all()
         Winner = namedtuple("Winner", "team_winner_id, team_winner_name, probability")
 
-        if user is not None:
-            #user
-            user_prediction_settings=ModuleUserSettings.query.filter_by(user_id=user.id).all()
-            print  user_prediction_settings
 
-            if len(user_prediction_settings) != 0:
-                for i in range( 0, len (user_prediction_settings) ):
-                    weight=user_prediction_settings[i].weight
-                    if( match.hometeam_id == module_winners[i].id ):
-                        print weight
-                        total_weight += weight
+        print ('000000000w')
+
+        if user is not None:
+            user_match_prediction_settings = ModuleUserMatchSettings(user_id=user.id, match_id=match.id).query.all()
+            user_prediction_settings = user.list_prediction_settings()
+            print ('000000000')
+
+            if user_match_prediction_settings:
+                print('User saved match specific settings')
+
+                print user_match_prediction_settings
+                ' if user saved match specific settings '
+                for i in range( 0, len (user_match_prediction_settings) ):
+                        weight=user_match_prediction_settings[i].weight
+
+                        if( match.hometeam_id == module_winners[i].id ):
+                            print weight
+                            total_weight += weight
             else:
-                for i in range( 0, len (PredictionModule.query.all()) ):
-                    weight=dbModules[i].default_weight
-                    if( match.hometeam_id == module_winners[i].id ):
-                        total_weight += weight
+                print('User settings provided, use default USER settings')
+
+                ' if user has set default prediction settings'
+                if user_prediction_settings:
+                    for i in range( 0, len (user_prediction_settings) ):
+                        weight=user_prediction_settings[i].weight
+
+                        if( match.hometeam_id == module_winners[i].id ):
+                            total_weight += weight
+        else:
+            'if none of the above, we will use the default system configuration'
+            print('No user settings provided, use default SYSTEM settings')
+
+            for i in range( 0, len (PredictionModule.query.all()) ):
+                weight=dbModules[i].default_weight
+
+                if( match.hometeam_id == module_winners[i].id ):
+                    total_weight += weight
 
 
         winner_probability = float( total_weight )
@@ -584,8 +591,6 @@ class Match(db.Model):
             return Winner(match.hometeam.id, match.awayteam.name, 1-winner_probability)
         else:
             return (-1, 'To Close To Call...', 0.5)
-
-        #user_prediction_settings=ModuleUserSettings.query.filter_by(user_id=me.id).all()
 
 
     def __repr__(self):

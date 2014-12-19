@@ -17,6 +17,8 @@ class Config:
     FOOTY_MAIL_SENDER='Sure thing <surething@admin.com>'
     FOOTY_ADMIN = """os.environ.get('SURETHING_ADMIN') or""" 'shchukina.marina@gmail.com'
     SQLALCHEMY_MIGRATE_REPO = os.path.join(basedir, 'db_repository')
+    PRESERVE_CONTEXT_ON_EXCEPTION = False
+
 
     @staticmethod
     def init_app(app):
@@ -26,6 +28,7 @@ class DevelopmentConfig(Config):
     DEBUG = True
     SQLALCHEMY_DATABASE_URI = os.environ.get('DEV_DATABASE_URL') or \
         'sqlite:///' + os.path.join(basedir, 'data-dev.sqlite')
+
 class TestingConfig(Config):
     TESTING = True
     SQLALCHEMY_DATABASE_URI = os.environ.get('TEST_DATABASE_URL') or \
