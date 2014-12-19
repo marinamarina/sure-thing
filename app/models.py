@@ -129,6 +129,36 @@ class Comments(db.Model):
 
 #db.event.listen(Comment.body, 'set', Comment.on_changed_body)
 '''
+class PredictionModule(db.Model):
+    __tablename__ = 'prediction_modules'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(64), index=True)
+    description = db.Column(db.String(64))
+    default_weight = db.Column(db.Float)
+
+    @staticmethod
+    def insert_modules():
+        modules = {
+            'league_position': 0.50,
+            'form': 0.30,
+            'home_away': 0.20
+        }
+        for m in modules:
+            module = PredictionModule.query.filter_by(name=m).first()
+            if module is None:
+                module = PredictionModule(name=m)
+            module.default_weight = modules[m]
+            db.session.add(module)
+        db.session.commit()
+        db.session.close()
+
+    def __repr__(self):
+        return "<PredictionModule> id:{} name:{} weight:{}".format(
+                self.id,
+                self.name,
+                self.default_weight
+        )
+
 class ModuleUserSettings(db.Model):
     'set custom user %'
     __tablename__='moduleusersettings'
@@ -245,8 +275,10 @@ class User(UserMixin, db.Model):
                                           foreign_keys=[ModuleUserSettings.user_id], lazy='dynamic')
 
     match_specific_settings = db.relationship('ModuleUserMatchSettings',
-                                          backref='bettor_match',
-                                          foreign_keys=[ModuleUserMatchSettings.user_id], lazy='dynamic')
+                                          backref=db.backref('bettor_match', lazy='joined'),
+                                          foreign_keys=[ModuleUserMatchSettings.user_id, PredictionModule.id],
+                                          lazy='dynamic',
+                                          cascade='all, delete-orphan')
 
 
 
@@ -339,16 +371,17 @@ class User(UserMixin, db.Model):
 
     'insert your match id as a parameter in case you want to see only one match'
     def list_matches(self, **kwargs):
-        return self.saved_matches.filter_by(**kwargs).all()
+        return [match
+                for match in self.saved_matches.filter_by(**kwargs)
+        ]
 
     'insert your module id as a parameter in case you want to see only one module value'
-    @property
+
     def list_prediction_settings(self, **kwargs):
        return [settings
                 for settings in self.prediction_settings.filter_by(**kwargs)
                 ]
 
-    @property
     def list_match_specific_settings(self, **kwargs):
         return [settings
                 for settings in self.match_specific_settings.filter_by(**kwargs)
@@ -552,8 +585,8 @@ class Match(db.Model):
         dbModules = PredictionModule.query.all()
         module_length=len(dbModules)
         Winner = namedtuple("Winner", "team_winner_id, team_winner_name, probability")
-        user_prediction_settings = user.list_prediction_settings
-        user_match_prediction_settings = []#ModuleUserMatchSettings(user_id=user.id, match_id=match.id).query.all()
+        user_prediction_settings = user.list_prediction_settings()
+        user_match_prediction_settings = user.list_match_specific_settings(match_id=match.id)
 
 
         for i in range( 0, module_length ):
@@ -575,7 +608,7 @@ class Match(db.Model):
                 total_weight += weight
 
 
-        winner_probability = float( total_weight )
+        winner_probability = float(total_weight)
 
         if total_weight > 0.5:
             return Winner(match.hometeam.id, match.hometeam.name, winner_probability)
@@ -615,32 +648,3 @@ class Comment(db.Model):
                 self.id
             )
 
-class PredictionModule(db.Model):
-    __tablename__ = 'prediction_modules'
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(64), index=True)
-    description = db.Column(db.String(64))
-    default_weight = db.Column(db.Float)
-
-    @staticmethod
-    def insert_modules():
-        modules = {
-            'league_position': 0.50,
-            'form': 0.30,
-            'home_away': 0.20
-        }
-        for m in modules:
-            module = PredictionModule.query.filter_by(name=m).first()
-            if module is None:
-                module = PredictionModule(name=m)
-            module.default_weight = modules[m]
-            db.session.add(module)
-        db.session.commit()
-        db.session.close()
-
-    def __repr__(self):
-        return "<PredictionModule> id:{} name:{} weight:{}".format(
-                self.id,
-                self.name,
-                self.default_weight
-        )

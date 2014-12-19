@@ -96,47 +96,82 @@ class TestPredictionSettings(unittest.TestCase):
 
         self.assertTrue(self.u1.list_matches(), 'User saved matches to the dashboard' )
         match1 = self.u1.list_matches()[0].match
-         #default configuration
 
-        m1 = ModuleUserSettings(user_id=self.u1.id, module_id=1, weight=0.12)
-        m2 = ModuleUserSettings(user_id=self.u1.id, module_id=2, weight=0.32)
-        m3 = ModuleUserSettings(user_id=self.u1.id, module_id=3, weight=0.56)
-        db.session.add(m1)
-        db.session.add(m2)
-        db.session.add(m3)
+        #default configuration
+        us1 = ModuleUserSettings(user_id=self.u1.id, module_id=1, weight=0.12)
+        us2 = ModuleUserSettings(user_id=self.u1.id, module_id=2, weight=0.32)
+        us3 = ModuleUserSettings(user_id=self.u1.id, module_id=3, weight=0.56)
+        db.session.add(us1)
+        db.session.add(us2)
+        db.session.add(us3)
         db.session.commit()
 
         print ModuleUserSettings.query.filter_by(user_id=self.u1.id).all()
 
         print match1.hometeam, match1.awayteam
         print 'LEAGUE_POSITION WINNER: {}, %: {}'.format(str(match1.prediction_league_position),
-                                                         m1.weight
+                                                         us1.weight
                                               )
         print  'FORM WINNER: {}, %: {}'.format(str(match1.prediction_form),
-                                               m2.weight
+                                               us2.weight
                                                )
         print  'HOME_AWAY WINNER: {}, %:{}'.format(str(match1.prediction_homeaway),
-                                                   m3.weight
+                                                   us3.weight
                                                )
 
         print 'OVERALL WINNER: {}'.format( str(Match.predicted_winner(match1, self.u1)) )
 
-    '''def test_user_match_prediction(self):
+    def test_user_match_prediction(self):
         print ('\n--------TESTING MATCH SPECIFIC USER CONFIGURATION-------')
-        mu1=ModuleUserMatchSettings.query.filter_by(user_id=self.u1.id, match_id=self.match1.id, module_id=1, weight=0.1)
-        mu2=ModuleUserMatchSettings.query.filter_by(user_id=self.u1.id, match_id=self.match1.id, module_id=2, weight=0.1)
-        mu3=ModuleUserMatchSettings.query.filter_by(user_id=self.u1.id, match_id=self.match1.id, module_id=3, weight=0.8)
+        print ('--------TESTCASE-1 USER HAS ONLY MATCH SETTINGS-------')
 
-        mu1=ModuleUserMatchSettings.query.filter_by(user_id=1, match_id=1703835, module_id=1, weight=0.1)
-        mu2=ModuleUserMatchSettings.query.filter_by(user_id=1, match_id=1703835, module_id=2, weight=0.1)
-        mu3=ModuleUserMatchSettings.query.filter_by(user_id=1, match_id=1703835, module_id=3, weight=0.8)
+        mus1=ModuleUserMatchSettings(user_id=self.u1.id, match_id=self.match1.id, module_id=1, weight=0.11)
+        mus2=ModuleUserMatchSettings(user_id=self.u1.id, match_id=self.match1.id, module_id=2, weight=0.38)
+        mus3=ModuleUserMatchSettings(user_id=self.u1.id, match_id=self.match1.id, module_id=3, weight=0.51)
 
-
-
-        db.session.add(mu1)
-        db.session.add(mu2)
-        db.session.add(mu3)
+        db.session.add(mus1)
+        db.session.add(mus2)
+        db.session.add(mus3)
         db.session.commit()
 
-        #user_match_prediction_settings = self.u1.list_match_specific_settings(match_id=self.match1.id)
-        #print user_match_prediction_settings'''
+        user_match_prediction_settings = self.u1.list_match_specific_settings(match_id=self.match1.id)
+
+        print user_match_prediction_settings
+        match1 = self.u1.list_matches()[0].match
+
+
+        print match1.hometeam, match1.awayteam
+        print 'LEAGUE_POSITION WINNER: {}, %: {}'.format(str(match1.prediction_league_position),
+                                                         mus1.weight
+                                              )
+        print  'FORM WINNER: {}, %: {}'.format(str(match1.prediction_form),
+                                               mus2.weight
+                                               )
+        print  'HOME_AWAY WINNER: {}, %:{}'.format(str(match1.prediction_homeaway),
+                                                mus3.weight
+                                               )
+
+        print 'OVERALL WINNER: {}'.format( str(Match.predicted_winner(match1, self.u1)) )
+
+        print ('\n--------TESTCASE-2 USER HAS USER DEFAULT AND MATCH SPECIFIC SETTINGS-------')
+        #default configuration
+        us1 = ModuleUserSettings(user_id=self.u1.id, module_id=1, weight=0.12)
+        us2 = ModuleUserSettings(user_id=self.u1.id, module_id=2, weight=0.32)
+        us3 = ModuleUserSettings(user_id=self.u1.id, module_id=3, weight=0.56)
+        db.session.add(us1)
+        db.session.add(us2)
+        db.session.add(us3)
+        db.session.commit()
+
+        print match1.hometeam, match1.awayteam
+        print 'LEAGUE_POSITION WINNER: {}, %: {}'.format(str(match1.prediction_league_position),
+                                                         mus1.weight
+                                              )
+        print  'FORM WINNER: {}, %: {}'.format(str(match1.prediction_form),
+                                               mus2.weight
+                                               )
+        print  'HOME_AWAY WINNER: {}, %:{}'.format(str(match1.prediction_homeaway),
+                                                mus3.weight
+                                               )
+
+        print 'OVERALL WINNER: {}'.format( str(Match.predicted_winner(match1, self.u1)) )
