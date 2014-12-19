@@ -541,46 +541,29 @@ class Match(db.Model):
         total_weight = 0
         module_winners = [match.prediction_league_position, match.prediction_form, match.prediction_homeaway]
         dbModules = PredictionModule.query.all()
+        module_length=len(dbModules)
         Winner = namedtuple("Winner", "team_winner_id, team_winner_name, probability")
+        user_prediction_settings = user.list_prediction_settings()
+        user_match_prediction_settings = []#ModuleUserMatchSettings(user_id=user.id, match_id=match.id).query.all()
 
 
-        print ('000000000w')
-
-        if user is not None:
-            user_match_prediction_settings = ModuleUserMatchSettings(user_id=user.id, match_id=match.id).query.all()
-            user_prediction_settings = user.list_prediction_settings()
-            print ('000000000')
+        for i in range( 0, module_length ):
 
             if user_match_prediction_settings:
                 print('User saved match specific settings')
+                weight=user_match_prediction_settings[i].weight
 
-                print user_match_prediction_settings
-                ' if user saved match specific settings '
-                for i in range( 0, len (user_match_prediction_settings) ):
-                        weight=user_match_prediction_settings[i].weight
-
-                        if( match.hometeam_id == module_winners[i].id ):
-                            print weight
-                            total_weight += weight
-            else:
+            elif (user_prediction_settings):
                 print('User settings provided, use default USER settings')
+                weight=user_prediction_settings[i].weight
 
-                ' if user has set default prediction settings'
-                if user_prediction_settings:
-                    for i in range( 0, len (user_prediction_settings) ):
-                        weight=user_prediction_settings[i].weight
-
-                        if( match.hometeam_id == module_winners[i].id ):
-                            total_weight += weight
-        else:
-            'if none of the above, we will use the default system configuration'
-            print('No user settings provided, use default SYSTEM settings')
-
-            for i in range( 0, len (PredictionModule.query.all()) ):
+            else:
+                print('No user settings provided, use default SYSTEM settings')
                 weight=dbModules[i].default_weight
 
-                if( match.hometeam_id == module_winners[i].id ):
-                    total_weight += weight
+
+            if( match.hometeam_id == module_winners[i].id ):
+                total_weight += weight
 
 
         winner_probability = float( total_weight )

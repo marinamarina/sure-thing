@@ -1,9 +1,7 @@
 import unittest
-from flask import current_app
 from app import create_app, db
 from pprint import pprint
-from app.football_data.football_api_wrapper import FootballAPIWrapper
-from app.models import PredictionModule, Role, Match, User, Team, SavedForLater, ModuleUserSettings
+from app.models import PredictionModule, Role, Match, User, Team, ModuleUserMatchSettings, ModuleUserSettings
 
 class TestPredictionSettings(unittest.TestCase):
     def setUp(self):
@@ -67,7 +65,7 @@ class TestPredictionSettings(unittest.TestCase):
                                                    PredictionModule.query.filter_by(id=3).first().default_weight
                                                )
 
-        print 'OVERALL WINNER: {}'.format( str(Match.predicted_winner(match1)) )
+        print 'OVERALL WINNER: {}'.format( str(Match.predicted_winner(match1, self.u1)) )
 
         print ('\n--------TESTING MATCH 2-------')
         match2 = self.u1.list_matches()[1].match
@@ -91,5 +89,37 @@ class TestPredictionSettings(unittest.TestCase):
                                                    PredictionModule.query.filter_by(id=3).first().default_weight
                                                )
 
-        print 'OVERALL WINNER: {}'.format( str(Match.predicted_winner(match2)) )
+        print 'OVERALL WINNER: {}'.format( str(Match.predicted_winner(match2, self.u1)) )
 
+    def test_user_prediction(self):
+        print ('\n--------TESTING DEFAULT USER CONFIGURATION-------')
+
+        self.assertTrue(self.u1.list_matches(), 'User saved matches to the dashboard' )
+        match1 = self.u1.list_matches()[0].match
+         #default configuration
+
+        m1 = ModuleUserSettings(user_id=self.u1.id, module_id=1, weight=0.12)
+        m2 = ModuleUserSettings(user_id=self.u1.id, module_id=2, weight=0.32)
+        m3 = ModuleUserSettings(user_id=self.u1.id, module_id=3, weight=0.56)
+        db.session.add(m1)
+        db.session.add(m2)
+        db.session.add(m3)
+        db.session.commit()
+
+        print ModuleUserSettings.query.filter_by(user_id=self.u1.id).all()
+
+        print match1.hometeam, match1.awayteam
+        print 'LEAGUE_POSITION WINNER: {}, %: {}'.format(str(match1.prediction_league_position),
+                                                         m1.weight
+                                              )
+        print  'FORM WINNER: {}, %: {}'.format(str(match1.prediction_form),
+                                               m2.weight
+                                               )
+        print  'HOME_AWAY WINNER: {}, %:{}'.format(str(match1.prediction_homeaway),
+                                                   m3.weight
+                                               )
+
+        print 'OVERALL WINNER: {}'.format( str(Match.predicted_winner(match1, self.u1)) )
+
+    def test_user_match_prediction(self):
+        user_match_prediction_settings = ModuleUserMatchSettings(user_id=self.u1.id, match_id=self.match1.id).query.all()
