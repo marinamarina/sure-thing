@@ -121,5 +121,22 @@ class TestPredictionSettings(unittest.TestCase):
 
         print 'OVERALL WINNER: {}'.format( str(Match.predicted_winner(match1, self.u1)) )
 
-    def test_user_match_prediction(self):
-        user_match_prediction_settings = ModuleUserMatchSettings(user_id=self.u1.id, match_id=self.match1.id).query.all()
+    '''def test_user_match_prediction(self):
+        print ('\n--------TESTING MATCH SPECIFIC USER CONFIGURATION-------')
+        mu1=ModuleUserMatchSettings.query.filter_by(user_id=self.u1.id, match_id=self.match1.id, module_id=1, weight=0.1)
+        mu2=ModuleUserMatchSettings.query.filter_by(user_id=self.u1.id, match_id=self.match1.id, module_id=2, weight=0.1)
+        mu3=ModuleUserMatchSettings.query.filter_by(user_id=self.u1.id, match_id=self.match1.id, module_id=3, weight=0.8)
+
+        mu1=ModuleUserMatchSettings.query.filter_by(user_id=1, match_id=1703835, module_id=1, weight=0.1)
+        mu2=ModuleUserMatchSettings.query.filter_by(user_id=1, match_id=1703835, module_id=2, weight=0.1)
+        mu3=ModuleUserMatchSettings.query.filter_by(user_id=1, match_id=1703835, module_id=3, weight=0.8)
+
+
+
+        db.session.add(mu1)
+        db.session.add(mu2)
+        db.session.add(mu3)
+        db.session.commit()
+
+        #user_match_prediction_settings = self.u1.list_match_specific_settings(match_id=self.match1.id)
+        #print user_match_prediction_settings'''

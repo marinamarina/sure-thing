@@ -149,7 +149,7 @@ class ModuleUserMatchSettings(db.Model):
     'set custom user % for each match'
     __tablename__='moduleusermatchsettings'
     user_id=db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
-    match_id=db.Column(db.Integer, db.ForeignKey('matches.id'), primary_key=True)
+    match_id=db.Column(db.Integer, db.ForeignKey('savedforlater.match_id'), primary_key=True)
     module_id = db.Column(db.Integer, db.ForeignKey('prediction_modules.id'), primary_key=True)
     weight = db.Column(db.Float)
     user = db.relationship("User", backref = "user_match_assoc")
@@ -176,6 +176,8 @@ class SavedForLater(db.Model):
     predicted_winner = db.Column(db.Integer, default=None)
     match = db.relationship( "Match", backref = "user_assocs")
     bettor = db.relationship( "User", backref="bettor")
+    match_specific_settings = db.relationship( "ModuleUserMatchSettings", backref="settings")
+
 
     '''@staticmethod
     def on_changed_match_status(self,target, value, old_value, initiator):
@@ -340,10 +342,17 @@ class User(UserMixin, db.Model):
         return self.saved_matches.filter_by(**kwargs).all()
 
     'insert your module id as a parameter in case you want to see only one module value'
+    @property
     def list_prediction_settings(self, **kwargs):
-        return self.prediction_settings.filter_by(**kwargs).all()
+       return [settings
+                for settings in self.prediction_settings.filter_by(**kwargs)
+                ]
 
-
+    @property
+    def list_match_specific_settings(self, **kwargs):
+        return [settings
+                for settings in self.match_specific_settings.filter_by(**kwargs)
+                ]
 
     '''def user_betting_settings(self, match):
         if not self.is_match_saved(match):
@@ -543,7 +552,7 @@ class Match(db.Model):
         dbModules = PredictionModule.query.all()
         module_length=len(dbModules)
         Winner = namedtuple("Winner", "team_winner_id, team_winner_name, probability")
-        user_prediction_settings = user.list_prediction_settings()
+        user_prediction_settings = user.list_prediction_settings
         user_match_prediction_settings = []#ModuleUserMatchSettings(user_id=user.id, match_id=match.id).query.all()
 
 
@@ -635,4 +644,3 @@ class PredictionModule(db.Model):
                 self.name,
                 self.default_weight
         )
-
