@@ -246,12 +246,22 @@ class Follow(db.Model):
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
 
 
-class Performance(UserMixin, db.Model):
+"""class Performance(db.Model):
     __tablename__ = 'user_performance'
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
-    win_points = db.Column(db.Integer)
-    loss_points = db.Column(db.Integer)
-    lsp = db.Column(db.Float)
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    win_points = db.Column(db.Integer, default=0)
+    loss_points = db.Column(db.Integer, default=0)
+    lsp = db.Column(db.Float, default=0)
+
+    def __repr__(self):
+        'user performance representation'
+        return '<Performace (user_id={}, wins={}, losses={}, lsp={})>'\
+            .format(self.user_id,
+                    self.win_points,
+                    self.loss_points,
+                    self.lsp
+        )"""
 
 
 class User(UserMixin, db.Model):
@@ -269,9 +279,12 @@ class User(UserMixin, db.Model):
     confirmed = db.Column(db.Boolean, default=False)
     member_since = db.Column(db.DateTime(), default = datetime.utcnow)
     last_seen = db.Column(db.DateTime(), default = datetime.utcnow)
+    win_points = db.Column(db.Integer, default=0)
+    loss_points = db.Column(db.Integer, default=0)
+    lsp = db.Column(db.Float, default=0)
     role_id = db.Column(db.Integer, db.ForeignKey('roles.id'))
 
-    performance = db.relationship("Performance", uselist=False, backref="performing_user")
+    #performance = db.relationship("Performance", uselist=True, backref="performing_user")
 
 
     #posts = db.relationship('Post', backref='author', lazy='dynamic')
@@ -309,10 +322,9 @@ class User(UserMixin, db.Model):
                                           lazy='dynamic')
 
 
-
     def __init__(self, **kwargs):
         super(User, self).__init__(**kwargs)
-        print Role.query.filter_by(permissions=0xff).first()
+
         if self.role is None:
             if self.email == 'shchukina.marina@gmail.com': #current_app.config['FOOTY_ADMIN']:
                 self.role = Role.query.filter_by(permissions=0xff).first()
@@ -321,8 +333,10 @@ class User(UserMixin, db.Model):
                 self.role = Role.query.filter_by(default=True).first()
                 flash('COMMONER, can I write articles? %r' % self.can(Permission.WRITE_ARTICLES))
 
-            self.location='Aberdeen'
-            self.follow(self)
+        self.location='Aberdeen'
+        #self.follow(self)
+        #self.create_performance()
+
 
     def generate_confirmation_token(self, expiration=3600):
         s = Serializer(current_app.config['SECRET_KEY'], expiration)
@@ -367,6 +381,15 @@ class User(UserMixin, db.Model):
         if not self.is_following(user):
             f = Follow(follower=self, followed=user)
             db.session.add(f)
+
+    '''def create_performance(self):
+        #if not self.performance:
+        flash('Creating performance')
+
+        #NOT CREATING PERFORMANCE!!
+        p=Performance(user_id=self.id)
+        db.session.add(p)
+        db.session.commit()'''
 
     def unfollow(self, user):
         f=self.followed.filter_by(followed_id=user.id).first()
@@ -534,11 +557,11 @@ class Match(db.Model):
     date_stamp = db.Column(db.Date())
     time_stamp = db.Column(db.Time())
     played = db.Column(db.Boolean)
+    match_ft_score = db.Column(db.String(8))
     hometeam_id = db.Column(db.Integer, db.ForeignKey('teams.id'), nullable=False)
     awayteam_id = db.Column(db.Integer, db.ForeignKey('teams.id'), nullable=False)
     hometeam_score = db.Column(db.String(4))
     awayteam_score = db.Column(db.String(4))
-    actual_winner = db.Column(db.Integer, db.ForeignKey('teams.id'), default=None)
     users = db.relationship('SavedForLater', backref='saved_matches', lazy='dynamic')
     comments = db.relationship('Comment', backref='match', lazy='dynamic')
 
@@ -557,13 +580,15 @@ class Match(db.Model):
             'if not in the database, create a new match'
             if match is None:
                 match = Match(id=m.id, hometeam_id = m.hometeam_id, awayteam_id = m.awayteam_id, date = m.date, time = m.time,
-                        date_stamp = m.date_stamp, time_stamp = m.time_stamp)
+                        date_stamp = m.date_stamp, time_stamp = m.time_stamp, match_ft_score=m.ft_score)
 
                 match.hometeam_score = m.hometeam_score
                 match.awayteam_score = m.awayteam_score
 
             if(m.ft_score != ''):
                 match.played = True
+            else:
+                match.played = False
 
             db.session.add(match)
         try:
@@ -645,6 +670,16 @@ class Match(db.Model):
         else:
             return (-1, 'To Close To Call...', 0.5)
 
+    'who won the match?'
+    @property
+    def actual_winner(self):
+        if self.hometeam_score != '?' and self.awayteam_score != '?':
+            if (int(self.hometeam_score) > int(self.awayteam_score)):
+                return self.hometeam_id
+            elif(int(self.hometeam_score) == int(self.awayteam_score)):
+                return '-1'
+            else:
+                return self.awayteam_id
 
     def __repr__(self):
         return "<Match> date:{} id:{}".format(

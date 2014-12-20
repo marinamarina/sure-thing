@@ -2,7 +2,8 @@
 import os
 from flask_script import Manager, Shell, Server
 from app import create_app, db
-from app.models import User, Role, Permission, Follow, Team, Match, SavedForLater, \
+from app.models import User, Role, Permission, Follow, \
+    Team, Match, SavedForLater, \
     PredictionModule, \
     ModuleUserSettings, \
     ModuleUserMatchSettings

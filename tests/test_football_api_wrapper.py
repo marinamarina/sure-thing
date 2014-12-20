@@ -27,6 +27,7 @@ class TestFootballAPIWrapper(unittest.TestCase):
                             "All the matches dates should be IN THE FUTURE compared to today")
             self.assertTrue(m.ft_score == '', 'FT Score is unknown=>match has not been played yet')
 
+
     def test_played_matches_tuple(self):
         from datetime import datetime
         matches = self.faw.played_matches
