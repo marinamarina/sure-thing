@@ -65,7 +65,7 @@ class TestPredictionSettings(unittest.TestCase):
                                                    PredictionModule.query.filter_by(id=3).first().default_weight
                                                )
 
-        print 'OVERALL WINNER: {}'.format( str(Match.predicted_winner(match1, self.u1)) )
+        print 'OVERALL WINNER: {}'.format( str(Match.predicted_winner(match1)) )
 
         print ('\n--------TESTING MATCH 2-------')
         match2 = self.u1.list_matches()[1].match

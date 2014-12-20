@@ -112,14 +112,15 @@ def commit_match(match_id):
     winner = Match.predicted_winner(savedmatch.match, me)
     team_winner_id = winner.team_winner_id
 
-    savedmatch.committed=True
-    savedmatch.predicted_winner=team_winner_id
-
-    db.session.add(savedmatch)
-    db.session.commit()
-
-    flash("Congratulation! You have successfully committed your saved match!")
-    return redirect(url_for('.dashboard'))
+    if(savedmatch.committed==True):
+        return redirect(url_for('.dashboard'))
+    else:
+        savedmatch.committed=True
+        savedmatch.predicted_winner=team_winner_id
+        db.session.add(savedmatch)
+        db.session.commit()
+        flash("Congratulation! You have successfully committed your saved match!")
+        return redirect(url_for('.dashboard'))
 
 @main.route('/view_match/<int:match_id>')
 def view_match(match_id):
@@ -180,21 +181,27 @@ def view_match_dashboard(match_id):
     me = current_user
     savedmatch = me.list_matches(match_id=match_id)[0].match
     form = UserMatchPredictionSettings()
-    current_weights = me.match_specific_settings.all()
+    match_specific_weights = me.list_match_specific_settings(match_id=savedmatch.id)
     modules= PredictionModule.query.all()
 
+    flash (savedmatch)
+    flash(match_specific_weights)
+
     if form.validate_on_submit():
+        '''if(me.list_matches(match_id=match_id)[0].committed):
+            return redirect(url_for('.view_match_dashboard', match_id=match_id))'''
 
         for module in modules:
             # if user already has set custom weights for the match
-            if current_weights:
+            if match_specific_weights:
                 settings_item = ModuleUserMatchSettings.query.filter_by(user_id=me.id, match_id=savedmatch.id, module_id=module.id).first()
                 flash(1)
+                flash (type(settings_item.weight))
 
             else:
-                settings_item = ModuleUserSettings(user_id=me.id, match_id=savedmatch.id, module_id=module.id)
+                # create a new one
+                settings_item = ModuleUserMatchSettings(user_id=me.id, match_id=savedmatch.id, module_id=module.id)
                 flash(2)
-
 
             settings_item.weight = form[module.name + '_weight'].data
 
@@ -206,8 +213,8 @@ def view_match_dashboard(match_id):
         flash('You have saved your match specific prediction settings, congratulations!')
 
     # if user has no betting settings, make each current weight equal to an empty string
-    if not current_weights:
-        current_weights = ['' for i in range(0, len(modules))]
+    if not match_specific_weights:
+        match_specific_weights = ['' for i in range(0, len(modules))]
 
     winner = Match.predicted_winner(savedmatch, user=me)
     flash(winner)
@@ -218,7 +225,7 @@ def view_match_dashboard(match_id):
                            user=current_user,
                            team_winner_name=winner[1],
                            probability=winner[2],
-                           current_weights=current_weights
+                           current_weights=match_specific_weights
                            )
 
 

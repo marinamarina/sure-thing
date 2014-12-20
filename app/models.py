@@ -275,10 +275,9 @@ class User(UserMixin, db.Model):
                                           foreign_keys=[ModuleUserSettings.user_id], lazy='dynamic')
 
     match_specific_settings = db.relationship('ModuleUserMatchSettings',
-                                          backref=db.backref('bettor_match', lazy='joined'),
+                                          backref='bettor_match',
                                           foreign_keys=[ModuleUserMatchSettings.user_id, PredictionModule.id],
-                                          lazy='dynamic',
-                                          cascade='all, delete-orphan')
+                                          lazy='dynamic')
 
 
 
@@ -582,33 +581,39 @@ class Match(db.Model):
 
         total_weight = 0
         module_winners = [match.prediction_league_position, match.prediction_form, match.prediction_homeaway]
-        dbModules = PredictionModule.query.all()
-        module_length=len(dbModules)
+        prediction_modules = PredictionModule.query.all()
+        module_length = len(prediction_modules)
         Winner = namedtuple("Winner", "team_winner_id, team_winner_name, probability")
-        user_prediction_settings = user.list_prediction_settings()
-        user_match_prediction_settings = user.list_match_specific_settings(match_id=match.id)
+        user_prediction_settings=[]
+        user_match_prediction_settings=[]
+
+        if not user is None:
+            user_prediction_settings = user.list_prediction_settings()
+            user_match_prediction_settings = user.list_match_specific_settings(match_id=match.id)
 
 
         for i in range( 0, module_length ):
-
             if user_match_prediction_settings:
                 print('User saved match specific settings')
                 weight=user_match_prediction_settings[i].weight
 
             elif (user_prediction_settings):
                 print('User settings provided, use default USER settings')
-                weight=user_prediction_settings[i].weight
+                #why outputs unicode instead of float???
+                weight=float(
+                    user_prediction_settings[i].weight
+                )
 
             else:
                 print('No user settings provided, use default SYSTEM settings')
-                weight=dbModules[i].default_weight
+                weight=prediction_modules[i].default_weight
 
 
             if( match.hometeam_id == module_winners[i].id ):
                 total_weight += weight
 
 
-        winner_probability = float(total_weight)
+        winner_probability = total_weight
 
         if total_weight > 0.5:
             return Winner(match.hometeam.id, match.hometeam.name, winner_probability)
@@ -622,10 +627,6 @@ class Match(db.Model):
         return "<Match> date:{} id:{}".format(
             self.date,
             self.id
-            #self.awayteam_id,
-            #self.hometeam_score,
-            #self.awayteam_score,
-            #self.played
             )
 
 #db.event.listen(Match.played, 'set', SavedForLater.on_changed_match_status)
