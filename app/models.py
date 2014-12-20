@@ -193,7 +193,6 @@ class ModuleUserMatchSettings(db.Model):
         )
 
 
-
 class SavedForLater(db.Model):
     'matches saved by users, association table'
     __tablename__='savedforlater'
@@ -208,10 +207,8 @@ class SavedForLater(db.Model):
     bettor = db.relationship( "User", backref="bettor")
     match_specific_settings = db.relationship( "ModuleUserMatchSettings", backref="settings")
 
+    savedmatch_played = association_proxy('match', 'played')
 
-    '''@staticmethod
-    def on_changed_match_status(self,target, value, old_value, initiator):
-        pass'''
 
     def __repr__(self):
         return "<SavedForLater> userid: {}, matchid: {}, committed:{}, predicted_winner:{}".format(
@@ -221,6 +218,25 @@ class SavedForLater(db.Model):
             self.predicted_winner
         )
 
+    @staticmethod
+    def on_changed_match_status(target, value, old_value, initiator):
+        print "received an event: %s" % target
+
+        all_savedmatches=SavedForLater.query.all()
+
+        # looping through all occurences of this match being saved by a user
+        for savedmatch in all_savedmatches:
+            if(savedmatch.match==target):
+                print "users having this match saved: %s" % savedmatch.bettor
+                # compare user's guess with who actually won the match
+
+
+        #m=Match.query.filter_by(id=1963811).first()
+        # if user won, update column won
+        # if user lost, update column loss
+        # update user's LSP
+        #target.bettor.real_name='Malina'
+        #print 'my user is %s' % target.bettor
 
 class Follow(db.Model):
     'following-follower feature'
@@ -228,6 +244,15 @@ class Follow(db.Model):
     follower_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
     followed_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
+
+
+class Performance(UserMixin, db.Model):
+    __tablename__ = 'user_performance'
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
+    win_points = db.Column(db.Integer)
+    loss_points = db.Column(db.Integer)
+    lsp = db.Column(db.Float)
+
 
 class User(UserMixin, db.Model):
     __tablename__ = 'users'
@@ -245,6 +270,10 @@ class User(UserMixin, db.Model):
     member_since = db.Column(db.DateTime(), default = datetime.utcnow)
     last_seen = db.Column(db.DateTime(), default = datetime.utcnow)
     role_id = db.Column(db.Integer, db.ForeignKey('roles.id'))
+
+    performance = db.relationship("Performance", uselist=False, backref="performing_user")
+
+
     #posts = db.relationship('Post', backref='author', lazy='dynamic')
     #comments = db.relationship('Comment', backref='author', lazy='dynamic')
 
@@ -427,13 +456,6 @@ class AnonymousUser(AnonymousUserMixin):
     def is_administrator(self):
         return False
 
-class AnonymousUser(AnonymousUserMixin):
-    def can(self, permissions):
-        return False
-
-    def is_administrator(self):
-        return False
-
 class ReadOnly(AttributeError):
         'custom exception'
         pass
@@ -516,7 +538,8 @@ class Match(db.Model):
     awayteam_id = db.Column(db.Integer, db.ForeignKey('teams.id'), nullable=False)
     hometeam_score = db.Column(db.String(4))
     awayteam_score = db.Column(db.String(4))
-    '''teams = db.relationship('Team', backref='teams', lazy='dynamic', foreign_keys=[Team.id])'''
+    actual_winner = db.Column(db.Integer, db.ForeignKey('teams.id'), default=None)
+    users = db.relationship('SavedForLater', backref='saved_matches', lazy='dynamic')
     comments = db.relationship('Comment', backref='match', lazy='dynamic')
 
     @staticmethod
@@ -629,7 +652,7 @@ class Match(db.Model):
             self.id
             )
 
-#db.event.listen(Match.played, 'set', SavedForLater.on_changed_match_status)
+db.event.listen(Match.played, 'set', SavedForLater.on_changed_match_status)
 
 
 class Comment(db.Model):
