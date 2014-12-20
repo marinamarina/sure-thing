@@ -7,7 +7,6 @@ from app.football_data.football_api_wrapper import FootballAPIWrapper
 
 class TestFootballAPIWrapper(unittest.TestCase):
     def setUp(self):
-
         self.faw = FootballAPIWrapper()
         self.faw.api_key = '2890be06-81bd-b6d7-1dcb4b5983a0'
 
@@ -35,9 +34,10 @@ class TestFootballAPIWrapper(unittest.TestCase):
             self.assertTrue(datetime.strptime(m.date, "%d.%m.%Y").date() <= datetime.now().date(),
                             "All the matches dates should be IN THE PAST compared to today")
 
-
     def test_standings(self):
         league_table = self.faw.league_table
         print ("\n")
+        self.assertEqual(len(league_table.items()), 20 , 'There are 20 teams in the premier league')
+
         for kkey, tuple in league_table.items():
             print kkey, tuple.position

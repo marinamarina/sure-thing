@@ -647,4 +647,3 @@ class Comment(db.Model):
             return "<Comment> id:{}".format(
                 self.id
             )
-

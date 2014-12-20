@@ -175,3 +175,51 @@ class TestPredictionSettings(unittest.TestCase):
                                                )
 
         print 'OVERALL WINNER: {}'.format( str(Match.predicted_winner(match1, self.u1)) )
+
+    def test_multiple_users_match_predictions(self):
+        # this is tested match
+        match1 = self.u1.list_matches()[0].match
+        # add another user
+        u2 = User(email='scarlett@example.com', password='cat')
+        u2.confirmed = True
+        db.session.add(u2)
+        db.session.commit()
+        print ('\n--------TESTING MULTIPLE USERS CONFIGURATION-------')
+        print ('--------TESTCASE-1 USERS HAS ONLY MATCH SETTINGS-------')
+
+        # specific match settings for user 1
+        mus1_1=ModuleUserMatchSettings(user_id=self.u1.id, match_id=self.match1.id, module_id=1, weight=0.09)
+        mus2_1=ModuleUserMatchSettings(user_id=self.u1.id, match_id=self.match1.id, module_id=2, weight=0.40)
+        mus3_1=ModuleUserMatchSettings(user_id=self.u1.id, match_id=self.match1.id, module_id=3, weight=0.51)
+
+         # specific match settings for user 2
+        mus1_2=ModuleUserMatchSettings(user_id=u2.id, match_id=self.match1.id, module_id=1, weight=0.08)
+        mus2_2=ModuleUserMatchSettings(user_id=u2.id, match_id=self.match1.id, module_id=2, weight=0.40)
+        mus3_2=ModuleUserMatchSettings(user_id=u2.id, match_id=self.match1.id, module_id=3, weight=0.52)
+
+        db.session.add(mus1_1)
+        db.session.add(mus2_1)
+        db.session.add(mus3_1)
+        db.session.add(mus1_2)
+        db.session.add(mus2_2)
+        db.session.add(mus3_2)
+        db.session.commit()
+
+        print match1.hometeam, match1.awayteam
+        print 'LEAGUE_POSITION WINNER: {}, %: {}'.format(str(match1.prediction_league_position),
+                                                         mus1_2.weight
+                                              )
+        print  'FORM WINNER: {}, %: {}'.format(str(match1.prediction_form),
+                                               mus2_2.weight
+                                               )
+        print  'HOME_AWAY WINNER: {}, %:{}'.format(str(match1.prediction_homeaway),
+                                                mus3_2.weight
+                                               )
+
+        print 'OVERALL WINNER: {}'.format( str(Match.predicted_winner(match1, u2)) )
+
+        # check the probability is correct (picked up from the settings of the second user)
+        if(match1.prediction_homeaway.id==9127):
+            self.assertEqual(Match.predicted_winner(match1, u2).probability, 0.52)
+        else:
+            self.assertLessEqual(Match.predicted_winner(match1, u2).probability, 0.48)
