@@ -46,7 +46,7 @@ manager.add_command("shell", Shell(make_context=make_shell_context, use_bpython=
 manager.add_command("db", MigrateCommand)
 
 @manager.command
-def runserver(debug=True): #needs to be changed to False in production or for updating the data
+def runserver(debug=False): #needs to be changed to False in production or for updating the data
     app.debug = debug
     socketio.run(app, host='127.0.0.1', port=port)
 

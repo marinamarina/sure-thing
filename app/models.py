@@ -226,8 +226,8 @@ class SavedForLater(db.Model):
 
         # looping through all occurences of this match being saved by a user
         for savedmatch in all_savedmatches:
-            if(savedmatch.match==target):
-                print "users having this match saved: %s" % savedmatch.bettor
+            if(savedmatch.match==target and savedmatch.committed==True):
+                print "users having this match saved and committed: %s" % savedmatch.bettor
                 # compare user's guess with who actually won the match
 
 
@@ -648,17 +648,14 @@ class Match(db.Model):
             elif (user_prediction_settings):
                 print('User settings provided, use default USER settings')
                 #why outputs unicode instead of float???
-                weight=float(
-                    user_prediction_settings[i].weight
-                )
-
+                weight=user_prediction_settings[i].weight
             else:
                 print('No user settings provided, use default SYSTEM settings')
                 weight=prediction_modules[i].default_weight
 
 
             if( match.hometeam_id == module_winners[i].id ):
-                total_weight += weight
+                total_weight += float(weight)
 
 
         winner_probability = total_weight
