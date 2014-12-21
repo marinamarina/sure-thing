@@ -48,6 +48,14 @@
                             <span class="team-form clearfix">WLWLWW</span>
                             <span class="team-last-result">3:0 Norwich</span>
                         </div>
+                        <div class="status col-xs-1 text-center">
+                            {% if savedmatch.committed %}<span>Committed</span>{% endif %}
+                            {% if savedmatch.committed %}<span>Played</span>{% endif %}
+                            <span>Won</span>
+                            <span>Lost</span>
+
+                        </div>
+
 
                         <div class="btn-group-xs pull-right" role="group">
                             {% if not savedmatch.played %}

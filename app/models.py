@@ -209,7 +209,6 @@ class SavedForLater(db.Model):
 
     savedmatch_played = association_proxy('match', 'played')
 
-
     def __repr__(self):
         return "<SavedForLater> userid: {}, matchid: {}, committed:{}, predicted_winner:{}".format(
             self.users_id,
@@ -220,23 +219,49 @@ class SavedForLater(db.Model):
 
     @staticmethod
     def on_changed_match_status(target, value, old_value, initiator):
-        print "received an event: %s" % target
-
         all_savedmatches=SavedForLater.query.all()
 
-        # looping through all occurences of this match being saved by a user
-        for savedmatch in all_savedmatches:
-            if(savedmatch.match==target and savedmatch.committed==True):
-                print "users having this match saved and committed: %s" % savedmatch.bettor
-                # compare user's guess with who actually won the match
+        #make sure the match is not just overwritten and win/loss points are re-added for the second time
+        if value is True and old_value is False:
+
+            # looping through all occurences of this match being saved by any user
+            for savedmatch in all_savedmatches:
+
+                if(savedmatch.match==target and savedmatch.committed):
+
+                    print "users having this match saved and committed: %s" % savedmatch.bettor
+
+                    if savedmatch.match.actual_winner != savedmatch.predicted_winner and not savedmatch.match.actual_winner is None:
+                        print "old value: " + str(savedmatch.bettor.win_points)
+                        savedmatch.bettor.win_points = savedmatch.bettor.win_points+1
+                        print ('Win user points updated')
+                        print "new value: " + str(savedmatch.bettor.win_points)
+
+                    elif(savedmatch.match.actual_winner is None):
+                        return False
+                    else:
+                        print "old value: " + str(savedmatch.bettor.loss_points)
+
+                        savedmatch.bettor.loss_points = savedmatch.bettor.loss_points+1
+                        print "new value: " + str(savedmatch.bettor.loss_points)
+
+                        print ('Win user points updated')
+
+                    db.session.add(savedmatch.bettor)
+
+            #try:
+            db.session.commit()
+            #except:
+                #db.session.rollback()
+            #   raise
+
 
 
         #m=Match.query.filter_by(id=1963811).first()
-        # if user won, update column won
-        # if user lost, update column loss
         # update user's LSP
-        #target.bettor.real_name='Malina'
-        #print 'my user is %s' % target.bettor
+        # u=User.query.all()[0]
+        #  match1=u.list_matches()[0]
+        # match1.match.played=True
 
 class Follow(db.Model):
     'following-follower feature'
@@ -279,9 +304,9 @@ class User(UserMixin, db.Model):
     confirmed = db.Column(db.Boolean, default=False)
     member_since = db.Column(db.DateTime(), default = datetime.utcnow)
     last_seen = db.Column(db.DateTime(), default = datetime.utcnow)
-    win_points = db.Column(db.Integer, default=0)
-    loss_points = db.Column(db.Integer, default=0)
-    lsp = db.Column(db.Float, default=0)
+    win_points = db.Column(db.Integer, default=0, nullable=True)
+    loss_points = db.Column(db.Integer, default=0, nullable=True)
+    lsp = db.Column(db.Float, default=0, nullable=True)
     role_id = db.Column(db.Integer, db.ForeignKey('roles.id'))
 
     #performance = db.relationship("Performance", uselist=True, backref="performing_user")
@@ -557,7 +582,6 @@ class Match(db.Model):
     date_stamp = db.Column(db.Date())
     time_stamp = db.Column(db.Time())
     played = db.Column(db.Boolean)
-    match_ft_score = db.Column(db.String(8))
     hometeam_id = db.Column(db.Integer, db.ForeignKey('teams.id'), nullable=False)
     awayteam_id = db.Column(db.Integer, db.ForeignKey('teams.id'), nullable=False)
     hometeam_score = db.Column(db.String(4))
@@ -580,15 +604,20 @@ class Match(db.Model):
             'if not in the database, create a new match'
             if match is None:
                 match = Match(id=m.id, hometeam_id = m.hometeam_id, awayteam_id = m.awayteam_id, date = m.date, time = m.time,
-                        date_stamp = m.date_stamp, time_stamp = m.time_stamp, match_ft_score=m.ft_score)
+                        date_stamp = m.date_stamp, time_stamp = m.time_stamp)
 
                 match.hometeam_score = m.hometeam_score
                 match.awayteam_score = m.awayteam_score
 
-            if(m.ft_score != ''):
+                # if match is newly created
+                if(m.ft_score != ''):
+                    match.played = True
+                else:
+                    match.played = False
+
+            # if match is updated from not played to played
+            if(not match.played and m.ft_score != ''):
                 match.played = True
-            else:
-                match.played = False
 
             db.session.add(match)
         try:
@@ -679,12 +708,17 @@ class Match(db.Model):
                 return self.awayteam_id
 
     def __repr__(self):
-        return "<Match> date:{} id:{}".format(
+        return "<Match> date:{} id:{} {}/{} Played? {} Score: {}:{}".format(
             self.date,
-            self.id
+            self.id,
+            self.hometeam_id,
+            self.awayteam_id,
+            self.played,
+            self.hometeam_score,
+            self.awayteam_score
             )
 
-db.event.listen(Match.played, 'set', SavedForLater.on_changed_match_status)
+db.event.listen(Match.played, 'set', SavedForLater.on_changed_match_status, retval=True)
 
 
 class Comment(db.Model):

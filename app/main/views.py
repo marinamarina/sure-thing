@@ -89,6 +89,13 @@ def show_played():
     return response
 
 
+@main.route('/winners')
+@templated()
+def winners():
+    users=User.query.all()
+    return dict(user=current_user, users=users)
+
+
 @main.route('/save_match/<int:match_id>')
 @login_required
 def save_match(match_id):
