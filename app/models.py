@@ -65,8 +65,15 @@ class Message(db.Model):
     title = db.Column(db.String)
     body = db.Column(db.Text)
     timestamp = db.Column(db.DateTime(), index=True, default = datetime.utcnow)
-    new = db.Column(db.Boolean, default=False)
+    new = db.Column(db.Boolean, default=True)
     addressee_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+
+    @staticmethod
+    def delete_message(message):
+        m=Message.query.filter_by(id=message.id).first()
+        if m:
+            db.session.delete(m)
+
 
     def __repr__(self):
         'message representation'
@@ -268,7 +275,7 @@ class SavedForLater(db.Model):
                               + ', played on ' \
                               + savedmatch.match.date
 
-                        body=", congratulation, you predicted this match results correctly.",
+                        body="congratulation, you predicted this match results correctly."
 
                     elif(savedmatch.match.actual_winner is None):
                         return False
@@ -277,12 +284,12 @@ class SavedForLater(db.Model):
                         savedmatch.bettor.loss_points = savedmatch.bettor.loss_points+1
                         print "new value: " + str(savedmatch.bettor.loss_points)
                         title="You won a bet!"
-                        body=", unfortunately, you did not predicted this match results correctly.",
+                        body="unfortunately, you did not predicted this match results correctly."
 
                         print ('Win user points updated')
 
                     msg.title=title
-                    msg.body="Dear user, " + str(body)
+                    msg.body="Dear user, " + body
                     db.session.add(msg)
                     db.session.add(savedmatch.bettor)
 
@@ -375,6 +382,7 @@ class User(UserMixin, db.Model):
 
     messages = db.relationship('Message', backref='addressee', lazy='dynamic')
 
+
     def __init__(self, **kwargs):
         super(User, self).__init__(**kwargs)
 
@@ -447,7 +455,7 @@ class User(UserMixin, db.Model):
         return self.follower.filter_by(follower_id=user.user_id).first() is not None
 
     def save_match(self, match):
-        '''add restriction to only save matches that have not yet been played'''
+        '''!!!add restriction to only save matches that have not yet been played'''
         if not self.is_match_saved(match):
             #self.saved_matches.append(match)
             s = SavedForLater(user=self, match=match)
@@ -470,7 +478,6 @@ class User(UserMixin, db.Model):
         ]
 
     'insert your module id as a parameter in case you want to see only one module value'
-
     def list_prediction_settings(self, **kwargs):
        return [settings
                 for settings in self.prediction_settings.filter_by(**kwargs)
@@ -480,6 +487,11 @@ class User(UserMixin, db.Model):
         return [settings
                 for settings in self.match_specific_settings.filter_by(**kwargs)
                 ]
+
+    @property
+    def list_new_messages(self):
+        return self.messages.filter_by(new=True).all()
+
 
     '''def user_betting_settings(self, match):
         if not self.is_match_saved(match):

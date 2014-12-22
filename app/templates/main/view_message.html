@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block title %}Message{% endblock %}
+
+{% block header %}
+<header id="head" class="secondary"></header>
+{% endblock header %}
+
+{% block inner_wrapper %}
+<div class="container">
+
+    <ol class="breadcrumb">
+        <li><a href="{{ url_for('.index') }}">Home</a></li>
+        <li><a href="{{url_for('.messages') }}">Messages</a></li>
+        <li class="active">Message</li>
+    </ol>
+    <!-- message -->
+    <h2>{{ message.title }}</h2>
+    <p>{{ message.body }}</p>
+    <!-- /message -->
+
+    <a href="{{ url_for('.delete_message', id=message.id) }}" class="btn btn-primary">Delete</a>
+
+</div>
+
+{% endblock inner_wrapper %}

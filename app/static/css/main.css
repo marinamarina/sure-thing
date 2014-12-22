@@ -163,19 +163,9 @@ hr {
   margin: 0px 5px 10px 0;
 }
 
-/* User profile viewable by others */
-.vcard {
-  overflow: hidden;
-  display: block;
-}
-
-.left-column {
-  width: 25%;
-  float: left;
-}
-
-.right-column {
-  float: left;
+/* Navbar */
+.orange {
+  color: #FFCC00;
 }
 
 /* User profile */

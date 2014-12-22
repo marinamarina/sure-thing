@@ -1,67 +1,3 @@
-<!--div class="container-fluid">
-<nav class="navbar navbar-default" role="navigation">
-        <!-- Brand and toggle get grouped for better mobile display
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-                <span class="sr-only">Toggle navigation</span> <span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span>
-            </button>
-            <a class="navbar-brand" href="http://www.jquery2dotnet.com">Brand</a>
-        </div>
-       
-        <div class="navbar-collapse collapse" id="bs-example-navbar-collapse-1" style="height: 1px;">
-            <ul class="nav navbar-nav">
-                <li><a href="#"><span class="glyphicon glyphicon-info-sign"></span>Help</a></li>
-                <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-search"></span>Search <b class="caret"></b></a>
-                    <ul class="dropdown-menu" style="min-width: 300px;">
-                        <li>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <form class="navbar-form navbar-left" role="search">
-                                    <div class="input-group">
-                                        <input type="text" class="form-control" placeholder="Search">
-                                        <span class="input-group-btn">
-                                            <button class="btn btn-primary" type="button">
-                                                Go!</button>
-                                        </span>
-                                    </div>
-                                    </form>
-                                </div>
-                            </div>
-                        </li>
-                    </ul>
-                </li>
-            </ul>
-            <ul class="nav navbar-nav navbar-right">
-
-            {% if current_user.is_authenticated() %}
-            <li class="dropdown"><a href="{{ url_for('main.dashboard') }}" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-user"> Hi,{{current_user.username}}!</span> <b class="caret"></b></a>
-            <li><a href="{{url_for('auth.logout') }}"><span class="glyphicon glyphicon-off"></span>Logout</a></li>
-                    <ul class="dropdown-menu">
-                        <li><a href="{{ url_for('auth.profile', user=current_user.username) }}"><span class="glyphicon glyphicon-user"></span>Profile</a></li>
-                        <li><a href="{{ url_for('auth.change_password') }}"><span class="glyphicon glyphicon-cog"></span>Change Password</a></li>
-
-                        <li class="divider"></li>
-
-                    </ul>
-            </li>
-             {% else %}
-                 <li class="auth"><a href="{{url_for('auth.login') }}"> Sign In</a></li>
-                 <li class="auth"> New User? <a href="{{url_for('auth.register') }}">Register Now</a></li>
-
-             {% endif %}
-
-            </ul>
-        </div>
-    </nav>
-
-<ul class="navbar-nav navbar-right">
-
-
-
-</ul>
-
-</div-->
-
 <!-- navbar -->
 <div id="navbar" class="navbar navbar-inverse navbar-fixed-top headroom animated slideDown">
     <div class="container">
@@ -88,12 +24,17 @@
 
                         <p class="pull-left">{{user.username}}</p>
                     </a>
+                    <a class="pull-left" id="messages" href="{{url_for('main.messages') }}">
+                        {% if current_user.list_new_messages %}
+                        <span class="glyphicon glyphicon-envelope orange" area="hidden"></span>
+                        {% else %}
+                        <span class="glyphicon glyphicon-envelope" area="hidden"></span>
+                        {% endif %}
+                    </a>
                     <a class="pull-left" id="logout" href="{{url_for('auth.logout') }}">
                         <span class="glyphicon glyphicon-log-out" area="hidden"></span>
                     </a>
                 </li>
-
-
                 {% endif %}
             </ul>
         </div>

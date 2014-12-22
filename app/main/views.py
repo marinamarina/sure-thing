@@ -3,10 +3,10 @@ from flask import render_template, redirect, url_for, abort, flash, \
     session, current_app, request
 from flask_login import login_required, current_user
 from . import main
-from .forms import BlogPostForm, CommentPostForm, UserDefaultPredictionSettings, UserMatchPredictionSettings
+from .forms import UserDefaultPredictionSettings, UserMatchPredictionSettings
 from .. import db
 from ..models import User, Permission, Team, \
-    Match, SavedForLater, PredictionModule, \
+    Match, SavedForLater, PredictionModule, Message, \
     ModuleUserSettings, ModuleUserMatchSettings
 
 from ..email import send_email
@@ -43,8 +43,7 @@ def index():
     else:
         my_query = Match.query.filter_by(played=False).order_by(Match.date_stamp.asc(), Match.time_stamp.asc())
 
-
-    # switch between d isplaying past and future matches
+    # switch between displaying past and future matches
     # order matches first by date and then by time
     matches = my_query.all()
 
@@ -88,6 +87,38 @@ def show_played():
     response.set_cookie('show_played_matches', value='1')
     return response
 
+
+@main.route('/messages')
+@login_required
+@templated()
+def messages():
+    me=current_user
+    messages = me.messages.order_by(Message.timestamp.desc())
+    return dict(user=me, messages=messages)
+
+# a unique url to each message
+@main.route('/view_message/<int:id>')
+def view_message(id):
+    me = current_user
+    message = Message.query.get_or_404(id)
+    message.new=False
+    db.session.add(message)
+    #emit socket event to remove the class orange
+
+    return render_template('main/view_message.html', message=message, user=current_user)
+
+
+@main.route('/delete_message/<int:id>')
+@login_required
+def delete_message(id):
+    me = current_user
+    message = Message.query.filter_by(id=id).first()
+
+    Message.delete_message(message)
+    flash("You have deleted a message from your postbox.")
+    messages = me.messages.all()
+
+    return redirect(url_for('.messages'))
 
 @main.route('/winners')
 @templated()
