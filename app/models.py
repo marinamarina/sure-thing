@@ -70,7 +70,11 @@ class Message(db.Model):
 
     def __repr__(self):
         'message representation'
-        return '<Message %r> %r %r' % (self.title, self.addressee_id, self.timestamp)
+        return '<Message> title: {}, user_id: {}, timestamp: {}'\
+            .format(self.title,
+                    self.addressee_id,
+                    self.timestamp
+        )
 
 '''class ModelUsingMarkdown(db.Model):
 
@@ -222,14 +226,6 @@ class SavedForLater(db.Model):
 
     savedmatch_played = association_proxy('match', 'played')
 
-    def __repr__(self):
-        return "<SavedForLater> userid: {}, matchid: {}, committed:{}, predicted_winner:{}".format(
-            self.users_id,
-            self.match_id,
-            self.committed,
-            self.predicted_winner
-        )
-
     def update_lsp(self):
         lsp=0
         rate1='3/1'
@@ -240,7 +236,6 @@ class SavedForLater(db.Model):
         print lsp
         #self.bettor.lsp=lsp
         #db.session.add(self.bettor)
-
 
 
     @staticmethod
@@ -255,24 +250,40 @@ class SavedForLater(db.Model):
 
                 if(savedmatch.match==target and savedmatch.committed):
 
+                    msg=Message(addressee_id=savedmatch.bettor.id)
+
                     print "users having this match saved and committed: %s" % savedmatch.bettor
 
-                    if savedmatch.match.actual_winner != savedmatch.predicted_winner and not savedmatch.match.actual_winner is None:
+                    if savedmatch.match.actual_winner != savedmatch.predicted_winner \
+                            and not savedmatch.match.actual_winner is None:
+
                         print "old value: " + str(savedmatch.bettor.win_points)
                         savedmatch.bettor.win_points = savedmatch.bettor.win_points+1
                         print ('Win user points updated')
                         print "new value: " + str(savedmatch.bettor.win_points)
+                        title="You won a bet for " \
+                              + savedmatch.match.hometeam.name \
+                              + ' vs.' \
+                              + savedmatch.match.awayteam.name \
+                              + ', played on ' \
+                              + savedmatch.match.date
+
+                        body=", congratulation, you predicted this match results correctly.",
 
                     elif(savedmatch.match.actual_winner is None):
                         return False
                     else:
                         print "old value: " + str(savedmatch.bettor.loss_points)
-
                         savedmatch.bettor.loss_points = savedmatch.bettor.loss_points+1
                         print "new value: " + str(savedmatch.bettor.loss_points)
+                        title="You won a bet!"
+                        body=", unfortunately, you did not predicted this match results correctly.",
 
                         print ('Win user points updated')
 
+                    msg.title=title
+                    msg.body="Dear user, " + str(body)
+                    db.session.add(msg)
                     db.session.add(savedmatch.bettor)
 
             #try:
@@ -283,11 +294,18 @@ class SavedForLater(db.Model):
 
 
 
-        #m=Match.query.filter_by(id=1963811).first()
         # update user's LSP
         # u=User.query.all()[0]
-        #  match1=u.list_matches()[0]
+        #  match1=u.list_matches()[2]
         # match1.match.played=True
+
+    def __repr__(self):
+        return "<SavedForLater> userid: {}, matchid: {}, committed:{}, predicted_winner:{}".format(
+            self.users_id,
+            self.match_id,
+            self.committed,
+            self.predicted_winner
+        )
 
 class Follow(db.Model):
     'following-follower feature'
@@ -295,24 +313,6 @@ class Follow(db.Model):
     follower_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
     followed_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
-
-
-"""class Performance(db.Model):
-    __tablename__ = 'user_performance'
-    id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    win_points = db.Column(db.Integer, default=0)
-    loss_points = db.Column(db.Integer, default=0)
-    lsp = db.Column(db.Float, default=0)
-
-    def __repr__(self):
-        'user performance representation'
-        return '<Performace (user_id={}, wins={}, losses={}, lsp={})>'\
-            .format(self.user_id,
-                    self.win_points,
-                    self.loss_points,
-                    self.lsp
-        )"""
 
 
 class User(UserMixin, db.Model):
@@ -411,8 +411,7 @@ class User(UserMixin, db.Model):
     def measure_time(self):
         self.last_seen = datetime.utcnow()
         db.session.add(self)
-        #db.session.commit()
-        #db.session.close()
+
 
     def avatar(self, size=230, default='retro', rating='g'):
         'size is in pixels'
@@ -434,15 +433,6 @@ class User(UserMixin, db.Model):
         if not self.is_following(user):
             f = Follow(follower=self, followed=user)
             db.session.add(f)
-
-    '''def create_performance(self):
-        #if not self.performance:
-        flash('Creating performance')
-
-        #NOT CREATING PERFORMANCE!!
-        p=Performance(user_id=self.id)
-        db.session.add(p)
-        db.session.commit()'''
 
     def unfollow(self, user):
         f=self.followed.filter_by(followed_id=user.id).first()
