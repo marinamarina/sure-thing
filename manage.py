@@ -6,15 +6,14 @@ from app.models import User, Role, Permission, Follow, \
     Team, Match, SavedForLater, \
     PredictionModule, \
     ModuleUserSettings, \
-    ModuleUserMatchSettings
+    ModuleUserMatchSettings, \
+    Message
 
 from flask_migrate import Migrate, MigrateCommand
 from app import socketio
-from gevent import monkey
-from socketio.server import SocketIOServer
-import werkzeug.serving
 
-from flask.ext.script import Manager, Command, Option
+
+from flask.ext.script import Manager
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 port = 5000
@@ -35,7 +34,7 @@ def make_shell_context():
     """make app, db available to the command line"""
     return dict(app=app, db=db, User=User, Role=Role,
                 Permission=Permission,
-                Follow=Follow,
+                Follow=Follow, Message=Message,
                 Team=Team, Match=Match,
                 SavedForLater=SavedForLater,
                 PredictionModule=PredictionModule,

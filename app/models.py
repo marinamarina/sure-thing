@@ -64,11 +64,13 @@ class Message(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String)
     body = db.Column(db.Text)
-    body_html = db.Column(db.Text)
     timestamp = db.Column(db.DateTime(), index=True, default = datetime.utcnow)
-    edited = db.Column(db.Boolean, default=False)
-    author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    comments = db.relationship('Comment', backref='post', lazy='dynamic')
+    new = db.Column(db.Boolean, default=False)
+    addressee_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+
+    def __repr__(self):
+        'message representation'
+        return '<Message %r> %r %r' % (self.title, self.addressee_id, self.timestamp)
 
 '''class ModelUsingMarkdown(db.Model):
 
@@ -370,6 +372,8 @@ class User(UserMixin, db.Model):
                                           foreign_keys=[ModuleUserMatchSettings.user_id, PredictionModule.id],
                                           lazy='dynamic')
 
+
+    messages = db.relationship('Message', backref='addressee', lazy='dynamic')
 
     def __init__(self, **kwargs):
         super(User, self).__init__(**kwargs)
