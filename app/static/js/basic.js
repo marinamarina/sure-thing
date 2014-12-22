@@ -24,15 +24,21 @@
 
     });
 
-    var commitToBetButton = $('#commitToBet');
+    var commitToBetButton = $('#commitToBet'),
+        navMessages = $('#navMessages');
 
-     commitToBetButton.on('click', function () {
+
+    commitToBetButton.on('click', function () {
             //var gender = $(this).val();
             //calculatorModel.updateGender(gender);
             console.log('Clicked!')
             socket.emit('matchCommited', $('#teamWinner').text());
 
-        });
+    });
+    socket.on('no_new_messages', function(msg) {
+        console.log("No new messages found for this user!");
+        navMessages.removeClass('orange');
+    });
 
 
  });

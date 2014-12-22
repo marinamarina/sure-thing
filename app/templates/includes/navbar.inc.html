@@ -25,11 +25,10 @@
                         <p class="pull-left">{{user.username}}</p>
                     </a>
                     <a class="pull-left" id="messages" href="{{url_for('main.messages') }}">
-                        {% if current_user.list_new_messages %}
-                        <span class="glyphicon glyphicon-envelope orange" area="hidden"></span>
-                        {% else %}
-                        <span class="glyphicon glyphicon-envelope" area="hidden"></span>
-                        {% endif %}
+
+                        <span class="glyphicon glyphicon-envelope
+                        {% if current_user.list_new_messages %}orange{% endif %}" area="hidden" id="navMessages"></span>
+
                     </a>
                     <a class="pull-left" id="logout" href="{{url_for('auth.logout') }}">
                         <span class="glyphicon glyphicon-log-out" area="hidden"></span>

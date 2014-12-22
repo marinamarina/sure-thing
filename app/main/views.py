@@ -103,7 +103,9 @@ def view_message(id):
     message = Message.query.get_or_404(id)
     message.new=False
     db.session.add(message)
-    #emit socket event to remove the class orange
+    if (not me.list_new_messages):
+        socketio.emit('no_new_messages', namespace='/test')
+
 
     return render_template('main/view_message.html', message=message, user=current_user)
 
