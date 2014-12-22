@@ -1,3 +1,10 @@
+{% set navigation_bar = [
+    ("/index", "index", "HOME"),
+    ("/dashboard", "dashboard", "DASHBOARD"),
+    ("/help", "help", "HELP")
+] -%}
+{% set active_page = active_page -%}
+
 <!-- navbar -->
 <div id="navbar" class="navbar navbar-inverse navbar-fixed-top headroom animated slideDown">
     <div class="container">
@@ -9,23 +16,24 @@
                 height="64px" width="64px" alt="#" /></a>
         </div>
         <div class="navbar-collapse collapse">
-            <ul class="nav navbar-nav pull-right">
-                <li class="active"><a href="/">HOME</a></li>
-                <li><a href="{{ url_for('main.dashboard') }}">DASHBOARD</a></li>
-                <li><a href="help.html">HELP</a></li>
+            <ul class="nav navbar-nav pull-right" id="navigation">
+                {% for href, id, caption in navigation_bar %}
+                <li{% if id==active_page %} class="active"{% endif %}><a href="{{ href|e }}">{{ caption|e }}
+                 {{active_page}} </a>
+                </li>
+                {% endfor %}
+
                 {% if not current_user.is_authenticated() %}
-                <li class="indented"><a href="{{url_for('auth.login') }}">LOG IN</a></li>
-                <li><a class="btn" href="{{url_for('auth.register') }}">REGISTER</a></li>
+                    <li class="indented"><a href="{{url_for('auth.login') }}">LOG IN</a></li>
+                    <li><a class="btn" href="{{url_for('auth.register') }}">REGISTER</a></li>
                 {% else %}
                 <li class="right-navbar-content">
                     <a class="pull-left" href="{{url_for('.dashboard') }}">
                         <img alt="avatar" class="img-circle pull-left" data-user="{{user.id}}" height="25" width="25"
                              src="{{user.avatar()}}"/>
-
                         <p class="pull-left">{{user.username}}</p>
                     </a>
                     <a class="pull-left" id="messages" href="{{url_for('main.messages') }}">
-
                         <span class="glyphicon glyphicon-envelope
                         {% if current_user.list_new_messages %}orange{% endif %}" area="hidden" id="navMessages"></span>
 

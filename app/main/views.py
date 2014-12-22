@@ -94,6 +94,9 @@ def show_played():
 def messages():
     me=current_user
     messages = me.messages.order_by(Message.timestamp.desc())
+    if (not me.list_new_messages):
+        socketio.emit('no_new_messages', namespace='/test')
+
     return dict(user=me, messages=messages)
 
 # a unique url to each message
@@ -103,6 +106,7 @@ def view_message(id):
     message = Message.query.get_or_404(id)
     message.new=False
     db.session.add(message)
+
     if (not me.list_new_messages):
         socketio.emit('no_new_messages', namespace='/test')
 

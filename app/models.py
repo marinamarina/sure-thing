@@ -644,11 +644,17 @@ class Match(db.Model):
                 else:
                     match.played = False
 
-            # if match is updated from not played to played
-            if(not match.played and m.ft_score != ''):
-                match.played = True
+                print('match is not in database')
+            else:
+                # if match is updated from not played to played
+                if(not match.played and m.ft_score != ''):
+                    print('match changed status to played')
+                    match.played = True
+                    match.hometeam_score = m.hometeam_score
+                    match.awayteam_score = m.awayteam_score
 
             db.session.add(match)
+
         try:
             db.session.commit()
         except:
