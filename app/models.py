@@ -59,6 +59,17 @@ class Role(db.Model):
         return '<Role (name={})>'.format(self.name)
 
 
+class Message(db.Model):
+    __tablename__='messages'
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String)
+    body = db.Column(db.Text)
+    body_html = db.Column(db.Text)
+    timestamp = db.Column(db.DateTime(), index=True, default = datetime.utcnow)
+    edited = db.Column(db.Boolean, default=False)
+    author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    comments = db.relationship('Comment', backref='post', lazy='dynamic')
+
 '''class ModelUsingMarkdown(db.Model):
 
     @staticmethod
@@ -216,6 +227,19 @@ class SavedForLater(db.Model):
             self.committed,
             self.predicted_winner
         )
+
+    def update_lsp(self):
+        lsp=0
+        rate1='3/1'
+        # extract 3 1nd 1 from the rate
+        rate_top=3
+        rate_bottom=1
+        lsp = 1 + rate_top / rate_bottom
+        print lsp
+        #self.bettor.lsp=lsp
+        #db.session.add(self.bettor)
+
+
 
     @staticmethod
     def on_changed_match_status(target, value, old_value, initiator):
@@ -609,7 +633,6 @@ class Match(db.Model):
                 match.hometeam_score = m.hometeam_score
                 match.awayteam_score = m.awayteam_score
 
-                # if match is newly created
                 if(m.ft_score != ''):
                     match.played = True
                 else:
