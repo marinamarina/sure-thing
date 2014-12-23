@@ -170,6 +170,14 @@ def dashboard():
     return render_template('main/dashboard.html', savedmatches=savedmatches, user=current_user, title='Dashboard')
 
 
+@main.route('/archived')
+@login_required
+def archived():
+    savedmatches = current_user.saved_matches
+
+    return render_template('main/archived.html', savedmatches=savedmatches, user=current_user, title='Archived')
+
+
 @main.route('/prediction_settings', methods=['GET','POST'])
 @login_required
 def prediction_settings():
