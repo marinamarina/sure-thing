@@ -1,11 +1,17 @@
 {% from 'includes/__formhelpers.html' import teamkitimage %}
+{{ moment.include_jquery() }}
+{{ moment.include_moment() }}
 
 <!--matches -->
 <div class="jumbotron top-space container">
-    <div class="matches-for-date">
-        <h3 class="match-date row">Sat, 22 Nov</h3>
 
-        {% for match in matches %}
+    {% for key, value in matches.iteritems() | sort  %}
+
+    <!-- matches for date -->
+    <div class="matches-for-date">
+        <h3 class="match-date row"> {{ moment(key).format('MMMM Do YYYY') }}</h3>
+
+        {% for match in value | sort %}
         <!--match-->
         <div class="match row panel panel-default" data="{{match.id}}">
             <div class="panel-body">
@@ -41,5 +47,9 @@
         {% endfor %}
 
     </div>
+    <!--  /matches for date -->
+    {% endfor %}
+
+
 </div>
 <!--/matches-->

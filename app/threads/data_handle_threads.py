@@ -49,7 +49,7 @@ class DataUpdateThread(Thread):
             sleep(30)
             faw.write_standings_data()
             time = datetime.today().strftime("%Y-%m-%d %H:%M:%S")
-            socketio.emit('data_updated', {'time' : time}, namespace='/test') #{'number': number},
+            socketio.emit('data_updated', {'time' : time}, namespace='/test')
             sleep(self.delay)
 
     def run(self):

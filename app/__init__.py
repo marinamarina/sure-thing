@@ -3,7 +3,7 @@ from flask_bootstrap import Bootstrap
 from flask_sqlalchemy import SQLAlchemy
 from flask_mail import Mail
 from flask_login import LoginManager
-from flask_shorturl import ShortUrl
+from flask_moment import Moment
 from config import config
 from gevent import monkey
 from flask_socketio import SocketIO
@@ -21,7 +21,7 @@ db = SQLAlchemy()
 login_manager = LoginManager()
 login_manager.session_protection = 'strong'
 login_manager.login_view = 'auth.login'
-su = ShortUrl()
+moment = Moment()
 faw = FootballAPIWrapper()
 faw.api_key = '2890be06-81bd-b6d7-1dcb4b5983a0' # set as an environment variable
 socketio = SocketIO()
@@ -56,8 +56,8 @@ def create_app(config_name):
         db.create_all()
 
     faw.init_app(app)
+    moment.init_app(app)
     login_manager.init_app(app)
-    su.init_app(app)
     socketio.init_app(app)
 
     #attach routes and custom error pages here

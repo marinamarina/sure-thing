@@ -3,7 +3,7 @@ from . import auth
 from flask_login import login_user, current_user, logout_user, login_required
 from ..main.forms import LoginForm, RegistrationForm, PasswordChangeForm, ManageProfile, AdminManageProfiles
 from ..models import User
-from app import db, su
+from app import db
 from ..email import send_email
 from sqlalchemy.exc import IntegrityError
 from flask import abort

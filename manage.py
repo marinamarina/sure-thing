@@ -8,7 +8,6 @@ from app.models import User, Role, Permission, Follow, \
     ModuleUserSettings, \
     ModuleUserMatchSettings, \
     Message
-
 from flask_migrate import Migrate, MigrateCommand
 from app import socketio
 

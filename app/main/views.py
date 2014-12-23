@@ -32,7 +32,6 @@ def inject_permissions():
 @templated()
 def index():
     show_played_matches = False
-    Match.update_all_matches()
 
     #we get the value of the show_followed cookie from the request cookie dictionary
     #and convert it to boolean
@@ -43,33 +42,28 @@ def index():
     else:
         my_query = Match.query.filter_by(was_played=False).order_by(Match.date_stamp.asc(), Match.time_stamp.asc())
 
-    # switch between displaying past and future matches
-    # order matches first by date and then by time
-    matches = my_query.all()
+    #
+    from pprint import pprint
 
-    # define the form
-    '''form = BlogPostForm()
-    if (current_user.can(Permission.WRITE_ARTICLES)):
-        if form.is_submitted():
-            print "submitted"
-        if form.validate():
-            print "valid"
-            print form.errors
-        if form.validate_on_submit():
-            # redirect loop
-            post = Post(body_html=form.body_html.data, title=form.title.data, author_id=current_user.id)
-            try:
-                #add new post
-                db.session.add(post)
-                return redirect(url_for('.index'))
-            except Exception:
-                db.session.flush()
-            finally:
-                flash ("You have now been authorized!" + str(current_user.role))
+    m1=Match.query.all()[1]
+    m2=Match.query.all()[2]
+    query = db.session.query(Match.date_stamp.distinct().label("date_stamp"))
+    unique_dates = [row.date_stamp for row in query.all()]
 
-    posts = my_query.order_by(Post.timestamp.desc()).all()'''
 
-    return dict(user=current_user, matches=matches)  #posts=posts, form=form,
+    matches = {date: my_query.filter_by(date_stamp=date).all()
+               for date in unique_dates
+               if my_query.filter_by(date_stamp=date).all()
+    }
+
+    pprint(matches)
+
+
+    ''' matches = {
+        datetime.today(): [Match.query.all()[1], Match.query.all()[2]]
+        }'''
+
+    return dict(user=current_user, matches=matches, current_time=datetime.utcnow (), dates=unique_dates)
 
 
 @main.route('/show_unplayed')
@@ -87,6 +81,10 @@ def show_played():
     response.set_cookie('show_played_matches', value='1')
     return response
 
+@socketio.on('data_updated', namespace='/test')
+def data_updated(msg):
+    Match.update_all_matches()
+    'matches updated using sockets'
 
 @main.route('/messages')
 @login_required
@@ -271,12 +269,6 @@ def view_match_dashboard(match_id):
                            probability=winner[2],
                            current_weights=match_specific_weights
                            )
-
-
-'''@socketio.on('matchCommited', namespace='/test')
-def matchCommited(msg):
-    print ()'''
-
 
 
 @main.route('/remove_match/<int:match_id>')
