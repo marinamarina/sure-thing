@@ -42,11 +42,7 @@ def index():
     else:
         my_query = Match.query.filter_by(was_played=False).order_by(Match.date_stamp.asc(), Match.time_stamp.asc())
 
-    #
-    from pprint import pprint
 
-    m1=Match.query.all()[1]
-    m2=Match.query.all()[2]
     query = db.session.query(Match.date_stamp.distinct().label("date_stamp"))
     unique_dates = [row.date_stamp for row in query.all()]
 
@@ -56,14 +52,8 @@ def index():
                if my_query.filter_by(date_stamp=date).all()
     }
 
-    pprint(matches)
 
-
-    ''' matches = {
-        datetime.today(): [Match.query.all()[1], Match.query.all()[2]]
-        }'''
-
-    return dict(user=current_user, matches=matches, current_time=datetime.utcnow (), dates=unique_dates)
+    return dict(user=current_user, matches=matches)
 
 
 @main.route('/show_unplayed')
