@@ -162,7 +162,11 @@ class FootballAPIWrapper:
             matches_data = json.load(localfile)
         localfile.close()
 
-        MatchInfo = namedtuple('MatchInfo', 'id date time date_stamp time_stamp hometeam_id awayteam_id hometeam_score awayteam_score ft_score')
+        MatchInfo = namedtuple('MatchInfo',
+                               'id date time date_stamp time_stamp '
+                               'hometeam_id awayteam_id '
+                               'hometeam_score awayteam_score '
+                               'ft_score')
         all_matches = []
         unplayed_matches = []
         played_matches = []

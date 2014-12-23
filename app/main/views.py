@@ -39,9 +39,9 @@ def index():
     show_played_matches = bool(request.cookies.get('show_played_matches', ''))
 
     if show_played_matches:
-        my_query = Match.query.filter_by(played=True).order_by(Match.date_stamp.desc(), Match.time_stamp.asc())
+        my_query = Match.query.filter_by(was_played=True).order_by(Match.date_stamp.desc(), Match.time_stamp.asc())
     else:
-        my_query = Match.query.filter_by(played=False).order_by(Match.date_stamp.asc(), Match.time_stamp.asc())
+        my_query = Match.query.filter_by(was_played=False).order_by(Match.date_stamp.asc(), Match.time_stamp.asc())
 
     # switch between displaying past and future matches
     # order matches first by date and then by time

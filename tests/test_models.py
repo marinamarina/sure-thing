@@ -222,4 +222,4 @@ class TestPredictionSettings(unittest.TestCase):
         if(match1.prediction_homeaway.id==9127):
             self.assertEqual(Match.predicted_winner(match1, u2).probability, 0.52)
         else:
-            self.assertLessEqual(Match.predicted_winner(match1, u2).probability, 0.48)
+            self.assertGreaterEqual(Match.predicted_winner(match1, u2).probability, 0.48)

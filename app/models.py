@@ -231,7 +231,7 @@ class SavedForLater(db.Model):
     bettor = db.relationship( "User", backref="bettor")
     match_specific_settings = db.relationship( "ModuleUserMatchSettings", backref="settings")
 
-    savedmatch_played = association_proxy('match', 'played')
+    savedmatch_played = association_proxy('match', 'was_played')
 
     def update_lsp(self):
         lsp=0
@@ -244,12 +244,19 @@ class SavedForLater(db.Model):
         #self.bettor.lsp=lsp
         #db.session.add(self.bettor)
 
+    def __repr__(self):
+        return "<SavedForLater> userid: {}, matchid: {}, committed:{}, predicted_winner:{}".format(
+            self.users_id,
+            self.match_id,
+            self.committed,
+            self.predicted_winner
+        )
 
     @staticmethod
     def on_changed_match_status(target, value, old_value, initiator):
         all_savedmatches=SavedForLater.query.all()
 
-        #make sure the match is not just overwritten and win/loss points are re-added for the second time
+    #make sure the match is not just overwritten and win/loss points are re-added for the second time
         if value is True and old_value is False:
 
             # looping through all occurences of this match being saved by any user
@@ -266,7 +273,6 @@ class SavedForLater(db.Model):
 
                         print "old value: " + str(savedmatch.bettor.win_points)
                         savedmatch.bettor.win_points = savedmatch.bettor.win_points+1
-                        print ('Win user points updated')
                         print "new value: " + str(savedmatch.bettor.win_points)
                         title="You won a bet for " \
                               + savedmatch.match.hometeam.name \
@@ -283,10 +289,15 @@ class SavedForLater(db.Model):
                         print "old value: " + str(savedmatch.bettor.loss_points)
                         savedmatch.bettor.loss_points = savedmatch.bettor.loss_points+1
                         print "new value: " + str(savedmatch.bettor.loss_points)
-                        title="You won a bet!"
+                        title="You lost a bet for " \
+                              + savedmatch.match.hometeam.name \
+                              + ' vs.' \
+                              + savedmatch.match.awayteam.name \
+                              + ', played on ' \
+                              + savedmatch.match.date
+
                         body="unfortunately, you did not predicted this match results correctly."
 
-                        print ('Win user points updated')
 
                     msg.title=title
                     msg.body="Dear user, " + body
@@ -304,15 +315,14 @@ class SavedForLater(db.Model):
         # update user's LSP
         # u=User.query.all()[0]
         #  match1=u.list_matches()[2]
-        # match1.match.played=True
+        # match1.match.was_played=True
 
-    def __repr__(self):
-        return "<SavedForLater> userid: {}, matchid: {}, committed:{}, predicted_winner:{}".format(
-            self.users_id,
-            self.match_id,
-            self.committed,
-            self.predicted_winner
-        )
+
+'''
+@event.listens_for(SavedForLater.match, 'before_update')
+def receive_before_update(mapper, connection, target):
+    print("updated!")
+    print target'''
 
 class Follow(db.Model):
     'following-follower feature'
@@ -396,8 +406,6 @@ class User(UserMixin, db.Model):
 
         self.location='Aberdeen'
         #self.follow(self)
-        #self.create_performance()
-
 
     def generate_confirmation_token(self, expiration=3600):
         s = Serializer(current_app.config['SECRET_KEY'], expiration)
@@ -611,13 +619,17 @@ class Match(db.Model):
     time = db.Column(db.String(16))
     date_stamp = db.Column(db.Date())
     time_stamp = db.Column(db.Time())
-    played = db.Column(db.Boolean)
+    was_played = db.Column(db.Boolean, unique=False, default=False)
     hometeam_id = db.Column(db.Integer, db.ForeignKey('teams.id'), nullable=False)
     awayteam_id = db.Column(db.Integer, db.ForeignKey('teams.id'), nullable=False)
     hometeam_score = db.Column(db.String(4))
     awayteam_score = db.Column(db.String(4))
     users = db.relationship('SavedForLater', backref='saved_matches', lazy='dynamic')
     comments = db.relationship('Comment', backref='match', lazy='dynamic')
+
+    '''def __init__(self, id, hometeam_id, awayteam_id, date, time, date_stamp, time_stamp):
+
+        is_active = True'''
 
     @staticmethod
     def update_all_matches():
@@ -639,21 +651,15 @@ class Match(db.Model):
                 match.hometeam_score = m.hometeam_score
                 match.awayteam_score = m.awayteam_score
 
-                if(m.ft_score != ''):
-                    match.played = True
-                else:
-                    match.played = False
 
-                print('match is not in database')
+            if(m.ft_score != ''):
+                match.was_played = True
             else:
-                # if match is updated from not played to played
-                if(not match.played and m.ft_score != ''):
-                    print('match changed status to played')
-                    match.played = True
-                    match.hometeam_score = m.hometeam_score
-                    match.awayteam_score = m.awayteam_score
+                match.was_played = False
 
             db.session.add(match)
+
+
 
         try:
             db.session.commit()
@@ -743,18 +749,17 @@ class Match(db.Model):
                 return self.awayteam_id
 
     def __repr__(self):
-        return "<Match> date:{} id:{} {}/{} Played? {} Score: {}:{}".format(
+        return "<Match> date:{} id:{} {}/{} was_played {} score: {}:{}".format(
             self.date,
             self.id,
             self.hometeam_id,
             self.awayteam_id,
-            self.played,
+            self.was_played,
             self.hometeam_score,
             self.awayteam_score
             )
 
-db.event.listen(Match.played, 'set', SavedForLater.on_changed_match_status, retval=True)
-
+db.event.listen(Match.was_played, 'set', SavedForLater.on_changed_match_status, retval=False)
 
 class Comment(db.Model):
         __tablename__ = 'comments'
