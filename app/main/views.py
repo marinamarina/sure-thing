@@ -172,21 +172,31 @@ def view_match(match_id):
 @login_required
 def dashboard():
     savedmatches = current_user.saved_matches
+    sort_order_reversed=False
 
     upcomingmatches=[s for s in savedmatches if not s.savedmatch_played]
 
 
-    return render_template('main/dashboard.html', savedmatches=upcomingmatches, user=current_user, title='Dashboard')
+    return render_template('main/dashboard.html',
+                           savedmatches=upcomingmatches,
+                            sort_order_reversed=sort_order_reversed,
+                           user=current_user,
+                           title='Dashboard')
 
 
 @main.route('/archived')
 @login_required
 def archived():
     savedmatches = current_user.saved_matches
+    sort_order_reversed = True
     playedmatches=[s for s in savedmatches if s.savedmatch_played]
 
 
-    return render_template('main/archived.html', savedmatches=playedmatches, user=current_user, title='Archived')
+    return render_template('main/archived.html',
+                           savedmatches=playedmatches,
+                           sort_order_reversed=sort_order_reversed,
+                           user=current_user,
+                           title='Archived')
 
 
 @main.route('/prediction_settings', methods=['GET','POST'])
