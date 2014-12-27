@@ -28,16 +28,12 @@
             <div class="status col-xs-2 text-center">
                 {% if savedmatch.committed %}<span>Committed</span>{% endif %}
                 {% if savedmatch.savedmatch_played %}
-                    <span>Played</span>
                      {% if savedmatch.bettor_won %}
                         <span>Won</span>
                      {% else %}
                         <span>Lost</span>
                      {% endif %}
-                {% else %} <span>Not played</span>
-
                 {% endif %}
-
 
             </div>
 

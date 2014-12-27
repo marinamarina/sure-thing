@@ -267,10 +267,11 @@ class SavedForLater(db.Model):
                     msg=Message(addressee_id=savedmatch.bettor.id)
 
                     print "users having this match saved and committed: %s" % savedmatch.bettor
+                    print 'Won?' + str(savedmatch.bettor_won)
+                    print 'Played?' + str(savedmatch.match.was_played)
 
-                    if savedmatch.match.actual_winner != savedmatch.predicted_winner \
-                            and not savedmatch.match.actual_winner is None:
-
+                    if savedmatch.bettor_won and not savedmatch.match.was_played:
+                        print('333333333')
                         print "old value: " + str(savedmatch.bettor.win_points)
                         savedmatch.bettor.win_points = savedmatch.bettor.win_points+1
                         print "new value: " + str(savedmatch.bettor.win_points)
@@ -283,9 +284,7 @@ class SavedForLater(db.Model):
 
                         body="congratulation, you predicted this match results correctly."
 
-                    elif(savedmatch.match.actual_winner is None):
-                        return False
-                    else:
+                    elif not savedmatch.bettor_won and not savedmatch.match.was_played:
                         print "old value: " + str(savedmatch.bettor.loss_points)
                         savedmatch.bettor.loss_points = savedmatch.bettor.loss_points+1
                         print "new value: " + str(savedmatch.bettor.loss_points)
@@ -297,6 +296,10 @@ class SavedForLater(db.Model):
                               + savedmatch.match.date
 
                         body="unfortunately, you did not predicted this match results correctly."
+                        print('222222222')
+                    else:
+                        print('33333333')
+                        return False
 
 
                     msg.title=title
@@ -315,7 +318,7 @@ class SavedForLater(db.Model):
         # update user's LSP
         # u=User.query.all()[0]
         #  match1=u.list_matches()[2]
-        # match1.match.was_played=True
+        # match1.match.was_played=False
 
     def __repr__(self):
         return "<SavedForLater {}/{}> userid: {}, matchid: {}, date:{}, committed:{}, predicted_winner:{}"\
