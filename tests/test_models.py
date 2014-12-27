@@ -18,11 +18,25 @@ class TestPredictionSettings(unittest.TestCase):
         db.session.add(self.u1)
         db.session.commit()
         matches = Match.query.all()
+
+        #non-played
         self.match1 = Match.query.all()[len(matches)-2]
         self.match2 = Match.query.all()[len(matches)-1]
 
+
+        #played
+        self.match3 = Match.query.all()[12]
+        self.match4 = Match.query.all()[16]
+
+        #draw
+        self.match5 = Match.query.all()[14]
+
+
         self.u1.save_match(self.match1)
         self.u1.save_match(self.match2)
+        self.u1.save_match(self.match3)
+        self.u1.save_match(self.match4)
+        self.u1.save_match(self.match5)
         db.session.add(self.u1)
         db.session.commit()
 
@@ -31,11 +45,13 @@ class TestPredictionSettings(unittest.TestCase):
         db.drop_all()
         self.app_context.pop()
 
+    @unittest.skip('')
     def test_league_position(self):
         #print(self.match.hometeam)
         pass
 
 
+    @unittest.skip('')
     def test_default_prediction(self):
 
         #testing the saved matches array length
@@ -91,6 +107,7 @@ class TestPredictionSettings(unittest.TestCase):
 
         print 'OVERALL WINNER: {}'.format( str(Match.predicted_winner(match2, self.u1)) )
 
+    @unittest.skip('')
     def test_user_prediction(self):
         print ('\n--------TESTING DEFAULT USER CONFIGURATION-------')
 
@@ -121,6 +138,7 @@ class TestPredictionSettings(unittest.TestCase):
 
         print 'OVERALL WINNER: {}'.format( str(Match.predicted_winner(match1, self.u1)) )
 
+    @unittest.skip('')
     def test_user_match_prediction(self):
         print ('\n--------TESTING MATCH SPECIFIC USER CONFIGURATION-------')
         print ('--------TESTCASE-1 USER HAS ONLY MATCH SETTINGS-------')
@@ -176,6 +194,7 @@ class TestPredictionSettings(unittest.TestCase):
 
         print 'OVERALL WINNER: {}'.format( str(Match.predicted_winner(match1, self.u1)) )
 
+    @unittest.skip('')
     def test_multiple_users_match_predictions(self):
         # this is tested match
         match1 = self.u1.list_matches()[0].match
@@ -209,10 +228,10 @@ class TestPredictionSettings(unittest.TestCase):
         print 'LEAGUE_POSITION WINNER: {}, %: {}'.format(str(match1.prediction_league_position),
                                                          mus1_2.weight
                                               )
-        print  'FORM WINNER: {}, %: {}'.format(str(match1.prediction_form),
+        print 'FORM WINNER: {}, %: {}'.format(str(match1.prediction_form),
                                                mus2_2.weight
                                                )
-        print  'HOME_AWAY WINNER: {}, %:{}'.format(str(match1.prediction_homeaway),
+        print 'HOME_AWAY WINNER: {}, %:{}'.format(str(match1.prediction_homeaway),
                                                 mus3_2.weight
                                                )
 
@@ -223,3 +242,94 @@ class TestPredictionSettings(unittest.TestCase):
             self.assertEqual(Match.predicted_winner(match1, u2).probability, 0.52)
         else:
             self.assertGreaterEqual(Match.predicted_winner(match1, u2).probability, 0.48)
+
+
+    def test_lsp(self):
+        print ('\n-----------------TESTING LSP---------------------')
+        match1 = self.u1.list_matches()[0]
+        #print 'THIS IS THE VALUE' + str (match1.)
+        #self.assertTrue(match1.update_lsp('3/1') == 4, 'LSP is equal to a certain value')
+
+
+    def test_actual_winner(self):
+        print ('\n\n-----------------ACTUAL WINNER---------------------')
+
+        # test a match
+        match3 = self.u1.list_matches()[0]
+        print match3
+        print 'WAS PLAYED?' + str(match3.match.date)
+        print 'Score is '+ str(match3.match.hometeam_score) + ':' +str(match3.match.awayteam_score)
+
+        print 'Actual winner: ' + str(match3.match.actual_winner)
+        self.assertEqual(match3.match.actual_winner, 9092, 'Actual winner was Chelsea')
+
+        # test draw
+        match4 = self.u1.list_matches()[1]
+        print match4
+        print 'WAS PLAYED?' + str(match4.match.date)
+        print 'Score is '+ str(match4.match.hometeam_score) + ':' +str(match4.match.awayteam_score)
+
+        print 'Actual winner: ' + str(match4.match.actual_winner)
+        self.assertEqual(match4.match.actual_winner, -1, 'This is draw')
+
+        # test another match
+        match5 = self.u1.list_matches()[2]
+        print match5
+        print 'WAS PLAYED?' + str(match5.match.date)
+        print 'Score is '+ str(match5.match.hometeam_score) + ':' +str(match5.match.awayteam_score)
+
+        print 'Actual winner: ' + str(match5.match.actual_winner)
+        self.assertEqual(match5.match.actual_winner, 9259, 'Actual winner was Man City')
+
+
+    def test_bettor_won(self):
+        print ('\n\n-----------------BETTOR WON---------------------')
+        match3 = self.u1.list_matches()[0]
+        match4 = self.u1.list_matches()[1]
+        match3.committed=True
+        match4.committed=True
+
+        db.session.add(match3)
+        db.session.add(match4)
+        db.session.commit()
+        print 'Predicted winner is ' + str (Match.predicted_winner(user=self.u1,match=match3.match).team_winner_id)
+        print 'Actual winner is ' + str(match3.match.actual_winner)
+        print 'Predicted winner is ' + str (Match.predicted_winner(user=self.u1,match=match4.match).team_winner_id)
+        print 'Actual winner is ' + str(match4.match.actual_winner)
+
+        # user guessed it correctly
+        self.assertTrue(match3.bettor_won, 'User predicted match result correctly')
+
+        # the actual result is a draw, user predicted home win
+        self.assertFalse(match4.bettor_won, 'User predicted match result correctly')
+
+        # change the settings so user predicts draw
+        mus1=ModuleUserMatchSettings(user_id=self.u1.id, match_id=match4.match.id, module_id=1, weight=0.2)
+        mus2=ModuleUserMatchSettings(user_id=self.u1.id, match_id=match4.match.id, module_id=2, weight=0.3)
+        mus3=ModuleUserMatchSettings(user_id=self.u1.id, match_id=match4.match.id, module_id=3, weight=0.5)
+
+        db.session.add(mus1)
+        db.session.add(mus2)
+        db.session.add(mus3)
+        db.session.commit()
+
+        user_match_prediction_settings = self.u1.list_match_specific_settings(match_id=match4.match.id)
+
+        print user_match_prediction_settings
+
+
+        print match4.match.hometeam, match4.match.awayteam
+        print 'LEAGUE_POSITION WINNER: {}, %: {}'.format(str(match4.match.prediction_league_position),
+                                                         mus1.weight
+                                              )
+        print  'FORM WINNER: {}, %: {}'.format(str(match4.match.prediction_form),
+                                               mus2.weight
+                                               )
+        print  'HOME_AWAY WINNER: {}, %:{}'.format(str(match4.match.prediction_homeaway),
+                                                mus3.weight
+                                               )
+
+        print 'OVERALL WINNER: {}'.format( str(Match.predicted_winner(match4.match, self.u1)) )
+
+        self.assertTrue(match4.bettor_won, 'User predicted match result correctly')
+

@@ -11,11 +11,12 @@ from ..models import User, Permission, Team, \
 
 from ..email import send_email
 from ..decorators_me import permission_required, templated
-from ..football_data.football_api_wrapper import FootballAPIWrapper
 from .. import socketio
 from threading import Thread, Event
 from ..threads.data_handle_threads import RandomThread, DataUpdateThread
 from collections import namedtuple
+from sqlalchemy import desc, asc
+from collections import OrderedDict
 
 # random number Generator Thread
 thread = Thread()
@@ -32,16 +33,18 @@ def inject_permissions():
 @templated()
 def index():
     show_played_matches = False
+    Match.update_all_matches()
 
     #we get the value of the show_followed cookie from the request cookie dictionary
     #and convert it to boolean
     show_played_matches = bool(request.cookies.get('show_played_matches', ''))
 
     if show_played_matches:
-        my_query = Match.query.filter_by(was_played=True).order_by(Match.date_stamp.desc(), Match.time_stamp.asc())
+        my_query = Match.query.filter_by(was_played=True).order_by(Match.time_stamp.asc())
+        sort_order_reversed=True
     else:
-        my_query = Match.query.filter_by(was_played=False).order_by(Match.date_stamp.asc(), Match.time_stamp.asc())
-
+        my_query = Match.query.filter_by(was_played=False).order_by(Match.time_stamp.asc())
+        sort_order_reversed=False
 
     query = db.session.query(Match.date_stamp.distinct().label("date_stamp"))
     unique_dates = [row.date_stamp for row in query.all()]
@@ -52,8 +55,7 @@ def index():
                if my_query.filter_by(date_stamp=date).all()
     }
 
-
-    return dict(user=current_user, matches=matches)
+    return dict(user=current_user, matches=matches, sort_order_reversed=sort_order_reversed)
 
 
 @main.route('/show_unplayed')
@@ -118,6 +120,10 @@ def delete_message(id):
 @templated()
 def winners():
     users=User.query.all()
+    Winners = namedtuple('Winners',
+                               'username win_points loss_points lsp')
+    #winners_dict=
+
     return dict(user=current_user, users=users)
 
 
@@ -167,15 +173,20 @@ def view_match(match_id):
 def dashboard():
     savedmatches = current_user.saved_matches
 
-    return render_template('main/dashboard.html', savedmatches=savedmatches, user=current_user, title='Dashboard')
+    upcomingmatches=[s for s in savedmatches if not s.savedmatch_played]
+
+
+    return render_template('main/dashboard.html', savedmatches=upcomingmatches, user=current_user, title='Dashboard')
 
 
 @main.route('/archived')
 @login_required
 def archived():
     savedmatches = current_user.saved_matches
+    playedmatches=[s for s in savedmatches if s.savedmatch_played]
 
-    return render_template('main/archived.html', savedmatches=savedmatches, user=current_user, title='Archived')
+
+    return render_template('main/archived.html', savedmatches=playedmatches, user=current_user, title='Archived')
 
 
 @main.route('/prediction_settings', methods=['GET','POST'])
@@ -292,14 +303,13 @@ def admin():
 
 # user profile to view by other users
 @main.route('/user/<username>')
-@templated()
 def user(username):
     user = User.query.filter_by(username=username).first()
     if user is None:
         abort(404)
     #posts = Post.query.filter_by(author=user).order_by(Post.timestamp.desc()).all()
 
-    return dict(user=user)  #posts=posts
+    return render_template('main/user.html', user=user)  #posts=posts
 
 
 '''

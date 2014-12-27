@@ -2,7 +2,7 @@
 {% set active_page = 'dashboard' %}
 {% from 'includes/__formhelpers.html' import render_field, teamkitimage %}
 
-{% block title %}Dashboard{% endblock %}
+{% block title %}Archived{% endblock %}
 
 {% block header %}
 <header id="head" class="secondary"></header>
@@ -14,7 +14,8 @@
 
     <ol class="breadcrumb">
         <li><a href="{{ url_for('.index') }}">Home</a></li>
-        <li class="active">Dashboard</li>
+        <li><a href="{{ url_for('.dashboard') }}">Dashboard</a></li>
+        <li class="active">Archived Matches</li>
     </ol>
 
     <!--sidebar-->
@@ -24,12 +25,8 @@
     <div class="row well">
         {% if savedmatches.length != 0 %}
             {% include 'includes/saved_matches.inc.html' %}
-        {% else %}
-        <p>This is your dashboard!</p>
-
-        <p>Start saving your matches now!<a href="/">HOME</a></p>
         {% endif %}
     </div>
-</div>
+
 </div>
 {% endblock %}

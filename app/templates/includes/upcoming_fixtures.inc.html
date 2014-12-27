@@ -5,13 +5,13 @@
 <!--matches -->
 <div class="jumbotron top-space container">
 
-    {% for key, value in matches.iteritems() | sort  %}
+    {% for key, value in matches.iteritems() |sort (reverse=sort_order_reversed) %}
 
     <!-- matches for date -->
     <div class="matches-for-date">
         <h3 class="match-date row"> {{ moment(key).format('MMMM Do YYYY') }}</h3>
 
-        {% for match in value | sort %}
+        {% for match in value %}
         <!--match-->
         <div class="match row panel panel-default" data="{{match.id}}">
             <div class="panel-body">

@@ -233,24 +233,24 @@ class SavedForLater(db.Model):
 
     savedmatch_played = association_proxy('match', 'was_played')
 
-    def update_lsp(self):
+    def update_lsp(self, rate):
         lsp=0
-        rate1='3/1'
-        # extract 3 1nd 1 from the rate
-        rate_top=3
-        rate_bottom=1
-        lsp = 1 + rate_top / rate_bottom
-        print lsp
-        #self.bettor.lsp=lsp
-        #db.session.add(self.bettor)
+        rateArr=map(int, rate.split('/'))
+        print rateArr
+        if (rateArr[0] > rateArr[1]):
+            lsp = 1 + rateArr[0] / rateArr[1]
+        else:
+            lsp = rateArr[0] / rateArr[1]
 
-    def __repr__(self):
-        return "<SavedForLater> userid: {}, matchid: {}, committed:{}, predicted_winner:{}".format(
-            self.users_id,
-            self.match_id,
-            self.committed,
-            self.predicted_winner
-        )
+        self.bettor.lsp = lsp
+        # should i add this to a session?
+
+    @property
+    def bettor_won(self):
+        if (self.match.actual_winner==Match.predicted_winner(self.match, self.bettor).team_winner_id):
+            return True
+        else:
+            return False
 
     @staticmethod
     def on_changed_match_status(target, value, old_value, initiator):
@@ -316,6 +316,18 @@ class SavedForLater(db.Model):
         # u=User.query.all()[0]
         #  match1=u.list_matches()[2]
         # match1.match.was_played=True
+
+    def __repr__(self):
+        return "<SavedForLater {}/{}> userid: {}, matchid: {}, date:{}, committed:{}, predicted_winner:{}"\
+            .format(
+            self.match.hometeam.name,
+            self.match.awayteam.name,
+            self.users_id,
+            self.match_id,
+            self.match.date,
+            self.committed,
+            self.predicted_winner
+        )
 
 
 '''
@@ -660,7 +672,6 @@ class Match(db.Model):
             db.session.add(match)
 
 
-
         try:
             db.session.commit()
         except:
@@ -735,7 +746,7 @@ class Match(db.Model):
         elif total_weight < 0.5:
             return Winner(match.hometeam.id, match.awayteam.name, 1-winner_probability)
         else:
-            return (-1, 'To Close To Call...', 0.5)
+            return Winner(-1, 'To Close To Call...', 0.5)
 
     'who won the match?'
     @property
@@ -744,13 +755,14 @@ class Match(db.Model):
             if (int(self.hometeam_score) > int(self.awayteam_score)):
                 return self.hometeam_id
             elif(int(self.hometeam_score) == int(self.awayteam_score)):
-                return '-1'
+                return -1
             else:
                 return self.awayteam_id
 
     def __repr__(self):
-        return "<Match> date:{} id:{} {}/{} was_played {} score: {}:{}".format(
+        return "<Match> date:{} time: {} id:{} {}/{} was_played {} score: {}:{}".format(
             self.date,
+            self.time,
             self.id,
             self.hometeam_id,
             self.awayteam_id,

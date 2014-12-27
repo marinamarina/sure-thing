@@ -20,29 +20,8 @@
     </ul>
     <!--/menu-->
 
-    <!--sockets-->
- <div class="jumbotron">
-    <h1>Asynchronous Flask Communication</h1>
-</div>
-
-<div class="container" id="content">
-    <div class="row">
-        <p>Asynchronous page updates will appear here:</p>
-        <h3>Number list:</h3>
-        <div id="log">
-    </div>
-</div>
-
-
-</div>
-    <!--/sockets-->
-
+    <!--matches list-->
     {% include 'includes/upcoming_fixtures.inc.html' %}
+    <!--/matches list-->
 
-        <p>Welcome to my website,
-            {% if current_user.is_authenticated() %}{{ current_user.username }}{% else %} Stranger {% endif %}!
-        </p>
-        {% if not known %}
-            <p>Pleased to meet you</p>
-        {% endif %}
 {% endblock inner_wrapper %}
