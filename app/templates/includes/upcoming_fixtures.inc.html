@@ -22,6 +22,9 @@
                     <span class="team-name clearfix">{{match.hometeam.name}}</span>
                     <span class="team-form clearfix">{{match.awayteam.form}}</span>
                     <span class="team-last-result">2:0 Norwich</span>
+                    {% if match.hometeam_score %}
+                        <span class="team-ft-score">{{match.hometeam_score}}</span>
+                    {% endif %}
 
                 </div>
                 <div class="team-name col-xs-1 text-muted text-center"><span>VS</span><span class="clearfix">ID: {{match.id}} DATE: {{match.date}} TIME: {{match.time}}</span>
@@ -31,6 +34,10 @@
                     <span class="team-name clearfix">{{match.awayteam.name}}</span>
                     <span class="team-form clearfix">{{match.awayteam.form}}</span>
                     <span class="team-last-result">3:0 Norwich</span>
+                    {% if match.awayteam_score %}
+                        <span class="team-ft-score">{{match.awayteam_score}}</span>
+                    {% endif %}
+
                 </div>
                 <div class="status">
                     {% if current_user.is_authenticated() and current_user.has_match_saved(match) %}

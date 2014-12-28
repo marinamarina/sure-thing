@@ -268,7 +268,7 @@ class SavedForLater(db.Model):
     def on_changed_match_status(target, value, old_value, initiator):
         all_savedmatches=SavedForLater.query.all()
 
-    #make sure the match is not just overwritten and win/loss points are re-added for the second time
+        # make sure the match is not just overwritten and win/loss points are re-added for the second time
         if value is True and old_value is False:
 
             # looping through all occurences of this match being saved by any user
@@ -280,13 +280,9 @@ class SavedForLater(db.Model):
 
                     print "users having this match saved and committed: %s" % savedmatch.bettor
                     print 'Won?' + str(savedmatch.bettor_won)
-                    print 'Played?' + str(savedmatch.was_played)
+                    print 'Played?' + str(savedmatch.match.was_played)
 
-                    if not savedmatch.was_played:
-                        title='weird'
-                        body='This is weird'
-
-                    if savedmatch.bettor_won and savedmatch.was_played:
+                    if savedmatch.bettor_won:
                         print('111111')
                         print "old value: " + str(savedmatch.bettor.win_points)
                         savedmatch.bettor.win_points = savedmatch.bettor.win_points+1
@@ -300,7 +296,7 @@ class SavedForLater(db.Model):
 
                         body="congratulation, you predicted this match results correctly."
 
-                    elif not savedmatch.bettor_won and savedmatch.was_played:
+                    elif not savedmatch.bettor_won:
                         print "old value: " + str(savedmatch.bettor.loss_points)
                         savedmatch.bettor.loss_points = savedmatch.bettor.loss_points+1
                         print "new value: " + str(savedmatch.bettor.loss_points)
@@ -323,17 +319,17 @@ class SavedForLater(db.Model):
                     db.session.add(msg)
                     db.session.add(savedmatch.bettor)
 
-            #try:
-            db.session.commit()
-            #except:
-                #db.session.rollback()
-            #   raise
+            try:
+                db.session.commit()
+            except:
+                db.session.rollback()
+                raise
 
 
 
         # update user's LSP
         # u=User.query.all()[0]
-        #  match1=u.list_matches()[2]
+        #  match1=u.list_matches()[1]
         # match1.match.was_played=False
 
 
@@ -675,11 +671,11 @@ class Match(db.Model):
                 match = Match(id=m.id, hometeam_id = m.hometeam_id, awayteam_id = m.awayteam_id, date = m.date, time = m.time,
                         date_stamp = m.date_stamp, time_stamp = m.time_stamp)
 
-                match.hometeam_score = m.hometeam_score
-                match.awayteam_score = m.awayteam_score
+            match.hometeam_score = m.hometeam_score
+            match.awayteam_score = m.awayteam_score
 
 
-            if(m.ft_score != ''):
+            if m.ft_score != '':
                 match.was_played = True
             else:
                 match.was_played = False

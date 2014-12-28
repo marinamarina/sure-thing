@@ -33,7 +33,7 @@ def inject_permissions():
 @templated()
 def index():
     show_played_matches = False
-    #Match.update_all_matches()
+    Match.update_all_matches()
 
     #we get the value of the show_followed cookie from the request cookie dictionary
     #and convert it to boolean
@@ -169,7 +169,6 @@ def commit_match(match_id):
         # use default
         weights_used = default_weights
 
-    print weights_used
 
     if(savedmatch.committed==True):
         return redirect(url_for('.dashboard'))
