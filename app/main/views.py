@@ -151,7 +151,7 @@ def commit_match(match_id):
     module_length = len(prediction_modules)
     winner = Match.predicted_winner(savedmatch.match, me)
     team_winner_id = winner.team_winner_id
-    default_weights = [module.default_weight for module in prediction_modules]
+    default_weights = [module for module in prediction_modules]
 
     # check what settings were used
     if not me is None:
@@ -164,6 +164,7 @@ def commit_match(match_id):
     elif user_prediction_settings:
         # use user specific
         weights_used = user_prediction_settings
+
     else:
         # use default
         weights_used = default_weights
@@ -174,11 +175,10 @@ def commit_match(match_id):
         return redirect(url_for('.dashboard'))
     else:
         savedmatch.committed=True
-
-        #savedmatch.weight_league_position = weights_used[0]
-        #savedmatch.weight_form = weights_used[1]
-        #savedmatch.weight_home_away = weights_used[2]
-        savedmatch.predicted_winner=team_winner_id
+        savedmatch.weight_league_position = weights_used[0].weight
+        savedmatch.weight_form = weights_used[1].weight
+        savedmatch.weight_home_away = weights_used[2].weight
+        savedmatch.predicted_winner = team_winner_id
         db.session.add(savedmatch)
         db.session.commit()
         flash("Congratulation! You have successfully committed your saved match!")
@@ -300,7 +300,6 @@ def view_match_dashboard(match_id):
         match_specific_weights = ['' for i in range(0, len(modules))]
 
     winner = Match.predicted_winner(savedmatch, user=me)
-    flash(winner)
 
     return render_template('main/view_match_dashboard.html',
                            form=form,

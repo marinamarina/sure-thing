@@ -153,7 +153,7 @@ class PredictionModule(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64), index=True)
     description = db.Column(db.String(64))
-    default_weight = db.Column(db.Float)
+    weight = db.Column(db.Float)
 
     @staticmethod
     def insert_modules():
@@ -166,7 +166,7 @@ class PredictionModule(db.Model):
             module = PredictionModule.query.filter_by(name=m).first()
             if module is None:
                 module = PredictionModule(name=m)
-            module.default_weight = modules[m]
+            module.weight = modules[m]
             db.session.add(module)
         db.session.commit()
         db.session.close()
@@ -175,7 +175,7 @@ class PredictionModule(db.Model):
         return "<PredictionModule> id:{} name:{} weight:{}".format(
                 self.id,
                 self.name,
-                self.default_weight
+                self.weight
         )
 
 class ModuleUserSettings(db.Model):
@@ -225,11 +225,9 @@ class SavedForLater(db.Model):
     predicted_winner = db.Column(db.Integer, default=None)
     match = db.relationship( "Match", backref = "user_assocs", order_by="Match.date_stamp, Match.time_stamp")
     bettor = db.relationship( "User", backref="bettor")
-    match_specific_settings = db.relationship( "ModuleUserMatchSettings", backref="settings")
+    match_specific_settings = db.relationship("ModuleUserMatchSettings", backref="settings")
 
     was_played = association_proxy('match', 'was_played')
-    #was_played = association_proxy('match', 'was_played')
-
 
 
     def update_lsp(self, rate):
@@ -749,7 +747,7 @@ class Match(db.Model):
                 weight=user_prediction_settings[i].weight
             else:
                 print('No user settings provided, use default SYSTEM settings')
-                weight=prediction_modules[i].default_weight
+                weight=prediction_modules[i].weight
 
 
             if( match.hometeam_id == module_winners[i].id ):
