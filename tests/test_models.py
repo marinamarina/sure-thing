@@ -333,3 +333,9 @@ class TestPredictionSettings(unittest.TestCase):
 
         self.assertTrue(match4.bettor_won, 'User predicted match result correctly')
 
+
+    def test_winning_config(self):
+        match=Match.query.filter_by(id=1963810).first()
+        pass
+
+

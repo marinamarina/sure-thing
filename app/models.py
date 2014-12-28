@@ -7,13 +7,8 @@ from . import login_manager
 from datetime import datetime
 import hashlib
 from flask import flash
-from markdown import markdown
-import bleach
-from sqlalchemy.orm.collections import attribute_mapped_collection
 from sqlalchemy.ext.associationproxy import association_proxy
-from sqlalchemy.orm import relation
 from collections import namedtuple
-
 
 
 """Database models representation"""
@@ -191,6 +186,7 @@ class ModuleUserSettings(db.Model):
     weight = db.Column(db.Float)
     user = db.relationship("User", backref = "user_assocs")
 
+
     def __repr__(self):
         return "<ModuleUserSettings> user_id: {}, module_id: {}, weight:{}".format(
             self.user_id,
@@ -231,7 +227,8 @@ class SavedForLater(db.Model):
     bettor = db.relationship( "User", backref="bettor")
     match_specific_settings = db.relationship( "ModuleUserMatchSettings", backref="settings")
 
-    savedmatch_played = association_proxy('match', 'was_played')
+    was_played = association_proxy('match', 'was_played')
+
 
     def update_lsp(self, rate):
         lsp=0
@@ -268,9 +265,9 @@ class SavedForLater(db.Model):
 
                     print "users having this match saved and committed: %s" % savedmatch.bettor
                     print 'Won?' + str(savedmatch.bettor_won)
-                    print 'Played?' + str(savedmatch.match.was_played)
+                    print 'Played?' + str(savedmatch.was_played)
 
-                    if savedmatch.bettor_won and not savedmatch.match.was_played:
+                    if savedmatch.bettor_won and not savedmatch.was_played:
                         print('333333333')
                         print "old value: " + str(savedmatch.bettor.win_points)
                         savedmatch.bettor.win_points = savedmatch.bettor.win_points+1
@@ -284,7 +281,7 @@ class SavedForLater(db.Model):
 
                         body="congratulation, you predicted this match results correctly."
 
-                    elif not savedmatch.bettor_won and not savedmatch.match.was_played:
+                    elif not savedmatch.bettor_won and not savedmatch.was_played:
                         print "old value: " + str(savedmatch.bettor.loss_points)
                         savedmatch.bettor.loss_points = savedmatch.bettor.loss_points+1
                         print "new value: " + str(savedmatch.bettor.loss_points)
@@ -407,6 +404,9 @@ class User(UserMixin, db.Model):
 
     messages = db.relationship('Message', backref='addressee', lazy='dynamic')
 
+    # take a look, this provides me an overview of matches for the user, only this value
+    winners = association_proxy('saved_matches', 'bettor_won')
+
 
     def __init__(self, **kwargs):
         super(User, self).__init__(**kwargs)
@@ -479,7 +479,7 @@ class User(UserMixin, db.Model):
 
     def save_match(self, match):
         '''!!!add restriction to only save matches that have not yet been played'''
-        if not self.is_match_saved(match):
+        if not self.has_match_saved(match):
             #self.saved_matches.append(match)
             s = SavedForLater(user=self, match=match)
             db.session.add(self)
@@ -491,7 +491,7 @@ class User(UserMixin, db.Model):
         if s:
             db.session.delete(s)
 
-    def is_match_saved(self, match):
+    def has_match_saved(self, match):
         return self.saved_matches.filter_by(match_id=match.id).first() is not None
 
     'insert your match id as a parameter in case you want to see only one match'
@@ -639,7 +639,7 @@ class Match(db.Model):
     awayteam_id = db.Column(db.Integer, db.ForeignKey('teams.id'), nullable=False)
     hometeam_score = db.Column(db.String(4))
     awayteam_score = db.Column(db.String(4))
-    users = db.relationship('SavedForLater', backref='saved_matches', lazy='dynamic')
+    saved_for_later = db.relationship('SavedForLater', backref='saved_matches', lazy='dynamic')
     comments = db.relationship('Comment', backref='match', lazy='dynamic')
 
     '''def __init__(self, id, hometeam_id, awayteam_id, date, time, date_stamp, time_stamp):

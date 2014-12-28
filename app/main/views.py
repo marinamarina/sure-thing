@@ -133,7 +133,7 @@ def save_match(match_id):
     me = current_user
     match = Match.query.filter_by(id=match_id).first()
 
-    if me.is_match_saved(match):
+    if me.has_match_saved(match):
         flash("You have already saved this match to  your dashboard.")
         return redirect(url_for('.index'))
 
@@ -147,13 +147,36 @@ def save_match(match_id):
 def commit_match(match_id):
     me = current_user
     savedmatch = me.list_matches(match_id=match_id)[0]
+    prediction_modules = PredictionModule.query.all()
+    module_length = len(prediction_modules)
     winner = Match.predicted_winner(savedmatch.match, me)
     team_winner_id = winner.team_winner_id
+    default_weights = [module.default_weight for module in prediction_modules]
+
+    # check what settings were used
+    if not me is None:
+        user_prediction_settings = me.list_prediction_settings()
+        user_match_prediction_settings = me.list_match_specific_settings(match_id=savedmatch.match.id)
+
+    if user_match_prediction_settings:
+        # use match specific
+        weights_used = user_match_prediction_settings
+    elif user_prediction_settings:
+        # use user specific
+        weights_used = user_prediction_settings
+    else:
+        # use default
+        weights_used = default_weights
+
+    print weights_used
 
     if(savedmatch.committed==True):
         return redirect(url_for('.dashboard'))
     else:
         savedmatch.committed=True
+        savedmatch.weight_league_position = weights_used[0]
+        savedmatch.weight_form = weights_used[1]
+        savedmatch.weight_home_away = weights_used[2]
         savedmatch.predicted_winner=team_winner_id
         db.session.add(savedmatch)
         db.session.commit()
@@ -174,12 +197,12 @@ def dashboard():
     savedmatches = current_user.saved_matches
     sort_order_reversed=False
 
-    upcomingmatches=[s for s in savedmatches if not s.savedmatch_played]
+    upcomingmatches=[s for s in savedmatches if not s.was_played]
 
 
     return render_template('main/dashboard.html',
                            savedmatches=upcomingmatches,
-                            sort_order_reversed=sort_order_reversed,
+                           sort_order_reversed=sort_order_reversed,
                            user=current_user,
                            title='Dashboard')
 
@@ -189,7 +212,7 @@ def dashboard():
 def archived():
     savedmatches = current_user.saved_matches
     sort_order_reversed = True
-    playedmatches=[s for s in savedmatches if s.savedmatch_played]
+    playedmatches=[s for s in savedmatches if s.was_played]
 
 
     return render_template('main/archived.html',

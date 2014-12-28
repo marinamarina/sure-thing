@@ -32,6 +32,11 @@
                     <span class="team-form clearfix">{{match.awayteam.form}}</span>
                     <span class="team-last-result">3:0 Norwich</span>
                 </div>
+                <div class="status">
+                    {% if current_user.is_authenticated() and current_user.has_match_saved(match) %}
+                        <span>Saved</span>
+                    {% endif %}
+                </div>
                 <div class="btn-group-xs pull-right" role="group">
                     <a class="btn btn-primary">Comments ></a>
                     {% if not match.was_played %}
