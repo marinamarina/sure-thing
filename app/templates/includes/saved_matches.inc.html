@@ -3,7 +3,7 @@
 <!-- saved matches -->
 <div class="jumbotron top-space container">
 
-    {% for savedmatch in savedmatches |sort (reverse=sort_order_reversed) %}
+    {% for savedmatch in savedmatches %}
 
     <!--match-->
     <div class="match row panel panel-default {% if savedmatch.committed %}committed_match{% endif %}"

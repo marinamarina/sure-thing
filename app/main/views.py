@@ -33,7 +33,7 @@ def inject_permissions():
 @templated()
 def index():
     show_played_matches = False
-    Match.update_all_matches()
+    #Match.update_all_matches()
 
     #we get the value of the show_followed cookie from the request cookie dictionary
     #and convert it to boolean
@@ -174,9 +174,10 @@ def commit_match(match_id):
         return redirect(url_for('.dashboard'))
     else:
         savedmatch.committed=True
-        savedmatch.weight_league_position = weights_used[0]
-        savedmatch.weight_form = weights_used[1]
-        savedmatch.weight_home_away = weights_used[2]
+
+        #savedmatch.weight_league_position = weights_used[0]
+        #savedmatch.weight_form = weights_used[1]
+        #savedmatch.weight_home_away = weights_used[2]
         savedmatch.predicted_winner=team_winner_id
         db.session.add(savedmatch)
         db.session.commit()
@@ -194,15 +195,14 @@ def view_match(match_id):
 @main.route('/dashboard')
 @login_required
 def dashboard():
-    savedmatches = current_user.saved_matches
-    sort_order_reversed=False
+    savedmatches = current_user.list_matches()
 
     upcomingmatches=[s for s in savedmatches if not s.was_played]
 
 
+
     return render_template('main/dashboard.html',
                            savedmatches=upcomingmatches,
-                           sort_order_reversed=sort_order_reversed,
                            user=current_user,
                            title='Dashboard')
 
@@ -210,14 +210,12 @@ def dashboard():
 @main.route('/archived')
 @login_required
 def archived():
-    savedmatches = current_user.saved_matches
-    sort_order_reversed = True
-    playedmatches=[s for s in savedmatches if s.was_played]
+    savedmatches = current_user.list_matches()
+    playedmatches=[s for s in reversed(savedmatches) if s.was_played]
 
 
     return render_template('main/archived.html',
                            savedmatches=playedmatches,
-                           sort_order_reversed=sort_order_reversed,
                            user=current_user,
                            title='Archived')
 
@@ -291,6 +289,7 @@ def view_match_dashboard(match_id):
 
             try:
                 db.session.add(settings_item)
+                return redirect(url_for('.view_match_dashboard'))
             except Exception:
                 db.session.flush()
 
@@ -323,7 +322,10 @@ def remove_match(match_id):
     flash("Congratulations, you have removed this match from your dashboard!")
     saved_matches = me.saved_matches
 
-    return redirect(url_for('.dashboard', matches=saved_matches))
+    if match.was_played:
+        return redirect(url_for('.archived', matches=saved_matches))
+    else:
+        return redirect(url_for('.dashboard', matches=saved_matches))
 
 
 @main.route('/admin', methods=['GET', 'POST'])

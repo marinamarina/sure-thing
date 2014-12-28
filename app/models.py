@@ -223,11 +223,13 @@ class SavedForLater(db.Model):
     weight_form = db.Column(db.Float, default=None)
     weight_home_away = db.Column(db.Float, default=None)
     predicted_winner = db.Column(db.Integer, default=None)
-    match = db.relationship( "Match", backref = "user_assocs")
+    match = db.relationship( "Match", backref = "user_assocs", order_by="Match.date_stamp, Match.time_stamp")
     bettor = db.relationship( "User", backref="bettor")
     match_specific_settings = db.relationship( "ModuleUserMatchSettings", backref="settings")
 
     was_played = association_proxy('match', 'was_played')
+    #was_played = association_proxy('match', 'was_played')
+
 
 
     def update_lsp(self, rate):
@@ -248,6 +250,21 @@ class SavedForLater(db.Model):
             return True
         else:
             return False
+    def __repr__(self):
+        return "<SavedForLater {}/{}> " \
+               "userid: {}, matchid: {}, date:{}, committed:{}, " \
+               "weight_league_position: {}" \
+               "predicted_winner:{}"\
+            .format(
+            self.match.hometeam.name,
+            self.match.awayteam.name,
+            self.users_id,
+            self.match_id,
+            self.match.date,
+            self.committed,
+            self.weight_league_position,
+            self.predicted_winner
+    )
 
     @staticmethod
     def on_changed_match_status(target, value, old_value, initiator):
@@ -267,8 +284,12 @@ class SavedForLater(db.Model):
                     print 'Won?' + str(savedmatch.bettor_won)
                     print 'Played?' + str(savedmatch.was_played)
 
-                    if savedmatch.bettor_won and not savedmatch.was_played:
-                        print('333333333')
+                    if not savedmatch.was_played:
+                        title='weird'
+                        body='This is weird'
+
+                    if savedmatch.bettor_won and savedmatch.was_played:
+                        print('111111')
                         print "old value: " + str(savedmatch.bettor.win_points)
                         savedmatch.bettor.win_points = savedmatch.bettor.win_points+1
                         print "new value: " + str(savedmatch.bettor.win_points)
@@ -281,7 +302,7 @@ class SavedForLater(db.Model):
 
                         body="congratulation, you predicted this match results correctly."
 
-                    elif not savedmatch.bettor_won and not savedmatch.was_played:
+                    elif not savedmatch.bettor_won and savedmatch.was_played:
                         print "old value: " + str(savedmatch.bettor.loss_points)
                         savedmatch.bettor.loss_points = savedmatch.bettor.loss_points+1
                         print "new value: " + str(savedmatch.bettor.loss_points)
@@ -316,18 +337,6 @@ class SavedForLater(db.Model):
         # u=User.query.all()[0]
         #  match1=u.list_matches()[2]
         # match1.match.was_played=False
-
-    def __repr__(self):
-        return "<SavedForLater {}/{}> userid: {}, matchid: {}, date:{}, committed:{}, predicted_winner:{}"\
-            .format(
-            self.match.hometeam.name,
-            self.match.awayteam.name,
-            self.users_id,
-            self.match_id,
-            self.match.date,
-            self.committed,
-            self.predicted_winner
-        )
 
 
 '''
@@ -394,18 +403,23 @@ class User(UserMixin, db.Model):
 
     prediction_settings = db.relationship('ModuleUserSettings',
                                           backref='bettor',
-                                          foreign_keys=[ModuleUserSettings.user_id], lazy='dynamic')
+                                        foreign_keys=[ModuleUserSettings.user_id],
+                                        lazy='dynamic',
+                                        cascade='all, delete-orphan'
+    )
 
     match_specific_settings = db.relationship('ModuleUserMatchSettings',
                                           backref='bettor_match',
                                           foreign_keys=[ModuleUserMatchSettings.user_id, PredictionModule.id],
-                                          lazy='dynamic')
+                                          lazy='dynamic',
+                                          cascade='all, delete-orphan'
+    )
 
 
     messages = db.relationship('Message', backref='addressee', lazy='dynamic')
 
     # take a look, this provides me an overview of matches for the user, only this value
-    winners = association_proxy('saved_matches', 'bettor_won')
+    #winners = association_proxy('saved_matches', 'bettor_won')
 
 
     def __init__(self, **kwargs):
@@ -495,9 +509,9 @@ class User(UserMixin, db.Model):
         return self.saved_matches.filter_by(match_id=match.id).first() is not None
 
     'insert your match id as a parameter in case you want to see only one match'
-    def list_matches(self, **kwargs):
+    def list_matches(self, *args, **kwargs):
         return [match
-                for match in self.saved_matches.filter_by(**kwargs)
+                for match in self.saved_matches.filter_by(**kwargs).order_by(*args)
         ]
 
     'insert your module id as a parameter in case you want to see only one module value'
