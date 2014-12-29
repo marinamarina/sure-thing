@@ -265,8 +265,6 @@ def view_match_dashboard(match_id):
     match_specific_weights = me.list_match_specific_settings(match_id=savedmatch.id)
     modules= PredictionModule.query.all()
 
-    flash (savedmatch)
-    flash(match_specific_weights)
 
     if form.validate_on_submit():
         '''if(me.list_matches(match_id=match_id)[0].committed):
@@ -276,27 +274,31 @@ def view_match_dashboard(match_id):
             # if user already has set custom weights for the match
             if match_specific_weights:
                 settings_item = ModuleUserMatchSettings.query.filter_by(user_id=me.id, match_id=savedmatch.id, module_id=module.id).first()
-                flash(1)
-                flash (type(settings_item.weight))
-
+                print(1)
             else:
                 # create a new one
+                print(2)
                 settings_item = ModuleUserMatchSettings(user_id=me.id, match_id=savedmatch.id, module_id=module.id)
-                flash(2)
 
             settings_item.weight = form[module.name + '_weight'].data
 
             try:
                 db.session.add(settings_item)
-                return redirect(url_for('.view_match_dashboard'))
             except Exception:
                 db.session.flush()
 
+        db.session.commit()
+
+        return redirect(url_for('.view_match_dashboard', match_id=savedmatch.id))
         flash('You have saved your match specific prediction settings, congratulations!')
+
 
     # if user has no betting settings, make each current weight equal to an empty string
     if not match_specific_weights:
+        flash('match specific settings not found')
         match_specific_weights = ['' for i in range(0, len(modules))]
+
+
 
     winner = Match.predicted_winner(savedmatch, user=me)
 
@@ -309,6 +311,24 @@ def view_match_dashboard(match_id):
                            current_weights=match_specific_weights
                            )
 
+'''   post = Post.query.get_or_404(id)
+    form = CommentPostForm()
+    if form.validate_on_submit():
+        comment = Comment(body=form.body_html.data,
+                          post=post,
+                          author=current_user._get_current_object())
+        try:
+            #add new comment
+            db.session.add(comment)
+            return redirect(url_for('.post', id=post.id))
+        except Exception:
+            db.session.flush()
+        finally:
+            flash('Your comment has been published!')
+
+    comments = post.comments.order_by(Comment.timestamp.asc()).all()
+
+    return render_template('main/post.html', comments=comments, posts=[post], form=form)'''
 
 @main.route('/remove_match/<int:match_id>')
 @login_required

@@ -118,7 +118,9 @@
       <h2 id="teamWinner">{{ team_winner_name }}</h2>
       <h2>{{ probability }}</h2>
 <!-- /overall winner -->
-<a href="{{ url_for('.commit_match', match_id=savedmatch.id) }}" class="btn btn-primary" id="commitToBet">Commit</a>
+{% if not savedmatch.committed %}
+    <a href="{{ url_for('.commit_match', match_id=savedmatch.id) }}" class="btn btn-primary" id="commitToBet">Commit</a>
+{% endif %}
 
 </div>
 {% endblock inner_wrapper %}

@@ -1,6 +1,6 @@
 {% from 'includes/__formhelpers.html' import render_field, render_submit_field %}
 
-<!--match specific prediction weight form-->
+<!-- match specific prediction weight form -->
 <form method="POST" class="form-horizontal" role="form">
      {{ render_field(form.league_position_weight, current_weights[0].weight) }}
      {{ render_field(form.form_weight, current_weights[1].weight) }}

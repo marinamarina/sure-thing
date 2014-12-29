@@ -225,7 +225,11 @@ class SavedForLater(db.Model):
     predicted_winner = db.Column(db.Integer, default=None)
     match = db.relationship( "Match", backref = "user_assocs", order_by="Match.date_stamp, Match.time_stamp")
     bettor = db.relationship( "User", backref="bettor")
-    match_specific_settings = db.relationship("ModuleUserMatchSettings", backref="settings")
+    match_specific_settings = db.relationship("ModuleUserMatchSettings",
+                                                backref=db.backref('settings', lazy='joined'),
+                                                lazy='dynamic',
+                                                cascade='all, delete-orphan'
+    )
 
     was_played = association_proxy('match', 'was_played')
 
