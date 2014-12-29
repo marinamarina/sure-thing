@@ -3,7 +3,13 @@
     	@include team-kit
 	}
 	.committed_match {
-    	color: #CCC;
+    	color: #6A6A6A;
     	background-color: #DDD;
+	}
+	.predicted-winner {
+		color: #FF981C;
+		font-weight: bold;
+		height: 20px;
+		display: block;
 	}
 }

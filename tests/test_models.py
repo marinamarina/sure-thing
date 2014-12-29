@@ -138,6 +138,7 @@ class TestPredictionSettings(unittest.TestCase):
 
         print 'OVERALL WINNER: {}'.format( str(Match.predicted_winner(match1, self.u1)) )
 
+
     @unittest.skip('')
     def test_user_match_prediction(self):
         print ('\n--------TESTING MATCH SPECIFIC USER CONFIGURATION-------')
@@ -194,6 +195,7 @@ class TestPredictionSettings(unittest.TestCase):
 
         print 'OVERALL WINNER: {}'.format( str(Match.predicted_winner(match1, self.u1)) )
 
+
     @unittest.skip('')
     def test_multiple_users_match_predictions(self):
         # this is tested match
@@ -244,6 +246,8 @@ class TestPredictionSettings(unittest.TestCase):
             self.assertGreaterEqual(Match.predicted_winner(match1, u2).probability, 0.48)
 
 
+
+    @unittest.skip('')
     def test_lsp(self):
         print ('\n-----------------TESTING LSP---------------------')
         match1 = self.u1.list_matches()[0]
@@ -251,6 +255,8 @@ class TestPredictionSettings(unittest.TestCase):
         #self.assertTrue(match1.update_lsp('3/1') == 4, 'LSP is equal to a certain value')
 
 
+
+    @unittest.skip('')
     def test_actual_winner(self):
         print ('\n\n-----------------ACTUAL WINNER---------------------')
 
@@ -282,6 +288,8 @@ class TestPredictionSettings(unittest.TestCase):
         self.assertEqual(match5.match.actual_winner, 9259, 'Actual winner was Man City')
 
 
+
+    @unittest.skip('')
     def test_bettor_won(self):
         print ('\n\n-----------------BETTOR WON---------------------')
         match3 = self.u1.list_matches()[0]
@@ -334,6 +342,7 @@ class TestPredictionSettings(unittest.TestCase):
         self.assertTrue(match4.bettor_won, 'User predicted match result correctly')
 
 
+    @unittest.skip('')
     def test_winning_config(self):
         match=Match.query.filter_by(id=1963810).first()
         pass

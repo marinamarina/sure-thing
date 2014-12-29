@@ -770,7 +770,7 @@ class Match(db.Model):
         if total_weight > 0.5:
             return Winner(match.hometeam.id, match.hometeam.name, winner_probability)
         elif total_weight < 0.5:
-            return Winner(match.hometeam.id, match.awayteam.name, 1-winner_probability)
+            return Winner(match.awayteam.id, match.awayteam.name, 1-winner_probability)
         else:
             return Winner(-1, 'To Close To Call...', 0.5)
 

@@ -557,13 +557,21 @@ def test_connect():
     global thread
     print('Client connected')
 
-    #Start the random number generator thread only if the thread has not been started before.
+    #Start the data update thread only if the thread has not been started before.
     if not thread.isAlive():
         print "Starting Thread"
+        #print 'CAPTURED!'
         thread = DataUpdateThread()
         thread.start()
 
 
 @socketio.on('disconnect', namespace='/test')
 def test_disconnect():
+
     print('Client disconnected')
+
+
+'''@socketio.on('data_updated', namespace='/test')
+def test_data_updated(time):
+    #session['receive_count'] = session.get('receive_count', 0) + 1
+    print 'CAPTURED1! ' + time'''

@@ -18,10 +18,7 @@
         $('#log').html(numbers_string);
     });
     socket.on('data_updated', function(msg) {
-        console.log("received data update event!" + msg.time);
         $('#log').append('<p> Data updated at: ' + msg.time + '</p>');
-
-
     });
 
     var commitToBetButton = $('#commitToBet'),
@@ -31,12 +28,12 @@
     commitToBetButton.on('click', function () {
             //var gender = $(this).val();
             //calculatorModel.updateGender(gender);
-            console.log('Clicked!')
             socket.emit('matchCommited', $('#teamWinner').text());
 
     });
+
+    //no more new messages found for this user
     socket.on('no_new_messages', function(msg) {
-        console.log("No new messages found for this user!");
         navMessages.removeClass('orange');
     });
 

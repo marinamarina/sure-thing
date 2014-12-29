@@ -20,16 +20,16 @@
                     {{ teamkitimage(match, home=1) }}
 
                     <span class="team-name clearfix">{{match.hometeam.name}}</span>
-                    <span class="team-form clearfix">{{match.awayteam.form}}</span>
+                    <span class="team-form clearfix">{{match.hometeam.form}}</span>
                     <span class="team-last-result">2:0 Norwich</span>
                 </div>
                 <div class="kick-off col-sm-2 text-muted text-center">
                     <span>VS</span>
                     <span class="clearfix">KO: {{match.time}} </span>
-                    <span>Current score:</span>
+                    <span>Score:</span>
                     {% if match.hometeam_score %}
-                        <span class="hometeam-score">{{match.hometeam_score}}</span>
-                        <span class="awayteam-score">{{match.awayteam_score}}</span>
+                        <span class="hometeam_score orange">{{match.hometeam_score}} :</span>
+                        <span class="awayteam_score orange">{{match.awayteam_score}}</span>
                     {% endif %}
                 </div>
                 <div class="away-team team col-sm-3 text-center">

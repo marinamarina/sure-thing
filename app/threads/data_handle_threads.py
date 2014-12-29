@@ -3,7 +3,7 @@ from random import random
 from time import sleep
 from .. import socketio
 from .. import faw
-from ..models import Match
+
 from datetime import datetime
 
 #random number Generator Thread
@@ -31,6 +31,7 @@ class RandomThread(Thread):
     def run(self):
         self.randomNumberGenerator()
 
+
 class DataUpdateThread(Thread):
     def __init__(self):
         self.delay = 100 #seconds
@@ -44,12 +45,16 @@ class DataUpdateThread(Thread):
         #infinite loop of data updates
         print "Updating the data"
         while not thread_stop_event.isSet():
-            print('Data reloaded at ' + datetime.today().strftime("%Y-%m-%d %H:%M:%S"))
+            print('Data written to the server at ' + datetime.today().strftime("%Y-%m-%d %H:%M:%S"))
             faw.write_matches_data()
             sleep(30)
             faw.write_standings_data()
             time = datetime.today().strftime("%Y-%m-%d %H:%M:%S")
             socketio.emit('data_updated', {'time' : time}, namespace='/test')
+
+            #with current_app.app_context():
+            #    Match.update_all_matches()
+
             sleep(self.delay)
 
     def run(self):

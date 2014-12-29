@@ -18,7 +18,7 @@ class FootballAPIWrapper:
 
         self.__premier_league_id = '1204'
         self.__base_url = 'http://football-api.com/api/?Action='
-        self.proxy_on = True
+        self.proxy_on = False
 
     def init_app(self, app):
         '''if hasattr(app, 'teardown_appcontext'):
@@ -90,8 +90,7 @@ class FootballAPIWrapper:
         return output_data
 
     def feed_ids_names(self):
-        'Create an team id -> name relationship'
-
+        """Create an team id -> name relationship"""
         with open(self.data_dir + '/standings.json', 'r') as localfile:
             standings_data = json.load(localfile)
         localfile.close()
@@ -105,7 +104,7 @@ class FootballAPIWrapper:
         return output_data
 
     def get_all_matches(self):
-        'Get the matches json from an API'
+        """Get the matches json from an API"""
         action = 'fixtures'
         params = {'from_date': '01.08.' + str(self.date_tuple.beginning_year), 'to_date' : '31.05.' + str(self.date_tuple.end_year)}
         all_matches = self.call_api(action, **params)
@@ -130,11 +129,11 @@ class FootballAPIWrapper:
             outfile.close()
             print ('matches updated!')
         except KeyError:
-            print ('*********Please, update your IP address!**************')
+            print ('*********Please, update your IP address!*********')
 
 
     def write_standings_data (self):
-        'Write standings json to the local file'
+        """Write standings json to the local file"""
         raw_data = dict()
 
         try:
@@ -152,11 +151,11 @@ class FootballAPIWrapper:
 
 
     def feed_all_and_unplayed_matches(self):
-        '''
+        """
         Create a named tuple with all matches for the season
         Read the data from a local file
         :return tuple of two arrays of tuples
-        '''
+        """
 
         with open(self.data_dir + '/all_matches.json', 'r') as localfile:
             matches_data = json.load(localfile)
@@ -208,8 +207,6 @@ class FootballAPIWrapper:
         league_table = OrderedDict()
         TeamInfo = namedtuple('TeamInfo', 'position team_name matches_played w d l goals_for goals_against gp points form')
 
-     #   for sortedKey in sorted(dictionary):
-    #print dictionary[sortedKeY] # gives the values sorted by key
 
         for team in standings_data['standings']:
             league_table[team['stand_team_id']] = TeamInfo(team['stand_position'], team['stand_team_name'], team['stand_round'],
@@ -219,17 +216,14 @@ class FootballAPIWrapper:
         return league_table
 
     def form_and_tendency(self):
-        'I need to output last 5 matches for a team for the team (tendency and result)'
-        action = 'fixtures'
-        params = {'from_date': '01.08.' + str(self.date_tuple.beginning_year), 'to_date' :str(self.date_tuple.today)}
+        """I need to output last 5 matches for a team for the team (tendency and result)
+        team_id: list_of_matches[(date,home/away,whom_played,score,w/l)]
+        """
 
-        data_matches = self.call_api(action, **params)
 
-        for match in data_matches["matches"]:
-            if match["match_status"] == "FT":
-                if match["match_localteam_id"] == '9260' or match["match_visitorteam_id"] == '9260':
-                    pass
-                    #print match["match_formatted_date"], match["match_localteam_name"], match["match_visitorteam_name"], match["match_ft_score"]
+        for team in self.ids_names:
+            print team
+
 
 
     @property

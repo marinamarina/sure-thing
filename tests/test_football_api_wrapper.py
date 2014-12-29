@@ -14,6 +14,7 @@ class TestFootballAPIWrapper(unittest.TestCase):
     def test_get_beginning_year(self):
         pass
 
+    @unittest.skip('')
     def test_unplayed_matches_tuple(self):
         from datetime import datetime
         matches = self.faw.unplayed_matches
@@ -22,7 +23,7 @@ class TestFootballAPIWrapper(unittest.TestCase):
                             "All the matches dates should be IN THE FUTURE compared to today")
             self.assertTrue(m.ft_score == '', 'FT Score is unknown=>match has not been played yet')
 
-
+    @unittest.skip('')
     def test_played_matches_tuple(self):
         from datetime import datetime
         matches = self.faw.played_matches
@@ -31,6 +32,7 @@ class TestFootballAPIWrapper(unittest.TestCase):
                             "All the matches dates should be IN THE PAST compared to today")
 
 
+    @unittest.skip('')
     def test_standings(self):
         league_table = self.faw.league_table
         print ("\n")
@@ -38,3 +40,7 @@ class TestFootballAPIWrapper(unittest.TestCase):
 
         for team_id, tuple in league_table.items():
             print team_id, tuple.position
+
+
+    def test_unplayed_matches_tuple(self):
+        self.faw.form_and_tendency()

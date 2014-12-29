@@ -183,6 +183,10 @@ img.pull-left { margin-right: 10px; }
 
 	.widget-simplenav { margin-left:-5px; }		
 	.widget-simplenav a{ margin:0 5px; }		
+.orange {
+  color: #FF981C;
+}
+
 /* Layout specific */
 .secondary-small {
   height: 100px;
@@ -331,10 +335,6 @@ hr {
 }
 
 /* Navbar */
-.orange {
-  color: #FFCC00;
-}
-
 /* Matches Overview */
 #matches-overview .match-date {
   border-bottom: 1px solid #CCC;
@@ -560,6 +560,12 @@ hr {
   width: 90px;
 }
 #saved-matches .committed_match {
-  color: #CCC;
+  color: #6A6A6A;
   background-color: #DDD;
+}
+#saved-matches .predicted-winner {
+  color: #FF981C;
+  font-weight: bold;
+  height: 20px;
+  display: block;
 }

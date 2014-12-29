@@ -17,7 +17,6 @@ def before_request():
 
         if not current_user.confirmed and request.endpoint[0:5] != 'auth.':
             return redirect(url_for('auth.unconfirmed'))'''
-    pass
 
 
 @auth.route('/login', methods=['GET', 'POST'])
