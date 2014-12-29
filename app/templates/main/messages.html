@@ -1,6 +1,8 @@
-{% from 'includes/__formhelpers.html' import teamkitimage %}
+{% from 'includes/__formhelpers.html' import teamkitimage, render_field %}
+{{ moment.include_jquery() }}
+{{ moment.include_moment() }}
+
 {% extends 'base.html' %}
-{% from 'includes/__formhelpers.html' import render_field %}
 
 {% block title %}Messages{% endblock %}
 
@@ -33,12 +35,11 @@
                 <!-- message preview -->
                 <div class="match row panel panel-default" data="{{message.id}}">
                     <div class="panel-body">
-                        <p class="col-sm-5" >
+                        <p class="col-sm-7" >
                             {% if message.new %}<strong>{{ message.title }}</strong>
                             {% else %} {{ message.title }} {% endif %}
                         </p>
-
-                        <p class="col-sm-3 col-sm-offset-3">{{ message.timestamp }}</p>
+                        <p class="col-sm-3 col-sm-offset-2">{{moment(message.timestamp).format('MMMM Do YYYY HH:mm') }}</p>
                         <div class="btn-group-xs pull-right" role="group">
                             <a href="{{ url_for('.view_message', id=message.id) }}" class="btn btn-primary">View</a>
 

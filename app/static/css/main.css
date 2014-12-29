@@ -53,24 +53,6 @@ hr {
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
 }
 
-/* Matches */
-.match-date {
-  border-bottom: 1px solid #CCC;
-}
-
-.match {
-  border-bottom: 1px solid #CCC;
-}
-
-.team {
-  margin-bottom: 30px;
-}
-
-.team-kit {
-  height: 90px;
-  width: 90px;
-}
-
 /* User profile */
 .user-profile_image {
   /*margin: 0 auto -87px;*/
@@ -166,6 +148,31 @@ hr {
 /* Navbar */
 .orange {
   color: #FFCC00;
+}
+
+/* Matches Overview */
+#matches-overview .match-date {
+  border-bottom: 1px solid #CCC;
+}
+#matches-overview .row.match {
+  margin-left: auto !important;
+  margin-right: auto !important;
+  border-bottom: 1px solid #CCC;
+  margin: 12px auto;
+  width: 95%;
+}
+#matches-overview .kick-off {
+  margin-top: 30px;
+  font-size: 1.1em;
+  display: block;
+  font-weight: normal;
+}
+#matches-overview .team {
+  margin-bottom: 30px;
+}
+#matches-overview .team-kit {
+  height: 90px;
+  width: 90px;
 }
 
 /* User profile */
@@ -363,7 +370,11 @@ hr {
     transition: all .4s ease 0s;
   }
 }
-.committed_match {
+#saved-matches .team-kit {
+  height: 90px;
+  width: 90px;
+}
+#saved-matches .committed_match {
   color: #CCC;
   background-color: #DDD;
 }

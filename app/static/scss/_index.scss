@@ -1,0 +1,27 @@
+/* Matches Overview */
+
+#matches-overview {
+	
+	.match-date {
+    	border-bottom: 1px solid #CCC;
+	}
+	.row.match {
+		margin-left: auto!important;
+		margin-right: auto!important;
+    	border-bottom: 1px solid #CCC;
+    	margin: 12px auto;
+		width: 95%;
+	}
+	.kick-off {
+		margin-top: 30px;
+		font-size: 1.1em;
+		display: block;
+		font-weight: normal;
+	}
+	.team {
+    	margin-bottom: 30px;
+	}
+	.team-kit {
+    	@include team-kit
+	}
+}

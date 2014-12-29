@@ -91,6 +91,7 @@ def messages():
 
 # a unique url to each message
 @main.route('/view_message/<int:id>')
+@login_required
 def view_message(id):
     me = current_user
     message = Message.query.get_or_404(id)

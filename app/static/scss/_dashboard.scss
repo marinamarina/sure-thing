@@ -1,4 +1,9 @@
-.committed_match {
-    color: #CCC;
-    background-color: #DDD;
+#saved-matches {
+	.team-kit {
+    	@include team-kit
+	}
+	.committed_match {
+    	color: #CCC;
+    	background-color: #DDD;
+	}
 }

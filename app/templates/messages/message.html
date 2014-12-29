@@ -1,0 +1,15 @@
+<p>Dear, {{savedmatch.bettor.username}}!</p>
+<p>{{body}}</p>
+<p>Your prediction was that {{predicted_winner_name}} was going to win.</p>
+
+<p>And the actual winner was {{actual_winner_name}}, who won with the score:
+    <b>{{savedmatch.match.hometeam_score}}</b>:<b>{{savedmatch.match.awayteam_score}}</b>.
+</p>
+<p>
+    Just for the reference.<br />
+    Your betting configuration was as follows: <br />
+    LEAGUE POSITION MODULE Winner - {{ savedmatch.match.prediction_league_position.name }} - {{savedmatch.weight_league_position*100 }}%<br />
+    FORM MODULE Winner - {{savedmatch.match.prediction_form.name}} - {{savedmatch.weight_form*100 }}% <br />
+    HOME-AWAY MODULE Winner: {{savedmatch.match.prediction_homeaway.name}} - {{savedmatch.weight_home_away*100 }}%. <br />
+</p>
+

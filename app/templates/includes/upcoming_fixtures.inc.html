@@ -3,7 +3,7 @@
 {{ moment.include_moment() }}
 
 <!--matches -->
-<div class="jumbotron top-space container">
+<div class="jumbotron top-space container" id="matches-overview">
 
     {% for key, value in matches.iteritems() |sort (reverse=sort_order_reversed) %}
 
@@ -16,30 +16,30 @@
         <div class="match row panel panel-default" data="{{match.id}}">
             <div class="panel-body">
 
-                <div class="home-team team col-xs-4 col-md-offset-1 text-center">
+                <div class="home-team team col-sm-4 col-sm-offset-1 text-center">
                     {{ teamkitimage(match, home=1) }}
 
                     <span class="team-name clearfix">{{match.hometeam.name}}</span>
                     <span class="team-form clearfix">{{match.awayteam.form}}</span>
                     <span class="team-last-result">2:0 Norwich</span>
+                </div>
+                <div class="kick-off col-sm-2 text-muted text-center">
+                    <span>VS</span>
+                    <span class="clearfix">KO: {{match.time}} </span>
+                    <span>Current score:</span>
                     {% if match.hometeam_score %}
-                        <span class="team-ft-score">{{match.hometeam_score}}</span>
+                        <span class="hometeam-score">{{match.hometeam_score}}</span>
+                        <span class="awayteam-score">{{match.awayteam_score}}</span>
                     {% endif %}
-
                 </div>
-                <div class="team-name col-xs-1 text-muted text-center"><span>VS</span><span class="clearfix">ID: {{match.id}} DATE: {{match.date}} TIME: {{match.time}}</span>
-                </div>
-                <div class="away-team team col-xs-4 col-xs-offset-1 text-center">
+                <div class="away-team team col-sm-3 text-center">
                      {{ teamkitimage(match, home=2) }}
                     <span class="team-name clearfix">{{match.awayteam.name}}</span>
                     <span class="team-form clearfix">{{match.awayteam.form}}</span>
                     <span class="team-last-result">3:0 Norwich</span>
-                    {% if match.awayteam_score %}
-                        <span class="team-ft-score">{{match.awayteam_score}}</span>
-                    {% endif %}
-
                 </div>
-                <div class="status">
+ 
+                <div class="status col-sm-1 text-center">
                     {% if current_user.is_authenticated() and current_user.has_match_saved(match) %}
                         <span>Saved</span>
                     {% endif %}

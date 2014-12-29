@@ -10,11 +10,6 @@ class TestFootballAPIWrapper(unittest.TestCase):
         self.faw = FootballAPIWrapper()
         self.faw.api_key = '2890be06-81bd-b6d7-1dcb4b5983a0'
 
-        #set the api key
-        #self.wrap.api_key = '2890be06-81bd-b6d7-1dcb4b5983a0'
-
-        #pprint(self.wrap.all_and_unplayed_matches.unplayed)
-
     @unittest.skip("To do")
     def test_get_beginning_year(self):
         pass

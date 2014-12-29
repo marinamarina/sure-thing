@@ -18,7 +18,7 @@ class FootballAPIWrapper:
 
         self.__premier_league_id = '1204'
         self.__base_url = 'http://football-api.com/api/?Action='
-        self.proxy_on = False
+        self.proxy_on = True
 
     def init_app(self, app):
         '''if hasattr(app, 'teardown_appcontext'):

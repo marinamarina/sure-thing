@@ -6,7 +6,7 @@ from flask import current_app, request
 from . import login_manager
 from datetime import datetime
 import hashlib
-from flask import flash
+from flask import flash, render_template
 from sqlalchemy.ext.associationproxy import association_proxy
 from collections import namedtuple
 
@@ -252,6 +252,7 @@ class SavedForLater(db.Model):
             return True
         else:
             return False
+
     def __repr__(self):
         return "<SavedForLater {}/{}> " \
                "userid: {}, matchid: {}, date:{}, committed:{}, " \
@@ -280,7 +281,7 @@ class SavedForLater(db.Model):
 
                 if(savedmatch.match==target and savedmatch.committed):
 
-                    msg=Message(addressee_id=savedmatch.bettor.id)
+                    msg = Message(addressee_id=savedmatch.bettor.id)
 
                     print "users having this match saved and committed: %s" % savedmatch.bettor
                     print 'Won?' + str(savedmatch.bettor_won)
@@ -289,16 +290,18 @@ class SavedForLater(db.Model):
                     if savedmatch.bettor_won:
                         print('111111')
                         print "old value: " + str(savedmatch.bettor.win_points)
-                        savedmatch.bettor.win_points = savedmatch.bettor.win_points+1
+                        savedmatch.bettor.win_points = savedmatch.bettor.win_points + 1
                         print "new value: " + str(savedmatch.bettor.win_points)
-                        title="You won a bet for " \
-                              + savedmatch.match.hometeam.name \
-                              + ' vs.' \
-                              + savedmatch.match.awayteam.name \
-                              + ', played on ' \
-                              + savedmatch.match.date
+                        title = "You won a bet for " \
+                               + savedmatch.match.hometeam.name \
+                               + ' vs. ' \
+                               + savedmatch.match.awayteam.name \
+                               + ', played on ' \
+                               + savedmatch.match.date
 
-                        body="congratulation, you predicted this match results correctly."
+                        body = "congratulation, you predicted this match results correctly!"
+
+
 
                     elif not savedmatch.bettor_won:
                         print "old value: " + str(savedmatch.bettor.loss_points)
@@ -311,15 +314,25 @@ class SavedForLater(db.Model):
                               + ', played on ' \
                               + savedmatch.match.date
 
-                        body="unfortunately, you did not predicted this match results correctly."
+                        body="unfortunately, you did not predicted this match results correctly!"
                         print('222222222')
                     else:
                         print('33333333')
                         return False
 
 
-                    msg.title=title
-                    msg.body="Dear user, " + body
+                    predicted_winner_name = Team.query.filter_by(id=savedmatch.predicted_winner).first().name
+                    actual_winner_name = Team.query.filter_by(id=savedmatch.match.actual_winner).first().name
+
+
+                    msg.title = title
+                    msg.body = render_template('messages/message' + '.html',
+                                               savedmatch=savedmatch,
+                                               body=body,
+                                               predicted_winner_name=predicted_winner_name,
+                                               actual_winner_name=actual_winner_name)
+
+
                     db.session.add(msg)
                     db.session.add(savedmatch.bettor)
 
@@ -329,11 +342,9 @@ class SavedForLater(db.Model):
                 db.session.rollback()
                 raise
 
-
-
         # update user's LSP
-        # u=User.query.all()[0]
-        #  match1=u.list_matches()[1]
+        # u=User.query.all()[2]
+        #  match1=User.query.all()[2].list_matches()[0]
         # match1.match.was_played=False
 
 
