@@ -120,4 +120,18 @@ hr {
 
 }
 
-/* Navbar */
+/* Footer */
+.footer1 {
+    .links {
+        ul {
+        margin-left: 0px;
+        padding-left: 0px; 
+        }
+        ul li {
+            list-style: none;
+            border-bottom: 1px solid #222;
+            border-top: 1px solid #666;
+            line-height: 40px;
+        }
+    }
+}

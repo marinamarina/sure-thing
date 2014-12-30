@@ -149,7 +149,18 @@ hr {
   margin: 0px 5px 10px 0;
 }
 
-/* Navbar */
+/* Footer */
+.footer1 .links ul {
+  margin-left: 0px;
+  padding-left: 0px;
+}
+.footer1 .links ul li {
+  list-style: none;
+  border-bottom: 1px solid #222;
+  border-top: 1px solid #666;
+  line-height: 40px;
+}
+
 /* Matches Overview */
 #matches-overview .match-date {
   border-bottom: 1px solid #CCC;

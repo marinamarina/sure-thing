@@ -239,8 +239,6 @@ def prediction_settings():
     current_weights = me.prediction_settings.all()
     modules= PredictionModule.query.all()
 
-    print me.prediction_settings.all()
-
     if form.validate_on_submit():
 
         for module in modules:
@@ -257,6 +255,7 @@ def prediction_settings():
             except Exception:
                 db.session.flush()
 
+        return redirect(url_for('.prediction_settings'))
         flash('You have saved your default prediction settings, congratulations!')
 
     # if user has no betting settings, make each current weight equal to an empty string
@@ -501,6 +500,13 @@ def show_followed_users(username):
     return render_template('main/followed.html', user=following_user, title=str(username) + "'s followers",
                            follows=followed)
 
+@main.route('/terms_and_conditions')
+def terms_and_conditions():
+    return render_template('main/terms_and_conditions.html', user=current_user, title='Terms and Conditions')
+
+@main.route('/privacy_policy')
+def privacy_policy():
+    return render_template('main/privacy_policy.html', user=current_user, title='Privacy Policy')
 
 '''
 @main.route('/moderate')
