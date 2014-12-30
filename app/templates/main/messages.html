@@ -25,7 +25,8 @@
     <!-- /sidebar -->
 
     <div class="row well">
-        {% if messages %}
+        {% if messages.count() > 0 %}
+
 
         <!-- user messages -->
         <div class="jumbotron top-space container">
@@ -50,6 +51,8 @@
                 {% endfor %}
 
             </div>
+            <a href="{{ url_for('.delete_all_messages') }}" class="btn btn-primary">Delete All</a>
+
         </div>
         <!--/ user messages -->
 

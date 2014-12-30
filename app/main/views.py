@@ -117,6 +117,16 @@ def delete_message(id):
 
     return redirect(url_for('.messages'))
 
+
+@main.route('/delete_all_messages')
+@login_required
+def delete_all_messages():
+    me = current_user
+    me.delete_messages()
+
+    return redirect(url_for('.messages'))
+
+
 @main.route('/winners')
 @templated()
 def winners():

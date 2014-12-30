@@ -382,9 +382,6 @@ class User(UserMixin, db.Model):
     lsp = db.Column(db.Float, default=0, nullable=True)
     role_id = db.Column(db.Integer, db.ForeignKey('roles.id'))
 
-    #performance = db.relationship("Performance", uselist=True, backref="performing_user")
-
-
     #posts = db.relationship('Post', backref='author', lazy='dynamic')
     #comments = db.relationship('Comment', backref='author', lazy='dynamic')
 
@@ -423,7 +420,6 @@ class User(UserMixin, db.Model):
                                           lazy='dynamic',
                                           cascade='all, delete-orphan'
     )
-
 
     messages = db.relationship('Message', backref='addressee', lazy='dynamic')
 
@@ -517,14 +513,14 @@ class User(UserMixin, db.Model):
     def has_match_saved(self, match):
         return self.saved_matches.filter_by(match_id=match.id).first() is not None
 
-    'insert your match id as a parameter in case you want to see only one match'
     def list_matches(self, *args, **kwargs):
+        'insert your match id as a parameter in case you want to see only one match'
         return [match
                 for match in self.saved_matches.filter_by(**kwargs).order_by(*args)
         ]
 
-    'insert your module id as a parameter in case you want to see only one module value'
     def list_prediction_settings(self, **kwargs):
+       'insert your module id as a parameter in case you want to see only one module value'
        return [settings
                 for settings in self.prediction_settings.filter_by(**kwargs)
                 ]
@@ -537,6 +533,13 @@ class User(UserMixin, db.Model):
     @property
     def list_new_messages(self):
         return self.messages.filter_by(new=True).all()
+
+
+    def delete_messages(self):
+        msgs=self.messages.all()
+        if msgs:
+            for msg in msgs:
+                db.session.delete(msg)
 
 
     '''def user_betting_settings(self, match):
