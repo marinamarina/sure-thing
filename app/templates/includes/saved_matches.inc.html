@@ -10,10 +10,9 @@
          data="{{savedmatch.id}}">
         <div class="panel-body">
 
-            <div class="home-team team col-xs-4 col-md-offset-1 text-center">
+            <div class="home-team team col-sm-4 text-center">
                 <span class="predicted-winner clearfix">
                 {% if savedmatch.predicted_winner==savedmatch.match.hometeam.id %}
-                    {{savedmatch.predicted_winner}} {{savedmatch.match.hometeam.id}}
                     Predicted Winner
                 {% endif %}
                 </span>
@@ -24,9 +23,16 @@
                 <span class="team-last-result">3:0 Norwich</span>
 
             </div>
-            <div class="team-name col-xs-1 text-muted text-center"><span>VS</span><span class="clearfix"> DATE: {{savedmatch.match.date}} KO: {{savedmatch.match.time}}</span>
+            <div class="team-name col-sm-2 text-muted text-center">
+                <span class="vs">VS</span>
+                <span class="clearfix"> DATE: {{savedmatch.match.date}}</span>
+                <span class="clearfix">KO: {{savedmatch.match.time}}</span>
+                {% if savedmatch.match.hometeam_score != '?' %}
+                        <span class="hometeam_score orange">{{savedmatch.match.hometeam_score}} :</span>
+                        <span class="awayteam_score orange">{{savedmatch.match.awayteam_score}}</span>
+                {% endif %}
             </div>
-            <div class="away-team team col-xs-4 col-md-offset-1 text-center">
+            <div class="away-team team col-sm-4 text-center">
                 <span class="predicted-winner clearfix">
                 {% if savedmatch.predicted_winner==savedmatch.match.awayteam.id %}
                     Predicted Winner
@@ -38,7 +44,7 @@
                 <span class="team-last-result">3:0 Norwich</span>
             </div>
             <div class="status col-xs-2 text-center">
-                {% if savedmatch.match.was_played %}
+                {% if savedmatch.match.was_played and savedmatch.committed %}
                      {% if savedmatch.bettor_won %}
                         <span>Won</span>
                      {% else %}

@@ -2,14 +2,6 @@
   color: #FF981C;
 }
 
-/* Layout specific */
-.secondary-small {
-  height: 100px;
-  min-height: 100px;
-  padding-top: 0px;
-}
-
-/* General styles */
 .img-circle {
   border-radius: 50%;
 }
@@ -28,6 +20,19 @@ hr {
   border: 2px solid #505050;
 }
 
+/* Typography */
+body#surething {
+  font-family: 'Open Sans', sans-serif;
+}
+
+/* Layout specific */
+.secondary-small {
+  height: 100px;
+  min-height: 100px;
+  padding-top: 0px;
+}
+
+/* General styles */
 /* Navbar */
 .right-navbar-content p {
   color: white;
@@ -150,6 +155,9 @@ hr {
 }
 
 /* Footer */
+.footer1 .widget {
+  font-size: 1.1em;
+}
 .footer1 .links ul {
   margin-left: 0px;
   padding-left: 0px;
@@ -160,8 +168,14 @@ hr {
   border-top: 1px solid #666;
   line-height: 40px;
 }
+.footer1 .links a {
+  font-size: 1.1em;
+}
 
 /* Matches Overview */
+#matches-overview {
+  font-family: 'Open Sans', sans-serif;
+}
 #matches-overview .match-date {
   border-bottom: 1px solid #CCC;
 }
@@ -381,6 +395,10 @@ hr {
     transition: all .4s ease 0s;
   }
 }
+#saved-matches {
+  margin-top: 0;
+  width: 100% !important;
+}
 #saved-matches .team-kit {
   height: 90px;
   width: 90px;
@@ -394,4 +412,14 @@ hr {
   font-weight: bold;
   height: 20px;
   display: block;
+}
+#saved-matches .vs {
+  font-size: 1.4em;
+  margin: 26px 0;
+  display: block;
+  font-weight: bold;
+}
+#saved-matches .status {
+  margin-bottom: 94px;
+  padding-top: 58px;
 }

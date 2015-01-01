@@ -97,7 +97,7 @@ class FootballAPIWrapper:
 
         # feeding the dictionary
         output_data = {
-            team["stand_team_id"] : team["stand_team_name"]
+            int(team["stand_team_id"]) : team["stand_team_name"]
             for team in standings_data['standings']
         }
 
@@ -187,7 +187,7 @@ class FootballAPIWrapper:
 
             all_matches.append(matchInfo)
 
-            if matchInfo.ft_score=='':
+            if matchInfo.ft_score == '':
                 unplayed_matches.append(matchInfo)
             else:
                 played_matches.append(matchInfo)
@@ -208,10 +208,12 @@ class FootballAPIWrapper:
         TeamInfo = namedtuple('TeamInfo', 'position team_name matches_played w d l goals_for goals_against gp points form')
 
 
-        for team in standings_data['standings']:
-            league_table[team['stand_team_id']] = TeamInfo(team['stand_position'], team['stand_team_name'], team['stand_round'],
-                           team['stand_overall_w'], team['stand_overall_d'], team['stand_overall_l'],
-                           team['stand_overall_gs'], team['stand_overall_ga'], team['stand_gd'], team['stand_points'], team['stand_recent_form'])
+        league_table = {team['stand_team_id'] : TeamInfo(team['stand_position'], team['stand_team_name'], team['stand_round'],
+                        team['stand_overall_w'], team['stand_overall_d'], team['stand_overall_l'],
+                        team['stand_overall_gs'], team['stand_overall_ga'], team['stand_gd'], team['stand_points'], team['stand_recent_form'])
+
+                        for team in standings_data['standings']
+            }
 
         return league_table
 
@@ -220,9 +222,64 @@ class FootballAPIWrapper:
         team_id: list_of_matches[(date,home/away,whom_played,score,w/l)]
         """
 
+        all_played_matches = self.played_matches
+        matches_for_form = []
+        MatchForFormInfo = namedtuple('MatchForFormInfo', 'id, date_stamp, time_stamp, hometeam_id, awayteam_id,'
+                                                          'hometeam_score, awayteam_score, outcome')
+
+        for match in all_played_matches:
+            matchForFormInfo = MatchForFormInfo(
+                match.id,
+                match.date_stamp,
+                match.time_stamp,
+                match.hometeam_id,
+                match.awayteam_id,
+                int(match.hometeam_score),
+                int(match.awayteam_score),
+                ''
+            )
+            matches_for_form.append(matchForFormInfo)
+        #print matches_for_form
+
+        dict1 = dict()
+        team_is_at_home = True
 
         for team in self.ids_names:
-            print team
+            matches_list = []
+
+            for match in matches_for_form:
+                if team == match.hometeam_id or team == match.awayteam_id:
+
+                    if team == match.hometeam_id:
+                        team_is_at_home = True
+                    elif team == match.awayteam_id:
+                        team_is_at_home = False
+
+                    if team_is_at_home and match.hometeam_score > match.awayteam_score or  \
+                        not team_is_at_home and match.hometeam_score < match.awayteam_score:
+                            pass
+                            #match.outcome = 'W'
+                    elif match.hometeam_score == match.awayteam_score:
+                        pass
+                        #match.outcome = 'D'
+                    else:
+                        pass
+                        #match.outcome = 'L'
+
+                    matches_list.append(match)
+                    if len(matches_list) == 10: break
+
+            dict1[team] = matches_list
+
+        from pprint import pprint
+        pprint (dict1[9002])
+
+        #print dict
+        # get the list of tuples with matches already created in the app
+        # create new tuple containing just my info: (match_date, match_time, hometeam_id, awayteam_id, score_home, score_away)
+        # sort list by date/time
+        # for each team load into dictionary a list of 5 last matches
+        # add draw/win/loss to the tuple
 
 
 

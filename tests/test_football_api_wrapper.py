@@ -41,6 +41,12 @@ class TestFootballAPIWrapper(unittest.TestCase):
         for team_id, tuple in league_table.items():
             print team_id, tuple.position
 
+    def test_league_table(self):
+        league_table = self.faw.league_table
+        print ("\n")
+
+        from pprint import pprint
+        pprint(league_table)
 
     def test_unplayed_matches_tuple(self):
         self.faw.form_and_tendency()

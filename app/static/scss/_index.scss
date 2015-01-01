@@ -1,6 +1,8 @@
 /* Matches Overview */
 
 #matches-overview {
+	font-family: 'Open Sans', sans-serif;
+
 	
 	.match-date {
     	border-bottom: 1px solid #CCC;
@@ -23,5 +25,11 @@
 	}
 	.team-kit {
     	@include team-kit
+	}
+}
+
+#modules {
+	.league-position-comparison {
+		margin-top: 30px;
 	}
 }

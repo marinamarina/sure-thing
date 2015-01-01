@@ -104,7 +104,7 @@
 /* Header */
 .head { background-color:#FFFFFF; background-size: cover; min-height:520px; text-align: center; padding-top:240px; color:white; font-family:"Open sans", Helvetica, Arial; font-weight:300; }
 .head.secondary { height:100px; min-height: 100px; padding-top:0px; }
-	.head .lead { font-family:"Open sans", Helvetica, Arial; font-size:44px; margin-bottom:6px; color:white; line-height:1.15em; } 
+	.head .lead { font-family: 'Open Sans', sans-serif;; font-size:44px; margin-bottom:6px; color:white; line-height:1.15em; } 
 	.head .tagline { color:rgba(255,255,255,0.75); margin-bottom:25px; }
 		.head .tagline a { color:#fff; } 
 	.head .btn { margin-bottom:10px;}
@@ -134,7 +134,7 @@
 
 
 /* Typography */
-h1, h2, h3, h4, h5, h6 { font-family:"Open sans", Helvetica, Arial; }
+h1, h2, h3, h4, h5, h6 { font-family: 'Open Sans', sans-serif; }
 h1, .h1, h2, .h2, h3, .h3 { margin-top:30px; } 
 blockquote { font-style: italic; font-family: Georgia; color:#999; margin:30px 0 30px; }
 label { color: #777; }
@@ -165,8 +165,8 @@ img.pull-left { margin-right: 10px; }
 	.sidebar h1, .sidebar .h1, .sidebar h2, .sidebar .h2, .sidebar h3, .sidebar .h3 { margin-top:20px; } 
 
 /* Footer */
-.footer1 { background: #232323; padding: 30px 0 0 0; font-size: 12px; color: #999; }
-	.footer1 a { color: #ccc; }
+.footer1 { font-family: 'Open Sans', sans-serif; background: #232323; padding: 30px 0 0 0; font-size: 12px; color: #999; }
+	.footer1 a { color: #ccc; font-family: 'Open Sans', sans-serif; }
 		.footer1 a:hover {color: #fff; }
 	.footer1 .widget { margin-bottom:30px; }		
 	.footer1 .widget-title { font-size: 17px; font-weight: bold; color: #ccc; margin: 0 0 20px; }
@@ -176,7 +176,7 @@ img.pull-left { margin-right: 10px; }
 	.follow-me-icons { font-size:30px; }		
 		.follow-me-icons i { float:left; margin:0 10px 0 0; }		
 
-.footer2 { background: #191919; padding: 15px 0; color: #777; font-size: 12px; }
+.footer2 { font-family: 'Open Sans', sans-serif; background: #191919; padding: 15px 0; color: #777; font-size: 12px; }
 	.footer2 a { color: #aaa; }
 		.footer2 a:hover { color: #fff; }
 		.footer2 p { margin: 0; }
@@ -187,14 +187,6 @@ img.pull-left { margin-right: 10px; }
   color: #FF981C;
 }
 
-/* Layout specific */
-.secondary-small {
-  height: 100px;
-  min-height: 100px;
-  padding-top: 0px;
-}
-
-/* General styles */
 .img-circle {
   border-radius: 50%;
 }
@@ -213,6 +205,19 @@ hr {
   border: 2px solid #505050;
 }
 
+/* Typography */
+body#surething {
+  font-family: 'Open Sans', sans-serif;
+}
+
+/* Layout specific */
+.secondary-small {
+  height: 100px;
+  min-height: 100px;
+  padding-top: 0px;
+}
+
+/* General styles */
 /* Navbar */
 .right-navbar-content p {
   color: white;
@@ -335,6 +340,9 @@ hr {
 }
 
 /* Footer */
+.footer1 .widget {
+  font-size: 1.1em;
+}
 .footer1 .links ul {
   margin-left: 0px;
   padding-left: 0px;
@@ -345,8 +353,14 @@ hr {
   border-top: 1px solid #666;
   line-height: 40px;
 }
+.footer1 .links a {
+  font-size: 1.1em;
+}
 
 /* Matches Overview */
+#matches-overview {
+  font-family: 'Open Sans', sans-serif;
+}
 #matches-overview .match-date {
   border-bottom: 1px solid #CCC;
 }
@@ -566,6 +580,10 @@ hr {
     transition: all .4s ease 0s;
   }
 }
+#saved-matches {
+  margin-top: 0;
+  width: 100% !important;
+}
 #saved-matches .team-kit {
   height: 90px;
   width: 90px;
@@ -579,4 +597,14 @@ hr {
   font-weight: bold;
   height: 20px;
   display: block;
+}
+#saved-matches .vs {
+  font-size: 1.4em;
+  margin: 26px 0;
+  display: block;
+  font-weight: bold;
+}
+#saved-matches .status {
+  margin-bottom: 94px;
+  padding-top: 58px;
 }

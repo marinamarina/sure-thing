@@ -248,7 +248,8 @@ class SavedForLater(db.Model):
 
     @property
     def bettor_won(self):
-        if (self.match.actual_winner==Match.predicted_winner(self.match, self.bettor).team_winner_id):
+        # predicted winner is calculated based on the weights + winners for each module
+        if self.match.actual_winner == Match.predicted_winner(self.match, self.bettor).team_winner_id:
             return True
         else:
             return False
@@ -286,6 +287,9 @@ class SavedForLater(db.Model):
                     print "users having this match saved and committed: %s" % savedmatch.bettor
                     print 'Won?' + str(savedmatch.bettor_won)
                     print 'Played?' + str(savedmatch.match.was_played)
+                    predicted_winner = Team.query.filter_by(id=savedmatch.predicted_winner).first()
+                    actual_winner = Team.query.filter_by(id=savedmatch.match.actual_winner).first()
+
 
                     if savedmatch.bettor_won:
                         print('111111')
@@ -314,15 +318,23 @@ class SavedForLater(db.Model):
                               + ', played on ' \
                               + savedmatch.match.date
 
-                        body="unfortunately, you did not predicted this match results correctly!"
+                        body="unfortunately, you did not predict this match result correctly!"
                         print('222222222')
                     else:
                         print('33333333')
                         return False
 
 
-                    predicted_winner_name = Team.query.filter_by(id=savedmatch.predicted_winner).first().name
-                    actual_winner_name = Team.query.filter_by(id=savedmatch.match.actual_winner).first().name
+                    if predicted_winner is not None:
+                        predicted_winner_name = predicted_winner.name
+                    else:
+                        predicted_winner_name = 'Draw'
+
+
+                    if actual_winner is not None:
+                        actual_winner_name = actual_winner.name
+                    else:
+                        actual_winner_name = 'Draw'
 
 
                     msg.title = title
@@ -645,6 +657,13 @@ class Team(db.Model):
         db.session.commit()
         db.session.close()
 
+
+    @staticmethod
+    def league_table():
+        league_table = faw.league_table
+
+        return league_table
+
     def __repr__(self):
         return '<Team> {}/{} league_position:{}'.format(
             self.id,
@@ -676,6 +695,7 @@ class Match(db.Model):
     def update_all_matches():
         'Inserting all the matches to the database'
         matches = faw.all_matches
+        print("THIS RAN")
 
         for m in matches:
             # hope this will not be a bottleneck, find a smarter way to check what is already in the database??
@@ -775,11 +795,12 @@ class Match(db.Model):
         elif total_weight < 0.5:
             return Winner(match.awayteam.id, match.awayteam.name, 1-winner_probability)
         else:
-            return Winner(-1, 'To Close To Call...', 0.5)
+            return Winner(-1, 'Draw', 0.5)
 
-    'who won the match?'
+
     @property
     def actual_winner(self):
+        'who actually won the match?'
         if self.hometeam_score != '?' and self.awayteam_score != '?':
             if (int(self.hometeam_score) > int(self.awayteam_score)):
                 return self.hometeam_id
@@ -787,6 +808,7 @@ class Match(db.Model):
                 return -1
             else:
                 return self.awayteam_id
+
 
     def __repr__(self):
         return "<Match> date:{} time: {} id:{} {}/{} was_played {} score: {}:{}".format(

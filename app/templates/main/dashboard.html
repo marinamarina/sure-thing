@@ -9,7 +9,9 @@
 {% endblock header %}
 
 {% block inner_wrapper %}
-
+    <!--sidebar-->
+    {% include 'includes/sidebar.inc.html' %}
+    <!--/sidebar-->
 <div class="container">
 
     <ol class="breadcrumb">
@@ -17,17 +19,13 @@
         <li class="active">Dashboard</li>
     </ol>
 
-    <!--sidebar-->
-    {% include 'includes/sidebar.inc.html' %}
-    <!--/sidebar-->
-
     <div class="row well">
-        {% if savedmatches.length != 0 %}
+        {% if savedmatches %}
             {% include 'includes/saved_matches.inc.html' %}
         {% else %}
         <p>This is your dashboard!</p>
 
-        <p>Start saving your matches now!<a href="/">HOME</a></p>
+        <p><a href="{{url_for('main.index')}}">Start saving your matches now!</a></p>
         {% endif %}
     </div>
 </div>

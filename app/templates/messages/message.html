@@ -1,10 +1,23 @@
 <p>Dear, {{savedmatch.bettor.username}}!</p>
 <p>{{body}}</p>
-<p>Your prediction was that {{predicted_winner_name}} was going to win.</p>
 
-<p>And the actual winner was {{actual_winner_name}}, who won with the score:
-    <b>{{savedmatch.match.hometeam_score}}</b>:<b>{{savedmatch.match.awayteam_score}}</b>.
-</p>
+{% if predicted_winner_name == 'Draw' %}
+    <p>You predicted that {{savedmatch.match.hometeam.name}} was going to draw against
+        {{savedmatch.match.awayteam.name}}.</p>
+{% else %}
+    <p>Your prediction was that {{predicted_winner_name}} was going to win.</p>
+{% endif %}
+
+{% if actual_winner_name == 'Draw' %}
+    <p>And the result of the match was Draw, with the score:
+        <b>{{savedmatch.match.hometeam_score}}</b>:<b>{{savedmatch.match.awayteam_score}}</b>.
+    </p>
+{% else %}
+    <p>And the actual winner was {{actual_winner_name}}, who won with the score:
+        <b>{{savedmatch.match.hometeam_score}}</b>:<b>{{savedmatch.match.awayteam_score}}</b>.
+    </p>
+{% endif %}
+
 <p>
     Just for the reference.<br />
     Your betting configuration was as follows: <br />

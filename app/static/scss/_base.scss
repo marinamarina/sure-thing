@@ -1,17 +1,12 @@
+/* Typography */
+body#surething {
+    font-family: 'Open Sans', sans-serif;
+}
 /* Layout specific */
 .secondary-small { height:100px; min-height: 100px; padding-top:0px; }
 
 /* General styles */
-.img-circle { border-radius: 50%; }
-.indented { margin-left: 20px; }
-.btn-round { 
-    border-width: 1px;
-    border-radius: 30px !important;
-    opacity: 0.79; 
-}
-hr {
-    border: 2px solid #505050;
-}
+
 /* Navbar */
 .right-navbar-content {
     p {
@@ -122,6 +117,9 @@ hr {
 
 /* Footer */
 .footer1 {
+    .widget {
+        font-size: 1.1em;
+    }
     .links {
         ul {
         margin-left: 0px;
@@ -132,6 +130,9 @@ hr {
             border-bottom: 1px solid #222;
             border-top: 1px solid #666;
             line-height: 40px;
+        }
+        a {
+            font-size: 1.1em;
         }
     }
 }

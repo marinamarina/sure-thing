@@ -199,7 +199,17 @@ def view_match(match_id):
     me = current_user
     match = Match.query.filter_by(id=match_id).first()
 
-    return render_template('main/view_match.html', match=match, user=current_user)
+    lt = Team.league_table()
+    lt_hometeam = lt[str(match.hometeam_id)]
+    lt_awayteam = lt[str(match.awayteam_id)]
+
+
+    return render_template('main/view_match.html',
+                           match=match,
+                           user=current_user,
+                           lt_hometeam=lt_hometeam,
+                           lt_awayteam=lt_awayteam
+    )
 
 
 @main.route('/dashboard')
@@ -208,8 +218,6 @@ def dashboard():
     savedmatches = current_user.list_matches()
 
     upcomingmatches=[s for s in savedmatches if not s.was_played]
-
-
 
     return render_template('main/dashboard.html',
                            savedmatches=upcomingmatches,
@@ -221,7 +229,7 @@ def dashboard():
 @login_required
 def archived():
     savedmatches = current_user.list_matches()
-    playedmatches=[s for s in reversed(savedmatches) if s.was_played]
+    playedmatches = [s for s in reversed(savedmatches) if s.was_played]
 
 
     return render_template('main/archived.html',
