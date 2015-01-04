@@ -1,9 +1,10 @@
-{% from 'includes/__formhelpers.html' import teamkitimage %}
+{% from 'includes/_macros.html' import teamkitimage %}
 {{ moment.include_jquery() }}
 {{ moment.include_moment() }}
 
 <!--matches -->
 <div class="jumbotron top-space container" id="matches-overview">
+    {% if matches %}
 
     {% for key, value in matches.iteritems() |sort (reverse=sort_order_reversed) %}
 
@@ -25,6 +26,7 @@
                 </div>
                 <div class="kick-off col-sm-2 text-muted text-center">
                     <span>VS</span>
+                    <span class="clearfix"> DATE: {{match.date}}</span>
                     <span class="clearfix">KO: {{match.time}} </span>
                     <span>Score:</span>
                     {% if match.hometeam_score %}
@@ -41,7 +43,7 @@
  
                 <div class="status col-sm-1 text-center">
                     {% if current_user.is_authenticated() and current_user.has_match_saved(match) %}
-                        <span>Saved</span>
+                        <span class="glyphicon glyphicon-saved"></span>
                     {% endif %}
                 </div>
                 <div class="btn-group-xs pull-right" role="group">
@@ -62,6 +64,8 @@
     <!--  /matches for date -->
     {% endfor %}
 
-
+{% else %}
+    <p>There are no matches in few next days.</p>
+{% endif %}
 </div>
 <!--/matches-->

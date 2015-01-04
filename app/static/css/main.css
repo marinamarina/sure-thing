@@ -17,7 +17,23 @@
 }
 
 hr {
-  border: 2px solid #505050;
+  border: 1px solid #e5e5e5;
+}
+
+li.separate {
+  margin: 4px 0 0 0;
+  padding: 4px 0 0 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.underlined-title {
+  padding-bottom: 12px;
+  border: 0;
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.errors li {
+  color: red;
 }
 
 /* Typography */
@@ -198,6 +214,10 @@ body#surething {
 #matches-overview .team-kit {
   height: 90px;
   width: 90px;
+}
+
+#modules .league-position-comparison {
+  margin-top: 30px;
 }
 
 /* User profile */

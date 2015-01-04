@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% from 'includes/__formhelpers.html' import render_field %}
+{% from 'includes/_macros.html' import render_field %}
 
 {% block header %}
     {% include 'includes/header.inc.html' %}
@@ -8,17 +8,19 @@
 {% block inner_wrapper %}
     <!-- introduction -->
     <div class="container text-center">
-        <br> <br>
+        <br />
+        <br />
         <h2 class="thin">The best place to tell people why they are here</h2>
         <p class="text-muted">This is the index page</p>
     </div>
     <!-- /introduction -->
-    <!--menu-->
-    <ul class="nav nav-tabs">
-            <li><a href="{{ url_for('.show_unplayed') }}">Upcoming fixtures</a></li>
-            <li><a href="{{ url_for('.show_played') }}">Previous Results</a></li>
+
+    <!-- menu -->
+    <ul class="nav nav-pills">
+            <li role="presentation" class="active"><a href="{{ url_for('.show_unplayed') }}">Upcoming fixtures</a></li>
+            <li role="presentation"><a href="{{ url_for('.show_played') }}">Previous Results</a></li>
     </ul>
-    <!--/menu-->
+    <!--/ menu -->
 
     <!--matches list-->
     {% include 'includes/upcoming_fixtures.inc.html' %}

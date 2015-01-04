@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% from 'includes/__formhelpers.html' import render_field, render_checkbox, render_submit_field %}
+{% from 'includes/_macros.html' import render_field, render_checkbox, render_submit_field %}
 {% import "bootstrap/wtf.html" as wtf %}
 
 {% block title %}
@@ -11,6 +11,7 @@
 {% endblock header %}
 
 {% block inner_wrapper %}
+
 <!-- container -->
     <div class="container">
 
@@ -30,14 +31,12 @@
                 <div class="col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">
                     <div class="panel panel-default">
                         <div class="panel-body">
-                            <h3 class="thin text-center">Welcome back!</h3>
-                            <hr>
+                            <h3 class="underlined-title thin text-center">Welcome back!</h3>
                             <form method="POST" class= "form-login" role="form">
                                 {{ render_field(form.email) }}
                                 {{ render_field(form.password) }}
 
-                                <hr />
-                                <div class="top-margin row">  
+                                <div class="top-margin row">
                                     {{ render_checkbox(form.rememberMe) }}
                                     {{ render_submit_field(form.submit) }}
                                 </div>

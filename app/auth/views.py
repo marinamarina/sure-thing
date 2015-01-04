@@ -1,7 +1,8 @@
 from flask import url_for, render_template, redirect, request, flash
 from . import auth
 from flask_login import login_user, current_user, logout_user, login_required
-from ..main.forms import LoginForm, RegistrationForm, PasswordChangeForm, ManageProfile, AdminManageProfiles
+from ..main.forms import LoginForm, RegistrationForm, PasswordChangeForm, EditProfile,\
+    AdminManageProfiles
 from ..models import User
 from app import db
 from ..email import send_email
@@ -43,6 +44,8 @@ def login():
             finally:
                 flash ("You have now been authorized!" + str(current_user.role))
                 return redirect(request.args.get('next') or url_for('main.index'))
+
+        flash('Invalid username or password.')
 
 
     return render_template('auth/login.html', form = form, title='Sign In')
@@ -127,23 +130,62 @@ def profile(user):
         abort(404)
     return render_template('auth/profile.html', user=user, title='My profile', current_user = current_user)
 
-@auth.route('/manage_profile', methods=['GET', 'POST'])
+# user profile to view by other users
+@auth.route('/user/<username>')
 @login_required
-def manage_profile():
-    form = ManageProfile()
+def user(username):
+    user = User.query.filter_by(username=username).first()
+    if user is None:
+        abort(404)
+    #posts = Post.query.filter_by(author=user).order_by(Post.timestamp.desc()).all()
+
+    return render_template('auth/user.html', user=user)  #posts=posts
+
+
+@auth.route('/edit_profile', methods=['GET', 'POST'])
+@login_required
+def edit_profile():
+    me = current_user
+    form = EditProfile()
 
     if form.validate_on_submit():
         current_user.real_name = form.real_name.data
         current_user.location = form.location.data
+        current_user.fav_team = form.fav_team.data
         current_user.about_me = form.about_me.data
 
-        db.session.add(current_user)
+        db.session.add(me)
         db.session.commit()
 
-        flash('Your profile has been edited!' + current_user.__repr__())
-        return redirect( url_for('auth.profile', user=current_user.username) )
+        flash('Your profile has been edited!' + me.__repr__())
 
-    return render_template('auth/manage_profile.html', title='Manage profile', form=form)
+        return redirect( url_for('auth.user', username=me.username) )
+
+    return render_template('auth/edit_profile.html', user=me, form=form, title='Edit profile')
+
+
+
+@auth.route('/change_email_request', methods=['GET', 'POST'])
+def change_email_request():
+    return redirect( url_for('auth.profile', user=current_user.username) )
+
+
+@auth.route('/change_password.html', methods=['GET', 'POST'])
+@login_required
+def change_password():
+    form = PasswordChangeForm()
+
+    if form.validate_on_submit():
+        if (current_user.verify_password(form.old_password.data)):
+            current_user.password = form.new_password.data
+            db.session.add(current_user)
+            flash('Your password has been changed!')
+            return redirect( url_for('main.index') )
+        else:
+            flash('Incorrect password!')
+
+    return render_template('auth/change_password.html', title='Change Password', user=current_user, form=form)
+
 
 @auth.route('/admin_manage_profiles/<int:id>', methods=['GET', 'POST'])
 @login_required
@@ -171,19 +213,3 @@ def admin_manage_profiles(id):
     form.confirmed.data = user.confirmed
 
     return render_template('auth/admin_manage_profiles.html', title='Admin manage profile', form=form, user=user)
-
-@auth.route('/change_password.html', methods=['GET', 'POST'])
-@login_required
-def change_password():
-    form = PasswordChangeForm()
-
-    if form.validate_on_submit():
-        if (current_user.verify_password(form.old_password.data)):
-            current_user.password = form.new_password.data
-            db.session.add(current_user)
-            flash('Your password has been changed!')
-            return redirect( url_for('main.index') )
-        else:
-            flash('Incorrect password!')
-
-    return render_template('auth/change_password.html', title='Change Password', form=form)

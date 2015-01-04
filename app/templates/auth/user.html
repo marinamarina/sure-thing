@@ -1,0 +1,186 @@
+{% extends 'base.html' %}
+{% from 'includes/_macros.html' import render_field, teamkitimage %}
+{{ moment.include_jquery() }}
+{{ moment.include_moment() }}
+
+{% block title %}User profile{% endblock %}
+
+{% block header %}
+<header id="head" class="secondary"></header>
+{% endblock header %}
+
+{% block inner_wrapper %}
+<div class="container target">
+    <div class="row">
+        <div class="col-sm-10">
+            <h1 class="">{{user.username}}</h1>
+
+            <button type="button" class="btn btn-success">Follow me</button>
+            <button type="button" class="btn btn-info">Send me a message</button>
+            <br>
+        </div>
+        <div class="col-sm-2">
+            <a href="/users" class="pull-right"><img title="profile image"
+                                                     class="img-circle img-responsive"
+                                                     src="{{ user.avatar(size=256) }}"></a>
+
+        </div>
+    </div>
+    <br>
+
+    <div class="row">
+        <div class="col-sm-3">
+            <!--left col-->
+            <ul class="list-group">
+                <li class="list-group-item text-muted" contenteditable="false">Profile&nbsp;<i class="fa fa-user fa-1x"></i>
+
+                </li>
+                <li class="list-group-item text-right"><span class="pull-left">
+                                <strong class="">Member Since</strong></span> {{ moment(user.member_since).format('L')
+                    }}
+                </li>
+                <li class="list-group-item text-right"><span class="pull-left"><strong class="">Last
+                    seen</strong></span> {{ moment(user.last_seen).fromNow() }}
+                </li>
+                <li class="list-group-item text-right"><span class="pull-left"><strong class="">Full
+                    name</strong></span> {{user.real_name}}
+                </li>
+                <li class="list-group-item text-right"><span class="pull-left"><strong
+                        class="">Location: </strong></span>
+                    <a href="http://maps.google.com/?q={{ user.location }}">{{ user.location }}</a>
+                </li>
+            </ul>
+
+            <ul class="list-group">
+                <li class="list-group-item text-muted">Preferences&nbsp;<i class="fa fa-heart"></i>
+
+                </li>
+                <li class="list-group-item text-right"><span class="pull-left"><strong
+                        class="">Fav team</strong></span>
+                    {% if user.fav_team %}
+                        {{user.fav_team}}
+                    {% else %}
+                        None
+                    {% endif %}
+                </li>
+            </ul>
+
+            <ul class="list-group">
+                <li class="list-group-item text-muted">Activity&nbsp;<i class="fa fa-dashboard fa-1x"></i>
+                </li>
+                <li class="list-group-item text-right"><span class="pull-left"><strong
+                        class="">Games bet on</strong></span> {{user.win_points + user.loss_points}}
+                </li>
+                <li class="list-group-item text-right"><span class="pull-left"><strong
+                        class="">Bets won</strong></span> {{user.win_points}}
+                </li>
+                <li class="list-group-item text-right"><span class="pull-left"><strong
+                        class="">Bets lost</strong></span> {{user.loss_points}}
+                </li>
+                <li class="list-group-item text-right"><span class="pull-left"><strong
+                        class="">Followers</strong></span> 78
+                </li>
+            </ul>
+            <div class="panel panel-default">
+                <div class="panel-heading">Social Media</div>
+                <div class="panel-body"><i class="fa fa-facebook fa-2x"></i> <i
+                        class="fa fa-github fa-2x"></i>
+                    <i class="fa fa-twitter fa-2x"></i><i class="fa fa-pinterest fa-2x"></i> <i
+                            class="fa fa-google-plus fa-2x"></i>
+
+                </div>
+            </div>
+        </div>
+        <!--/col-3-->
+        <div class="col-sm-9" contenteditable="false" style="">
+           <div class="panel panel-default">
+                <div class="panel-heading">About {{user.username}}</div>
+                <div class="panel-body"> {{user.about_me}}
+
+                </div>
+            </div>
+
+        <div class="panel panel-default target">
+            <div class="panel-heading" contenteditable="false">Recent bets I won</div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="thumbnail">
+                            <img alt="300x200" src="http://lorempixel.com/600/200/people">
+
+                            <div class="caption">
+                                <h3>
+                                    Rover
+                                </h3>
+
+                                <p>
+                                    Cocker Spaniel who loves treats.
+                                </p>
+
+                                <p>
+
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="thumbnail">
+                            <img alt="300x200" src="http://lorempixel.com/600/200/city">
+
+                            <div class="caption">
+                                <h3>
+                                    Marmaduke
+                                </h3>
+
+                                <p>
+                                    Is just another friendly dog.
+                                </p>
+
+                                <p>
+
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="thumbnail">
+                            <img alt="300x200" src="http://lorempixel.com/600/200/sports">
+
+                            <div class="caption">
+                                <h3>
+                                    Rocky
+                                </h3>
+
+                                <p>
+                                    Loves catnip and naps. Not fond of children.
+                                </p>
+
+                                <p>
+
+                                </p>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="panel panel-default">
+            <div class="panel-heading">{{user.username}}'s comments</div>
+            <div class="panel-body"> To be added...
+
+            </div>
+        </div>
+
+    </div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+{% endblock %}

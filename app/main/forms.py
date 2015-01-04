@@ -13,7 +13,7 @@ class CSRFDisabledForm(Form):
 
 class LoginForm(CSRFDisabledForm):
     email = StringField('Email address', validators = [DataRequired(message= "Please enter your email!"), Email()])
-    password = PasswordField('Password')
+    password = PasswordField('Password', validators=[DataRequired(message= "Please enter your password!")])
     rememberMe = BooleanField('Remember me')
     submit = SubmitField('Login')
 
@@ -25,24 +25,27 @@ class RegistrationForm(CSRFDisabledForm):
     submit = SubmitField('Register')
 
 class PasswordChangeForm(CSRFDisabledForm):
-    old_password = StringField('Old Password', validators=[DataRequired()])
+    old_password = PasswordField('Old Password', validators=[DataRequired()])
     new_password = PasswordField('Password', validators=[DataRequired(), EqualTo('new_password2', message= "Passwords must match!" )])
-    new_password2 = PasswordField('Password', validators=[DataRequired()])
-    submit = SubmitField('Change your password')
+    new_password2 = PasswordField('Re-enter Password', validators=[DataRequired()])
+    submit = SubmitField('Submit')
 
-class ManageProfile(CSRFDisabledForm):
+
+class EditProfile(CSRFDisabledForm):
     real_name = StringField('Real name', validators=[Length(0,64)])
     location = StringField('Location', validators=[Length(0,64)])
+    fav_team = StringField('Fav team', validators=[Length(0,64)])
     about_me = TextAreaField('About me')
-    submit = SubmitField('Add your details')
+    submit = SubmitField('Submit')
 
 class AdminManageProfiles(CSRFDisabledForm):
-    email = StringField('Email', validators=[DataRequired(), Length(1,64), Email(), validator_user_already_registered() ])
-    username = StringField('Username', validators=[DataRequired(), Length(1,64), validator_user_already_registered()])
+    email = StringField('Email', validators=[DataRequired(), Length(1, 64),
+                                             Email(), validator_user_already_registered()])
+    username = StringField('Username', validators=[DataRequired(), Length(1, 64), validator_user_already_registered()])
     role = SelectField('Role', coerce=int)
     confirmed = BooleanField('Is confirmed?')
-    real_name = StringField('Real name', validators=[Length(0,64)])
-    location = StringField('Location', validators=[Length(0,64)])
+    real_name = StringField('Real name', validators=[Length(0, 64)])
+    location = StringField('Location', validators=[Length(0, 64)])
     about_me = TextAreaField('About me')
     submit = SubmitField('Submit')
 
@@ -50,18 +53,8 @@ class AdminManageProfiles(CSRFDisabledForm):
         super(AdminManageProfiles, self).__init__()
 
         # generator generating a list of tuples
-        self.role.choices = [(role.id, role.name) for role in Role.query.all()  ]
+        self.role.choices = [(role.id, role.name) for role in Role.query.all() ]
         self.user = user
-
-    'reference user is the user we are editing'
-    'rewrite to custom validations'
-    def validate_email(self, field):
-        if field.data != self.email and User.query.filter_by(email=field.data).first():
-            raise ValidationError('Email is already registered.')
-
-    def validate_username(self, field):
-        if field.data != self.username and User.query.filter_by(username=field.data).first():
-            raise ValidationError('Username is already registered.')
 
 
 class UserDefaultPredictionSettings(CSRFDisabledForm):

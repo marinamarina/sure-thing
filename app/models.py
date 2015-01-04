@@ -65,7 +65,7 @@ class Message(db.Model):
 
     @staticmethod
     def delete_message(message):
-        m=Message.query.filter_by(id=message.id).first()
+        m = Message.query.filter_by(id=message.id).first()
         if m:
             db.session.delete(m)
 
@@ -232,7 +232,6 @@ class SavedForLater(db.Model):
     )
 
     was_played = association_proxy('match', 'was_played')
-
 
     def update_lsp(self, rate):
         lsp=0
@@ -420,14 +419,14 @@ class User(UserMixin, db.Model):
                                     )
 
     prediction_settings = db.relationship('ModuleUserSettings',
-                                          backref='bettor',
-                                        foreign_keys=[ModuleUserSettings.user_id],
-                                        lazy='dynamic',
-                                        cascade='all, delete-orphan'
+                                          backref=db.backref('bettor', lazy='joined'),
+                                          foreign_keys=[ModuleUserSettings.user_id],
+                                          lazy='dynamic',
+                                          cascade='all, delete-orphan'
     )
 
     match_specific_settings = db.relationship('ModuleUserMatchSettings',
-                                          backref='bettor_match',
+                                          backref=db.backref('bettor_match', lazy='joined'),
                                           foreign_keys=[ModuleUserMatchSettings.user_id, PredictionModule.id],
                                           lazy='dynamic',
                                           cascade='all, delete-orphan'
@@ -436,7 +435,7 @@ class User(UserMixin, db.Model):
     messages = db.relationship('Message', backref='addressee', lazy='dynamic')
 
     # take a look, this provides me an overview of matches for the user, only this value
-    #winners = association_proxy('saved_matches', 'bettor_won')
+    bets_won = association_proxy('saved_matches', 'bettor_won')
 
 
     def __init__(self, **kwargs):
@@ -554,11 +553,9 @@ class User(UserMixin, db.Model):
                 db.session.delete(msg)
 
 
-    '''def user_betting_settings(self, match):
-        if not self.is_match_saved(match):
-            #self.saved_matches.append(match)
-            s = SavedForLater(user=self, match=match)
-            db.session.add(self)'''
+    def list_won_bets(self, match):
+
+        return []
 
     # using property because I want to protect the password
     @property

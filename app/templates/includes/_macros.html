@@ -26,13 +26,25 @@
 
 {# Macro to render a submit form field #}
 {% macro render_submit_field(field) %}
-<div class="col-lg-4 text-right pull-right">
+<div class="col-lg-5 text-right pull-right">
     {{ field(class_="btn btn-action") }}
 </div>
 {% endmacro %}
 
 {# Macro to render a team image #}
 {% macro teamkitimage(match, home=1) %}
+    {% set img_url = '' %}
+
+    {% if home == 1 %}
+        {% set img_url = 'img/kits/' + match.hometeam.id ~ '_1.png' %}
+    {% else %}
+        {% set img_url = 'img/kits/' + match.awayteam.id ~ '_2.png' %}
+    {% endif %}
+    <img src="{{ url_for('static', filename=img_url, _external=True) }}" class="team-kit" alt="{{match.awayteam.name}}" />
+{% endmacro %}
+
+{# TODO Macro to render a team image for user profile #}
+{% macro teamkitimageprofile(name) %}
     {% set img_url = '' %}
 
     {% if home == 1 %}

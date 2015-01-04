@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% import 'bootstrap/wtf.html' as wtf %}
-{% from 'includes/__formhelpers.html' import render_field, render_submit_field %}
+{% from 'includes/_macros.html' import render_field, render_submit_field %}
 
 {% block title %}
     {{ title }}
@@ -29,8 +29,8 @@
                 <div class="col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">
                     <div class="panel panel-default">
                         <div class="panel-body">
-                            <h3 class="thin text-center">Create your SureThing Account</h3>
-                            <hr>
+                            <h3 class="underlined-title thin text-center">Create your SureThing Account</h3>
+
 							<form method="POST" class= "form-register" role="form">
                                 {{ render_field(form.email) }}
                                 {{ render_field(form.username) }}

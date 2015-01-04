@@ -372,17 +372,6 @@ def admin():
     pass
 
 
-# user profile to view by other users
-@main.route('/user/<username>')
-def user(username):
-    user = User.query.filter_by(username=username).first()
-    if user is None:
-        abort(404)
-    #posts = Post.query.filter_by(author=user).order_by(Post.timestamp.desc()).all()
-
-    return render_template('main/user.html', user=user)  #posts=posts
-
-
 '''
 # a unique url to each blogpost
 @main.route('/post/<int:id>', methods=['GET', 'POST'])
@@ -450,7 +439,7 @@ def follow(username):
 
     me.follow(other_user)
     flash("Congratulations, you are now following " + username)
-    return redirect(url_for('main.user', username=username))
+    return redirect(url_for('auth.user', username=username))
 
 
 @main.route('/unfollow/<username>')
@@ -468,7 +457,7 @@ def unfollow(username):
 
     me.unfollow(other_user)
     flash("Congratulations, you are now not following " + username)
-    return redirect(url_for('main.user', username=username))
+    return redirect(url_for('auth.user', username=username))
 
 
 #a route to show the users following our selected user

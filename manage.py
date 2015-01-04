@@ -1,6 +1,4 @@
-#!/usr/bin/env python
 import os
-from flask_script import Manager, Shell, Server
 from app import create_app, db
 from app.models import User, Role, Permission, Follow, \
     Team, Match, SavedForLater, \
@@ -8,7 +6,8 @@ from app.models import User, Role, Permission, Follow, \
     ModuleUserSettings, \
     ModuleUserMatchSettings, \
     Message
-from flask_migrate import Migrate, MigrateCommand
+from flask_migrate import Migrate, MigrateCommand, upgrade
+from flask_script.commands import Server, Shell, ShowUrls, Clean
 from app import socketio
 
 
@@ -18,7 +17,7 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 port = 5000
 
 cov = None
-if (os.environ.get('FLASK_COVERAGE')):
+if os.environ.get('FLASK_COVERAGE'):
     import coverage
     cov = coverage.coverage(branch=True, include='app/*')
     cov.start()
@@ -42,6 +41,8 @@ def make_shell_context():
 
 manager.add_command("shell", Shell(make_context=make_shell_context, use_bpython=True))
 manager.add_command("db", MigrateCommand)
+manager.add_command("show_urls", ShowUrls())
+manager.add_command("clean", Clean())
 
 @manager.command
 def runserver(debug=True): #needs to be changed to False in production or for updating the data
@@ -75,6 +76,22 @@ def test(coverage=False):
         cov.html_report(directory = covdir)
         print('HTML version: file://%s/index.html' % covdir)
         cov.erase()
+
+@manager.command
+def deploy():
+    '''Deployment tasks'''
+    #migrate database to latest revision
+    upgrade()
+    #create user roles
+    Role.insert_roles()
+    #insert matches from the data file
+    Team.insert_teams()
+    #insert matches from the data file
+    Match.update_all_matches()
+    #insert modules
+    PredictionModule.insert_modules()
+
+
 
 if __name__ == '__main__':
     manager.run()
