@@ -41,13 +41,9 @@ class DeploymentConfig(Config):
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or \
         'sqlite:///' + os.path.join(basedir, 'data.sqlite')
 
-@classmethod
-def init_app(cls, app):
-    DevelopmentConfig.Config.init_app(app)
-
     @classmethod
     def init_app(cls, app):
-        Config.init_app(app)
+        DevelopmentConfig.Config.init_app(app)
 
         # email errors to the administrators
         import logging

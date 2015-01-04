@@ -218,61 +218,65 @@ class FootballAPIWrapper:
         return league_table
 
     def form_and_tendency(self):
-        """I need to output last 5 matches for a team for the team (tendency and result)
-        team_id: list_of_matches[(date,home/away,whom_played,score,w/l)]
+        """I need to output all matches played by the team (tendency and result)
+        structure of the returned data:
+        team_id: [MatchForFormInfo(id,date,time,hometeam, awayteam,homescore, awayscore,outcome),()...]
         """
 
         all_played_matches = self.played_matches
-        matches_for_form = []
+        form_and_tendency_data = dict()
         MatchForFormInfo = namedtuple('MatchForFormInfo', 'id, date_stamp, time_stamp, hometeam_id, awayteam_id,'
                                                           'hometeam_score, awayteam_score, outcome')
 
-        for match in all_played_matches:
-            matchForFormInfo = MatchForFormInfo(
-                match.id,
-                match.date_stamp,
-                match.time_stamp,
-                match.hometeam_id,
-                match.awayteam_id,
-                int(match.hometeam_score),
-                int(match.awayteam_score),
-                ''
-            )
-            matches_for_form.append(matchForFormInfo)
-        #print matches_for_form
 
-        dict1 = dict()
-        team_is_at_home = True
+        # loop through the team ids
+        for team_id in self.ids_names:
 
-        for team in self.ids_names:
+            #empty the matches list
             matches_list = []
 
-            for match in matches_for_form:
-                if team == match.hometeam_id or team == match.awayteam_id:
+            # loop through the matches and pick the right ones
+            for match in all_played_matches:
+                if team_id==match.hometeam_id or team_id==match.awayteam_id:
 
-                    if team == match.hometeam_id:
+                    if team_id == match.hometeam_id:
                         team_is_at_home = True
-                    elif team == match.awayteam_id:
+                    elif team_id == match.awayteam_id:
                         team_is_at_home = False
 
                     if team_is_at_home and match.hometeam_score > match.awayteam_score or  \
                         not team_is_at_home and match.hometeam_score < match.awayteam_score:
-                            pass
-                            #match.outcome = 'W'
+                            outcome = 'W'
                     elif match.hometeam_score == match.awayteam_score:
-                        pass
-                        #match.outcome = 'D'
+                        outcome = 'D'
                     else:
-                        pass
-                        #match.outcome = 'L'
+                        outcome = 'L'
 
-                    matches_list.append(match)
-                    if len(matches_list) == 10: break
+                    # create a tuple representing a match
+                    matchForFormInfo = MatchForFormInfo(
+                        match.id,
+                        match.date_stamp,
+                        match.time_stamp,
+                        match.hometeam_id,
+                        match.awayteam_id,
+                        int(match.hometeam_score),
+                        int(match.awayteam_score),
+                        outcome
+                    )
 
-            dict1[team] = matches_list
+                    matches_list.append(matchForFormInfo)
+
+
+            form_and_tendency_data[team_id] = matches_list
 
         from pprint import pprint
-        pprint (dict1[9002])
+        pprint(form_and_tendency_data[9008])
+
+
+
+        return form_and_tendency_data
+
+
 
         #print dict
         # get the list of tuples with matches already created in the app
