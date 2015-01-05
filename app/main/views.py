@@ -55,6 +55,13 @@ def index():
                if my_query.filter_by(date_stamp=date).all()
     }
 
+    match = Match.query.all()[170]
+
+    team = Team.query.filter_by(id=match.hometeam_id).first()
+
+    print team.last_match
+    #MatchForFormInfo(id=1788004, date_stamp=datetime.date(2014, 8, 18), time_stamp=datetime.time(19, 0), hometeam_id=9072, awayteam_id=9092, hometeam_score=1, awayteam_score=3, outcome='W')
+
     return dict(user=current_user, matches=matches, sort_order_reversed=sort_order_reversed)
 
 

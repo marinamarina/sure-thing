@@ -46,8 +46,7 @@
                 <a class="pull-left" id="messages" href="{{url_for('main.messages') }}">
                         <span class="glyphicon glyphicon-envelope
                         {% if current_user.list_new_messages %}orange{% endif %}" area="hidden" id="navMessages"></span>
-
-                    </a>
+                </a>
                 </li>
                 <li>
                     <a class="pull-left" id="logout" href="{{url_for('auth.logout') }}">

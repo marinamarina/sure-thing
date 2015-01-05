@@ -55,3 +55,18 @@
     <img src="{{ url_for('static', filename=img_url, _external=True) }}" class="team-kit" alt="{{match.awayteam.name}}" />
 {% endmacro %}
 
+{% macro win_loss_draw_icon(match, home) %}
+    {% if home==True %}
+        {% set team = match.hometeam %}
+    {% else %}
+        {% set team = match.awayteam %}
+    {% endif %}
+
+    {% if team.last_match.outcome=='W' %}
+        <img src="{{ url_for('static', filename='img/win.png', _external=True) }}" height="15"/>
+    {% elif team.last_match.outcome=='L'  %}
+        <img src="{{ url_for('static', filename='img/loss.png', _external=True) }}" height="15"/>
+    {% else %}
+        <img src="{{ url_for('static', filename='img/draw.png', _external=True) }}" height="15"/>
+    {% endif %}
+{% endmacro %}

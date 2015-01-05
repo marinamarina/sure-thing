@@ -1,10 +1,16 @@
+$imgpath :'../img/';
+
 @mixin team-kit($size: 90px) {
 	height: $size;
     width: $size;
 }
+.jumbotron {
+    background-color: transparent;
+}
 .orange {
     color: #FF981C;
 }
+
 .img-circle { border-radius: 50%; }
 .indented { margin-left: 20px; }
 .btn-round { 
@@ -28,4 +34,13 @@ li.separate {
 
 .errors li {
     color: red;
+}
+.vs {
+		font-size: 1.4em;
+		margin: 26px 0;
+		display: block;
+		font-weight: bold;
+}
+.margin-top-20 {
+    margin-top: 20px;
 }

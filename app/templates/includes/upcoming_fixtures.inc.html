@@ -1,31 +1,35 @@
-{% from 'includes/_macros.html' import teamkitimage %}
+{% from 'includes/_macros.html' import teamkitimage, win_loss_draw_icon %}
 {{ moment.include_jquery() }}
 {{ moment.include_moment() }}
 
 <!--matches -->
-<div class="jumbotron top-space container" id="matches-overview">
     {% if matches %}
 
     {% for key, value in matches.iteritems() |sort (reverse=sort_order_reversed) %}
 
     <!-- matches for date -->
     <div class="matches-for-date">
-        <h3 class="match-date row"> {{ moment(key).format('MMMM Do YYYY') }}</h3>
+
+        <!-- date -->
+		<h3 class="match-date"> {{ moment(key).format('MMMM Do YYYY') }}</h3>
+        <!-- /date -->
 
         {% for match in value %}
         <!--match-->
         <div class="match row panel panel-default" data="{{match.id}}">
             <div class="panel-body">
 
-                <div class="home-team team col-sm-4 col-sm-offset-1 text-center">
+                <div class="home-team team col-sm-4 col-sm-offset-1 margin-top-20 text-center">
                     {{ teamkitimage(match, home=1) }}
 
                     <span class="team-name clearfix">{{match.hometeam.name}}</span>
                     <span class="team-form clearfix">{{match.hometeam.form}}</span>
-                    <span class="team-last-result">2:0 Norwich</span>
+                    <span class="win team-last-result">{{match.hometeam.last_match.score}} {{match.hometeam.last_match.opponent}}</span>
+                    {{ win_loss_draw_icon(match, home=True) }}
+
                 </div>
                 <div class="kick-off col-sm-2 text-muted text-center">
-                    <span>VS</span>
+                    <span class="vs">VS</span>
                     <span class="clearfix"> DATE: {{match.date}}</span>
                     <span class="clearfix">KO: {{match.time}} </span>
                     <span>Score:</span>
@@ -34,14 +38,15 @@
                         <span class="awayteam_score orange">{{match.awayteam_score}}</span>
                     {% endif %}
                 </div>
-                <div class="away-team team col-sm-3 text-center">
+                <div class="away-team team col-sm-3 margin-top-20 text-center">
                      {{ teamkitimage(match, home=2) }}
                     <span class="team-name clearfix">{{match.awayteam.name}}</span>
                     <span class="team-form clearfix">{{match.awayteam.form}}</span>
-                    <span class="team-last-result">3:0 Norwich</span>
+                    <span class="win team-last-result">{{match.awayteam.last_match.score}} {{match.awayteam.last_match.opponent}}</span>
+                    {{ win_loss_draw_icon(match, home=False) }}
                 </div>
  
-                <div class="status col-sm-1 text-center">
+                <div class="status col-sm-1 margin-top-20 text-center">
                     {% if current_user.is_authenticated() and current_user.has_match_saved(match) %}
                         <span class="glyphicon glyphicon-saved"></span>
                     {% endif %}
@@ -67,5 +72,4 @@
 {% else %}
     <p>There are no matches in few next days.</p>
 {% endif %}
-</div>
 <!--/matches-->

@@ -1,11 +1,20 @@
-/* Matches Overview */
+/* Navigation  */
+#upcoming-past-nav {
+    li.active {
+        background-color: #FF9B22;
+    }
+}
 
+/* Matches Overview */
 #matches-overview {
 	font-family: 'Open Sans', sans-serif;
 
 	
 	.match-date {
-    	border-bottom: 1px solid #CCC;
+    	font-size: 1.7em;
+        padding: 0 0 15px 32px;
+        margin: 40px 0 0 0;
+    
 	}
 	.row.match {
 		margin-left: auto!important;
@@ -15,8 +24,6 @@
 		width: 95%;
 	}
 	.kick-off {
-		margin-top: 30px;
-		font-size: 1.1em;
 		display: block;
 		font-weight: normal;
 	}
@@ -28,7 +35,9 @@
 	}
 }
 
+
 #modules {
+    
 	.league-position-comparison {
 		margin-top: 30px;
 	}

@@ -623,6 +623,23 @@ class Team(db.Model):
        current_form = faw.league_table[str(self.id)].form
        return current_form
 
+    @property
+    def last_match(self):
+       LastMatchInfo = namedtuple('LastMatchInfo', 'opponent, score outcome')
+       last_match_data = faw.form_and_tendency(self.id)[0]
+
+       if last_match_data.hometeam_id != self.id:
+           opponent = Team.query.filter_by(id=last_match_data.hometeam_id).first().name
+       else:
+           opponent = Team.query.filter_by(id=last_match_data.awayteam_id).first().name
+
+       score = str(last_match_data.hometeam_score) + ':' + str(last_match_data.awayteam_score)
+       outcome = last_match_data.outcome
+       from pprint import pprint
+
+       return LastMatchInfo(opponent, score, outcome)
+
+
     def __init__(self, **kwargs):
         super(Team, self).__init__(**kwargs)
         #self.league_position = 1

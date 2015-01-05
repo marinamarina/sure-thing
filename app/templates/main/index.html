@@ -2,7 +2,11 @@
 {% from 'includes/_macros.html' import render_field %}
 
 {% block header %}
-    {% include 'includes/header.inc.html' %}
+    {% if current_user.is_authenticated() %}
+        <header id="head" class="secondary"></header>
+    {% else %}
+        {% include 'includes/header.inc.html' %}
+    {% endif %}
 {% endblock header %}
 
 {% block inner_wrapper %}
@@ -10,20 +14,23 @@
     <div class="container text-center">
         <br />
         <br />
-        <h2 class="thin">The best place to tell people why they are here</h2>
-        <p class="text-muted">This is the index page</p>
+        <h2 class="thin">Bet safely!</h2>
+        <p class="text-muted">Start saving matches to your dashboard.</p>
     </div>
     <!-- /introduction -->
 
-    <!-- menu -->
-    <ul class="nav nav-pills">
+    <div class="jumbotron top-space container" id="matches-overview">
+        <!-- menu -->
+        <ul class="nav nav-pills" id="upcoming-past-nav">
             <li role="presentation" class="active"><a href="{{ url_for('.show_unplayed') }}">Upcoming fixtures</a></li>
             <li role="presentation"><a href="{{ url_for('.show_played') }}">Previous Results</a></li>
-    </ul>
-    <!--/ menu -->
+        </ul>
+        <!--/ menu -->
 
-    <!--matches list-->
-    {% include 'includes/upcoming_fixtures.inc.html' %}
-    <!--/matches list-->
+        <!-- matches list -->
+            {% include 'includes/upcoming_fixtures.inc.html' %}
+        <!--/matches list-->
+
+    </div>
 
 {% endblock inner_wrapper %}

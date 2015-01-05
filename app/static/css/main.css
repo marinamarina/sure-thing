@@ -1,3 +1,7 @@
+.jumbotron {
+  background-color: transparent;
+}
+
 .orange {
   color: #FF981C;
 }
@@ -34,6 +38,17 @@ li.separate {
 
 .errors li {
   color: red;
+}
+
+.vs {
+  font-size: 1.4em;
+  margin: 26px 0;
+  display: block;
+  font-weight: bold;
+}
+
+.margin-top-20 {
+  margin-top: 20px;
 }
 
 /* Typography */
@@ -188,12 +203,19 @@ body#surething {
   font-size: 1.1em;
 }
 
+/* Navigation  */
+#upcoming-past-nav li.active {
+  background-color: #FF9B22;
+}
+
 /* Matches Overview */
 #matches-overview {
   font-family: 'Open Sans', sans-serif;
 }
 #matches-overview .match-date {
-  border-bottom: 1px solid #CCC;
+  font-size: 1.7em;
+  padding: 0 0 15px 32px;
+  margin: 40px 0 0 0;
 }
 #matches-overview .row.match {
   margin-left: auto !important;
@@ -203,8 +225,6 @@ body#surething {
   width: 95%;
 }
 #matches-overview .kick-off {
-  margin-top: 30px;
-  font-size: 1.1em;
   display: block;
   font-weight: normal;
 }
@@ -432,12 +452,6 @@ body#surething {
   font-weight: bold;
   height: 20px;
   display: block;
-}
-#saved-matches .vs {
-  font-size: 1.4em;
-  margin: 26px 0;
-  display: block;
-  font-weight: bold;
 }
 #saved-matches .status {
   margin-bottom: 94px;

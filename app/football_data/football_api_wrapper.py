@@ -217,7 +217,7 @@ class FootballAPIWrapper:
 
         return league_table
 
-    def form_and_tendency(self):
+    def form_and_tendency(self, id):
         """I need to output all matches played by the team (tendency and result)
         structure of the returned data:
         team_id: [MatchForFormInfo(id,date,time,hometeam, awayteam,homescore, awayscore,outcome),()...]
@@ -227,7 +227,6 @@ class FootballAPIWrapper:
         form_and_tendency_data = dict()
         MatchForFormInfo = namedtuple('MatchForFormInfo', 'id, date_stamp, time_stamp, hometeam_id, awayteam_id,'
                                                           'hometeam_score, awayteam_score, outcome')
-
 
         # loop through the team ids
         for team_id in self.ids_names:
@@ -266,26 +265,13 @@ class FootballAPIWrapper:
 
                     matches_list.append(matchForFormInfo)
 
+            form_and_tendency_data[team_id] = matches_list[::-1]
 
-            form_and_tendency_data[team_id] = matches_list
-
-        from pprint import pprint
-        pprint(form_and_tendency_data[9008])
-
-
-
-        return form_and_tendency_data
-
-
-
-        #print dict
-        # get the list of tuples with matches already created in the app
-        # create new tuple containing just my info: (match_date, match_time, hometeam_id, awayteam_id, score_home, score_away)
-        # sort list by date/time
-        # for each team load into dictionary a list of 5 last matches
-        # add draw/win/loss to the tuple
-
-
+        # we can output either the whole data set or just a line for a particular team
+        if id is None:
+            return form_and_tendency_data
+        else:
+            return form_and_tendency_data[id]
 
     @property
     def api_key(self):
