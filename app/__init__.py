@@ -55,7 +55,6 @@ def create_app(config_name):
         # is while within this block. Therefore, you can now run........
         db.create_all()
 
-    faw.init_app(app)
     moment.init_app(app)
     login_manager.init_app(app)
     socketio.init_app(app)

@@ -709,7 +709,6 @@ class Match(db.Model):
     def update_all_matches():
         'Inserting all the matches to the database'
         matches = faw.all_matches
-        print("THIS RAN")
 
         for m in matches:
             # hope this will not be a bottleneck, find a smarter way to check what is already in the database??

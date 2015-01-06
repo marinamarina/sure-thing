@@ -16,37 +16,15 @@ class FootballAPIWrapper:
         if app is not None:
             self.init_app(app)'''
 
-        self.__premier_league_id = '1204'
-        self.__base_url = 'http://football-api.com/api/?Action='
-        self.proxy_on = False
-
-    def init_app(self, app):
-        '''if hasattr(app, 'teardown_appcontext'):
-            app.teardown_appcontext(self.teardown)
-        else:
-            app.teardown_request(self.teardown)'''
-        pass
-
-    @staticmethod
-    def get_beginning_year(current_month, current_year):
-        'checking in which year the season began'
-        if current_month > 7:
-            season_began_in_year = current_year
-        else:
-            season_began_in_year = current_year - 1
-        return season_began_in_year
-
-    @staticmethod
-    def get_end_year(current_month, current_year):
-        'checking in which year the season began'
-        if current_month > 7:
-            season_ends_in_year = current_year + 1
-        else:
-            season_ends_in_year = current_year
-        return season_ends_in_year
+        self._premier_league_id = '1204'
+        self._base_url = 'http://football-api.com/api/?Action='
+        self._data_dir = 'app/data'  #'../data'
+        self._proxy_on = False
 
 
-    def call_api(self, action=None, **kwargs):
+
+
+    def _call_api(self, action=None, **kwargs):
         """ Call the Football API
         :param action: Football API action: competition, standings, today, fixtures, commentaries
         :param kwargs: e.g
@@ -66,15 +44,15 @@ class FootballAPIWrapper:
         for kwarg in kwargs:
             params[kwarg] = kwargs[kwarg]
 
-        url = self.__base_url \
+        url = self._base_url \
                + action \
-               + '&comp_id=' + self.__premier_league_id
+               + '&comp_id=' + self._premier_league_id
 
         params = urllib.urlencode(params)
         print ("My url {}").format(url + '&%s' % params)
 
         try:
-            if (self.proxy_on):
+            if (self._proxy_on):
                 proxy = urllib2.ProxyHandler({'http': 'http://proxy1.rgu.ac.uk:8080'})
                 opener = urllib2.build_opener(proxy)
                 urllib2.install_opener(opener)
@@ -107,13 +85,13 @@ class FootballAPIWrapper:
         """Get the matches json from an API"""
         action = 'fixtures'
         params = {'from_date': '01.08.' + str(self.date_tuple.beginning_year), 'to_date' : '31.05.' + str(self.date_tuple.end_year)}
-        all_matches = self.call_api(action, **params)
+        all_matches = self._call_api(action, **params)
         return all_matches
 
     def get_standings(self):
         'Get the standings json from the API'
         action = 'standings'
-        data_standings = self.call_api(action)
+        data_standings = self._call_api(action)
         return data_standings
 
     def write_matches_data (self):
@@ -123,7 +101,7 @@ class FootballAPIWrapper:
             raw_data["matches"] = self.get_all_matches()["matches"]
             raw_data["date-time"] = self.date_tuple.today + ' ' + self.date_tuple.current_time
 
-            with open(self.data_dir + '/all_matches.json', mode = 'w') as outfile:
+            with open(self._data_dir + '/all_matches.json', mode = 'w') as outfile:
                 json.dump(raw_data, outfile)
 
             outfile.close()
@@ -140,7 +118,7 @@ class FootballAPIWrapper:
             raw_data["standings"] = self.get_standings()["teams"]
             raw_data["date-time"] = self.date_tuple.today + ' ' + self.date_tuple.current_time
 
-            with open(self.data_dir + '/standings.json', mode = 'w') as outfile:
+            with open(self._data_dir + '/standings.json', mode = 'w') as outfile:
                 json.dump(raw_data, outfile)
 
             outfile.close()
@@ -272,6 +250,24 @@ class FootballAPIWrapper:
             return form_and_tendency_data
         else:
             return form_and_tendency_data[id]
+
+    @staticmethod
+    def get_beginning_year(current_month, current_year):
+        'checking in which year the season began'
+        if current_month > 7:
+            season_began_in_year = current_year
+        else:
+            season_began_in_year = current_year - 1
+        return season_began_in_year
+
+    @staticmethod
+    def get_end_year(current_month, current_year):
+        'checking in which year the season began'
+        if current_month > 7:
+            season_ends_in_year = current_year + 1
+        else:
+            season_ends_in_year = current_year
+        return season_ends_in_year
 
     @property
     def api_key(self):
