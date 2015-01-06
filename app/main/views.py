@@ -1,21 +1,18 @@
-from datetime import datetime
 from flask import render_template, redirect, url_for, abort, flash, \
     session, current_app, request
 from flask_login import login_required, current_user
 from . import main
 from .forms import UserDefaultPredictionSettings, UserMatchPredictionSettings
-from .. import db
+from .. import db, socketio
 from ..models import User, Permission, Team, \
     Match, SavedForLater, PredictionModule, Message, \
     ModuleUserSettings, ModuleUserMatchSettings
 
 from ..email import send_email
 from ..decorators_me import permission_required, templated
-from .. import socketio
 from threading import Thread, Event
 from ..threads.data_handle_threads import RandomThread, DataUpdateThread
 from collections import namedtuple
-from sqlalchemy import desc, asc
 from collections import OrderedDict
 
 # random number Generator Thread
@@ -40,11 +37,11 @@ def index():
     show_played_matches = bool(request.cookies.get('show_played_matches', ''))
 
     if show_played_matches:
-        my_query = Match.query.filter_by(was_played=True).order_by(Match.time_stamp.asc())
-        sort_order_reversed=True
-    else:
         my_query = Match.query.filter_by(was_played=False).order_by(Match.time_stamp.asc())
-        sort_order_reversed=False
+        sort_order_reversed = False
+    else:
+        my_query = Match.query.filter_by(was_played=True).order_by(Match.time_stamp.asc())
+        sort_order_reversed = True
 
     query = db.session.query(Match.date_stamp.distinct().label("date_stamp"))
     unique_dates = [row.date_stamp for row in query.all()]
@@ -54,14 +51,6 @@ def index():
                for date in unique_dates
                if my_query.filter_by(date_stamp=date).all()
     }
-
-    match = Match.query.all()[170]
-
-    team = Team.query.filter_by(id=match.hometeam_id).first()
-
-    print team.last_match
-    #MatchForFormInfo(id=1788004, date_stamp=datetime.date(2014, 8, 18), time_stamp=datetime.time(19, 0), hometeam_id=9072, awayteam_id=9092, hometeam_score=1, awayteam_score=3, outcome='W')
-
     return dict(user=current_user, matches=matches, sort_order_reversed=sort_order_reversed)
 
 
@@ -134,13 +123,12 @@ def delete_all_messages():
     return redirect(url_for('.messages'))
 
 
-@main.route('/winners')
+@main.route('/leader_board')
 @templated()
-def winners():
-    users=User.query.all()
+def leader_board():
+    users= User.query.order_by(User.win_points.desc()).all()
     Winners = namedtuple('Winners',
                                'username win_points loss_points lsp')
-    #winners_dict=
 
     return dict(user=current_user, users=users)
 
@@ -580,7 +568,6 @@ def test_connect():
     #Start the data update thread only if the thread has not been started before.
     if not thread.isAlive():
         print "Starting Thread"
-        #print 'CAPTURED!'
         thread = DataUpdateThread()
         thread.start()
 

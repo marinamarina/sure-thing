@@ -8,6 +8,8 @@ from config import config
 from gevent import monkey
 from flask_socketio import SocketIO
 from football_data.football_api_wrapper import FootballAPIWrapper
+from flask_cache import Cache
+
 
 #gunicorn -b 0.0.0.0:5000 --log-config log.conf --pid=app.pid myfile:app
 
@@ -25,6 +27,8 @@ moment = Moment()
 faw = FootballAPIWrapper()
 faw.api_key = '2890be06-81bd-b6d7-1dcb4b5983a0' # set as an environment variable
 socketio = SocketIO()
+#cache = Cache(config={'CACHE_TYPE': 'simple'})
+
 
 '''def background_thread():
     """Example of how to send server generated events to clients."""
@@ -58,6 +62,7 @@ def create_app(config_name):
     moment.init_app(app)
     login_manager.init_app(app)
     socketio.init_app(app)
+
 
     #attach routes and custom error pages here
     from main import main as main_blueprint
