@@ -5,6 +5,7 @@ import json
 from datetime import datetime
 from collections import namedtuple, OrderedDict
 import urllib
+import requests
 
 '''
     TODO: switch to API version 2
@@ -22,10 +23,10 @@ class FootballAPIWrapper:
         self._proxy_on = False
 
 
-
-
     def _call_api(self, action=None, **kwargs):
-        """ Call the Football API
+        """
+        Private method
+        Store the response from the search endpoint in json_response
         :param action: Football API action: competition, standings, today, fixtures, commentaries
         :param kwargs: e.g
         :return: output as a json object
@@ -49,23 +50,20 @@ class FootballAPIWrapper:
                + '&comp_id=' + self._premier_league_id
 
         params = urllib.urlencode(params)
-        print ("My url {}").format(url + '&%s' % params)
+        print "My url {}".format(url + '&%s' % params)
 
-        try:
-            if (self._proxy_on):
-                proxy = urllib2.ProxyHandler({'http': 'http://proxy1.rgu.ac.uk:8080'})
-                opener = urllib2.build_opener(proxy)
-                urllib2.install_opener(opener)
 
-            my_json = urllib2.urlopen(url + '&%s' % params)
-        except urllib2.URLError, e:
-            print 'URL error: ' + str(e.reason)
-        except Exception:
-            print 'Other exception'
-        else:
-            output_data = json.load(my_json)
+        # rewrite for requests
+        '''if self.proxy_on:
+            proxy = urllib2.ProxyHandler({'http': 'http://proxy1.rgu.ac.uk:8080'})
+            opener = urllib2.build_opener(proxy)
+            urllib2.install_opener(opener)'''
 
-        return output_data
+        self.response = requests.get(url + '&%s' % params)
+        self.json_response = self.response.json()
+
+        return self.json_response
+
 
     def feed_ids_names(self):
         """Create an team id -> name relationship"""
