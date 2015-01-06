@@ -14,13 +14,9 @@ import requests
 '''
 class FootballAPIWrapper:
     def __init__(self, methodName='runTest'):
-        '''self.app = app
-        if app is not None:
-            self.init_app(app)'''
-
-        self.__premier_league_id = '1204'
-        self.__base_url = 'http://football-api.com/api/?Action='
-        self.data_dir = 'app/data'  #'../data'
+        self._premier_league_id = '1204'
+        self._base_url = 'http://football-api.com/api/?Action='
+        self._data_dir = 'app/data'  #'../data'
         self.proxy_on = False
         #self.cache = SimpleCache()
 
@@ -46,9 +42,9 @@ class FootballAPIWrapper:
         for kwarg in kwargs:
             params[kwarg] = kwargs[kwarg]
 
-        url = self.__base_url \
+        url = self._base_url \
                + action \
-               + '&comp_id=' + self.__premier_league_id
+               + '&comp_id=' + self._premier_league_id
 
         params = urllib.urlencode(params)
         print "My url {}".format(url + '&%s' % params)
@@ -67,6 +63,22 @@ class FootballAPIWrapper:
             self.json_response = self.response.json()
 
         return self.json_response
+
+
+    def feed_ids_names(self):
+        """Create an team id -> name relationship"""
+        with open(self._data_dir + '/standings.json', 'r') as localfile:
+            standings_data = json.load(localfile)
+        localfile.close()
+
+        # feeding the dictionary
+        output_data = {
+            int(team["stand_team_id"]) : team["stand_team_name"]
+            for team in standings_data['standings']
+        }
+
+        return output_data
+
 
     def _get_all_matches(self):
         """Get the matches json response from an API"""
@@ -89,7 +101,8 @@ class FootballAPIWrapper:
             raw_data["standings"] = self._get_standings()["teams"]
             raw_data["date-time"] = self.date_tuple.today + ' ' + self.date_tuple.current_time
 
-            with open(self.data_dir + '/standings.json', mode='w') as outfile:
+            with open(self._data_dir + '/all_matches.json', mode = 'w') as outfile:
+
                 json.dump(raw_data, outfile)
 
             outfile.close()
@@ -105,7 +118,8 @@ class FootballAPIWrapper:
             raw_data["matches"] = self._get_all_matches()["matches"]
             raw_data["date-time"] = self.date_tuple.today + ' ' + self.date_tuple.current_time
 
-            with open(self.data_dir + '/all_matches.json', mode='w') as outfile:
+            with open(self._data_dir + '/standings.json', mode = 'w') as outfile:
+
                 json.dump(raw_data, outfile)
 
             outfile.close()
@@ -136,7 +150,7 @@ class FootballAPIWrapper:
         :return tuple of two arrays of tuples
         """
 
-        with open(self.data_dir + '/all_matches.json', 'r') as localfile:
+        with open(self._data_dir + '/all_matches.json', 'r') as localfile:
             matches_data = json.load(localfile)
         localfile.close()
 
@@ -173,8 +187,28 @@ class FootballAPIWrapper:
 
         return MatchesAllAndUnplayed(all_matches, unplayed_matches, played_matches)
 
-    def testing_cache(self):
-        pass
+    def feed_league_table(self):
+        '''
+        Create a dictionary with the current standings
+        Read the data from a local file
+        :return league_table dictionary
+        '''
+        with open(self._data_dir + '/standings.json', 'r') as localfile:
+            standings_data = json.load(localfile)
+        localfile.close()
+        league_table = OrderedDict()
+        TeamInfo = namedtuple('TeamInfo', 'position team_name matches_played w d l goals_for goals_against gp points form')
+
+
+        league_table = {team['stand_team_id'] : TeamInfo(team['stand_position'], team['stand_team_name'], team['stand_round'],
+                        team['stand_overall_w'], team['stand_overall_d'], team['stand_overall_l'],
+                        team['stand_overall_gs'], team['stand_overall_ga'], team['stand_gd'], team['stand_points'], team['stand_recent_form'])
+
+                        for team in standings_data['standings']
+            }
+
+        return league_table
+
 
     def form_and_tendency(self, id):
         """I need to output all matches played by the team (tendency and result)
@@ -268,6 +302,24 @@ class FootballAPIWrapper:
             season_ends_in_year = current_year
         return season_ends_in_year
 
+    @staticmethod
+    def get_beginning_year(current_month, current_year):
+        'checking in which year the season began'
+        if current_month > 7:
+            season_began_in_year = current_year
+        else:
+            season_began_in_year = current_year - 1
+        return season_began_in_year
+
+    @staticmethod
+    def get_end_year(current_month, current_year):
+        'checking in which year the season began'
+        if current_month > 7:
+            season_ends_in_year = current_year + 1
+        else:
+            season_ends_in_year = current_year
+        return season_ends_in_year
+
     @property
     def api_key(self):
         raise AttributeError('API is a non-readable attribute!')
@@ -278,11 +330,12 @@ class FootballAPIWrapper:
 
     @property
     def data_dir(self):
-        return self.data_dir
+        return self._data_dir
+
 
     @data_dir.setter
     def data_dir(self, value):
-        self.data_dir = value
+        self._data_dir = value
 
     @property
     def ids_names(self):
