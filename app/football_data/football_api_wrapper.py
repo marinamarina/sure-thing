@@ -16,34 +16,10 @@ class FootballAPIWrapper:
         if app is not None:
             self.init_app(app)'''
 
-        self.__premier_league_id = '1204'
-        self.__base_url = 'http://football-api.com/api/?Action='
+        self._premier_league_id = '1204'
+        self._base_url = 'http://football-api.com/api/?Action='
+        self._data_dir = 'app/data'  #'../data'
         self.proxy_on = False
-
-    def init_app(self, app):
-        '''if hasattr(app, 'teardown_appcontext'):
-            app.teardown_appcontext(self.teardown)
-        else:
-            app.teardown_request(self.teardown)'''
-        pass
-
-    @staticmethod
-    def get_beginning_year(current_month, current_year):
-        'checking in which year the season began'
-        if current_month > 7:
-            season_began_in_year = current_year
-        else:
-            season_began_in_year = current_year - 1
-        return season_began_in_year
-
-    @staticmethod
-    def get_end_year(current_month, current_year):
-        'checking in which year the season began'
-        if current_month > 7:
-            season_ends_in_year = current_year + 1
-        else:
-            season_ends_in_year = current_year
-        return season_ends_in_year
 
 
     def call_api(self, action=None, **kwargs):
@@ -66,9 +42,9 @@ class FootballAPIWrapper:
         for kwarg in kwargs:
             params[kwarg] = kwargs[kwarg]
 
-        url = self.__base_url \
+        url = self._base_url \
                + action \
-               + '&comp_id=' + self.__premier_league_id
+               + '&comp_id=' + self._premier_league_id
 
         params = urllib.urlencode(params)
         print ("My url {}").format(url + '&%s' % params)
@@ -91,7 +67,7 @@ class FootballAPIWrapper:
 
     def feed_ids_names(self):
         """Create an team id -> name relationship"""
-        with open(self.data_dir + '/standings.json', 'r') as localfile:
+        with open(self._data_dir + '/standings.json', 'r') as localfile:
             standings_data = json.load(localfile)
         localfile.close()
 
@@ -123,7 +99,7 @@ class FootballAPIWrapper:
             raw_data["matches"] = self.get_all_matches()["matches"]
             raw_data["date-time"] = self.date_tuple.today + ' ' + self.date_tuple.current_time
 
-            with open(self.data_dir + '/all_matches.json', mode = 'w') as outfile:
+            with open(self._data_dir + '/all_matches.json', mode = 'w') as outfile:
                 json.dump(raw_data, outfile)
 
             outfile.close()
@@ -140,7 +116,7 @@ class FootballAPIWrapper:
             raw_data["standings"] = self.get_standings()["teams"]
             raw_data["date-time"] = self.date_tuple.today + ' ' + self.date_tuple.current_time
 
-            with open(self.data_dir + '/standings.json', mode = 'w') as outfile:
+            with open(self._data_dir + '/standings.json', mode = 'w') as outfile:
                 json.dump(raw_data, outfile)
 
             outfile.close()
@@ -157,7 +133,7 @@ class FootballAPIWrapper:
         :return tuple of two arrays of tuples
         """
 
-        with open(self.data_dir + '/all_matches.json', 'r') as localfile:
+        with open(self._data_dir + '/all_matches.json', 'r') as localfile:
             matches_data = json.load(localfile)
         localfile.close()
 
@@ -201,7 +177,7 @@ class FootballAPIWrapper:
         Read the data from a local file
         :return league_table dictionary
         '''
-        with open(self.data_dir + '/standings.json', 'r') as localfile:
+        with open(self._data_dir + '/standings.json', 'r') as localfile:
             standings_data = json.load(localfile)
         localfile.close()
         league_table = OrderedDict()
@@ -273,6 +249,24 @@ class FootballAPIWrapper:
         else:
             return form_and_tendency_data[id]
 
+    @staticmethod
+    def get_beginning_year(current_month, current_year):
+        'checking in which year the season began'
+        if current_month > 7:
+            season_began_in_year = current_year
+        else:
+            season_began_in_year = current_year - 1
+        return season_began_in_year
+
+    @staticmethod
+    def get_end_year(current_month, current_year):
+        'checking in which year the season began'
+        if current_month > 7:
+            season_ends_in_year = current_year + 1
+        else:
+            season_ends_in_year = current_year
+        return season_ends_in_year
+
     @property
     def api_key(self):
         raise AttributeError('API is a non-readable attribute!')
@@ -283,11 +277,11 @@ class FootballAPIWrapper:
 
     @property
     def data_dir(self):
-        return 'app/data'
+        return self._data_dir
 
     @data_dir.setter
     def data_dir(self, value):
-        self.data_dir = value
+        self._data_dir = value
 
     @property
     def ids_names(self):
