@@ -1,6 +1,7 @@
 /* Typography */
 body#surething {
     font-family: 'Open Sans', sans-serif;
+    -webkit-font-smoothing: antialiased;
 }
 /* Layout specific */
 .secondary-small { height:100px; min-height: 100px; padding-top:0px; }

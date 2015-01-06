@@ -48,4 +48,4 @@ class TestFootballAPIWrapper(unittest.TestCase):
         pprint(league_table)
 
     def test_unplayed_matches_tuple(self):
-        self.faw.form_and_tendency()
+        pprint(self.faw.form_and_tendency(9002))
