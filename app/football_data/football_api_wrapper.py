@@ -20,7 +20,7 @@ class FootballAPIWrapper:
         self._premier_league_id = '1204'
         self._base_url = 'http://football-api.com/api/?Action='
         self._data_dir = 'app/data'  #'../data'
-        self._proxy_on = False
+        self._proxy_on = True
 
 
     def _call_api(self, action=None, **kwargs):
@@ -58,12 +58,17 @@ class FootballAPIWrapper:
             proxy = urllib2.ProxyHandler({'http': 'http://proxy1.rgu.ac.uk:8080'})
             opener = urllib2.build_opener(proxy)
             urllib2.install_opener(opener)'''
+        if self._proxy_on:
+            http_proxy = {
+                "http": "http://1014481:He1kin2013@proxy1.rgu.ac.uk:8080/"
+            }
+        else:
+            http_proxy = {}
 
-        self.response = requests.get(url + '&%s' % params)
+        self.response = requests.get(url=url + '&%s' % params, proxies=http_proxy)
         self.json_response = self.response.json()
 
         return self.json_response
-
 
     def feed_ids_names(self):
         """Create an team id -> name relationship"""
