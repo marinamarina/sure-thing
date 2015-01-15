@@ -20,7 +20,7 @@ class FootballAPIWrapper:
         self._premier_league_id = '1204'
         self._base_url = 'http://football-api.com/api/?Action='
         self._data_dir = 'app/data'  #'../data'
-        self._proxy_on = True
+        self._proxy_on = False
 
 
     def _call_api(self, action=None, **kwargs):

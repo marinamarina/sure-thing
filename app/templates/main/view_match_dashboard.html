@@ -23,13 +23,13 @@
     <div class="module row panel panel-default" data="{{savedmatch.match_id}}">
         <div class="panel-body">
 
-            <div class="away-team team col-xs-2 col-xs-offset-1 text-center">
+            <div class="away-team team col-sm-2 col-xs-offset-1 text-center">
                 {{ teamkitimage(savedmatch, home=1) }}
                 <span class="team-name clearfix">{{savedmatch.hometeam.name}}</span>
                 <span class="team-form clearfix">{{savedmatch.hometeam.form}}</span>
                 <span class="team-last-result">3:0 Norwich</span>
             </div>
-            <div class="away-team team col-xs-2 col-xs-offset-1 text-center">
+            <div class="away-team team col-sm-2 col-xs-offset-1 text-center">
                 {{ teamkitimage(savedmatch, home=2) }}
                 <span class="team-name clearfix">{{savedmatch.awayteam.name}}</span>
                 <span class="team-form clearfix">{{savedmatch.hometeam.form}}</span>
@@ -47,16 +47,16 @@
                 <h3 class="panel-title">League Position</h3>
             </div>
 
-            <div class="home-team team col-xs-2 col-xs-offset-1 text-center">
+            <div class="home-team team col-sm-2 col-xs-offset-1 text-center">
 
                 <span class="team-form clearfix">Position: {{ savedmatch.hometeam.position }} </span>
                 <span class="team-last-result">3:0 Norwich</span>
             </div>
-            <div class="away-team team col-xs-2 col-xs-offset-1 text-center">
+            <div class="away-team team col-sm-2 col-xs-offset-1 text-center">
                 <span class="team-form clearfix">Position: {{ savedmatch.awayteam.position }} </span>
                 <span class="team-last-result">3:0 Norwich</span>
             </div>
-            <div class="away-team team col-xs-2 col-xs-offset-1 text-center">
+            <div class="away-team team col-sm-2 col-xs-offset-1 text-center">
                 <span class="clearfix">Winner: {{ savedmatch.prediction_league_position.name }}</span>
             </div>
 
@@ -71,16 +71,16 @@
                 <h3 class="panel-title">Form</h3>
             </div>
 
-            <div class="home-team team col-xs-2 col-xs-offset-1 text-center">
+            <div class="home-team team col-sm-2 col-xs-offset-1 text-center">
                 <span class="team-form clearfix">Form: {{ savedmatch.hometeam.form }} </span>
 
                 <span class="team-last-result">3:0 Norwich</span>
             </div>
-            <div class="away-team team col-xs-2 col-xs-offset-1 text-center">
+            <div class="away-team team col-sm-2 col-xs-offset-1 text-center">
                 <span class="team-form clearfix">Form: {{ savedmatch.awayteam.form }} </span>
                 <span class="team-last-result">3:0 Norwich</span>
             </div>
-            <div class="away-team team col-xs-2 col-xs-offset-1 text-center">
+            <div class="away-team team col-sm-2 col-sm-offset-1 text-center">
                 <span class="clearfix">Winner: {{ savedmatch.prediction_form.name }}</span>
             </div>
 
@@ -95,13 +95,13 @@
                 <h3 class="panel-title">Home/Away</h3>
             </div>
 
-            <div class="home-team team col-xs-2 col-xs-offset-1 text-center">
+            <div class="home-team team col-sm-2 col-sm-offset-1 text-center">
                 <span class="team-form clearfix">Home Team: {{ savedmatch.hometeam.name }} </span>
             </div>
-            <div class="away-team team col-xs-2 col-xs-offset-1 text-center">
+            <div class="away-team team col-sm-2 col-sm-offset-1 text-center">
                 <span class="team-form clearfix">Away Team: {{ savedmatch.awayteam.name }} </span>
             </div>
-            <div class="away-team team col-xs-2 col-xs-offset-1 text-center">
+            <div class="away-team team col-sm-2 col-sm-offset-1 text-center">
                 <span class="clearfix">Winner: {{ savedmatch.prediction_homeaway.name }}</span>
             </div>
         </div>

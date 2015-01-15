@@ -1,0 +1,45 @@
+team {
+    width: 14em;
+    padding: 5px 12px 0 0
+}
+.grid td.tournament, .grid td.date {
+    color: #808080;
+    white-space: nowrap;
+}
+.grid th {
+    padding: .292em .15em;
+    font-weight: bold;
+    color: #fff;
+    background-color: #556678;
+    text-align: left;
+}
+grid .alt td {
+    background-color: #F2F2F2;
+}
+.grid .result .result-1 {
+    color: #fff;
+    background-color: #8f8f8f;
+    padding: 0.2em;
+    display: block;
+    width: 2.6em;
+    text-align: center;
+}
+.team.home {
+    text-align: right;
+}
+.result {
+    width: 2.9em;
+    
+    font-weight: bold;
+    border-radius: 3px 3px 3px 3px;
+}
+.rc {
+    border-radius: 3px 3px 3px 3px;
+}
+td {
+    padding: .2em;
+}
+.module-league-position .league-position {
+    color: orange;
+    font-size: 1.2em;
+}
