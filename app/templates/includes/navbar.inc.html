@@ -1,9 +1,10 @@
 {% set navigation_bar = [
     ("/index", "index", "HOME"),
     ("/dashboard", "dashboard", "DASHBOARD"),
+     ("/leaderboard", "leaderboard", "LEADERBOARD"),
     ("/help", "help", "HELP")
 ] -%}
-{% set active_page = active_page -%}
+{% set active_page = request.endpoint[5:] | default('index') -%}
 
 <!-- navbar -->
 <div id="navbar" class="navbar navbar-inverse navbar-fixed-top headroom animated slideDown">
@@ -18,10 +19,14 @@
         <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav pull-right" id="navigation">
                 {% for href, id, caption in navigation_bar %}
-                <li{% if id==active_page %} class="active"{% endif %}><a href="{{ href|e }}">{{ caption|e }}
-                 {{active_page}} </a>
+                    <li{% if active_page == id %} class="active"{% endif %}>
+                <a href="{{ href|e }}">{{ caption|e }}
+
+                </a>
+
                 </li>
                 {% endfor %}
+
 
                 {% if not current_user.is_authenticated() %}
                     <li class="indented"><a href="{{url_for('auth.login') }}">LOG IN</a></li>

@@ -49,7 +49,6 @@ def index():
     query = db.session.query(Match.date_stamp.distinct().label("date_stamp"))
     unique_dates = [row.date_stamp for row in query.all()]
 
-
     matches = {date: my_query.filter_by(date_stamp=date).all()
                for date in unique_dates
                if my_query.filter_by(date_stamp=date).all()
@@ -129,9 +128,9 @@ def delete_all_messages():
     return redirect(url_for('.messages'))
 
 
-@main.route('/winners')
+@main.route('/leaderboard')
 @templated()
-def winners():
+def leaderboard():
     users=User.query.all()
     Winners = namedtuple('Winners',
                                'username win_points loss_points lsp')
