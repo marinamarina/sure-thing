@@ -1,0 +1,26 @@
+<div class="menu-wrap">
+    <nav class="menu">
+        <ul class="icon-list">
+            <li>
+                <a href="{{ url_for('main.dashboard') }}">
+                    <i class="fa fa-fw fa-link"></i>
+                    <span>Upcoming matches</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ url_for('main.archived') }}">
+                    <i class="fa fa-fw fa-link"></i>
+                    <span>Archived matches</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ url_for('main.prediction_settings') }}">
+                    <i class="fa fa-fw fa-cog"></i>
+                    <span>Prediction Settings</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <button class="close-button" id="close-button">Close Menu</button>
+</div>
+<button class="menu-button" id="open-button">Open Menu</button>

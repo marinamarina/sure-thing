@@ -10,22 +10,26 @@
 
 {% block inner_wrapper %}
     <!--sidebar-->
-    {% include 'includes/sidebar.inc.html' %}
+    {% include 'includes/sidebar_menu.inc.html' %}
     <!--/sidebar-->
-<div class="container">
+<div class="dashboard jumbotron container content-wrap">
 
     <ol class="breadcrumb">
         <li><a href="{{ url_for('.index') }}">Home</a></li>
         <li class="active">Dashboard</li>
     </ol>
 
-    <div class="row well">
+    <div class="dashboard__inner top-space">
         {% if savedmatches %}
             {% include 'includes/saved_matches.inc.html' %}
         {% else %}
-        <p>This is your dashboard!</p>
+            <div class="dashboard__inner-no_matches text-center">
+                <p>This is your dashboard!</p>
+                <p><i class="fa fa-dashboard fa-5x"></i></p>
+                <p><a href="{{url_for('main.index')}}">Start saving your matches now! &nbsp;<i class="fa fa-arrow-right"></i></a></p>
+            </div>
 
-        <p><a href="{{url_for('main.index')}}">Start saving your matches now!</a></p>
+        
         {% endif %}
     </div>
 </div>

@@ -58,9 +58,9 @@ class AdminManageProfiles(CSRFDisabledForm):
 
 
 class UserDefaultPredictionSettings(CSRFDisabledForm):
-    league_position_weight = StringField('League Position')
-    form_weight = StringField('Form')
-    home_away_weight = StringField('Home/Away')
+    league_position_weight = StringField('Module League Position')
+    form_weight = StringField('Module Form')
+    home_away_weight = StringField('Module Home/Away')
     submit = SubmitField('Save')
 
 

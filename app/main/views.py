@@ -131,10 +131,12 @@ def delete_all_messages():
 @main.route('/leaderboard')
 @templated()
 def leaderboard():
-    users=User.query.all()
+    users=User.query\
+              .order_by(User.win_points.desc())\
+              .all()
+
     Winners = namedtuple('Winners',
                                'username win_points loss_points lsp')
-    #winners_dict=
 
     return dict(user=current_user, users=users)
 
