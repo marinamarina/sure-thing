@@ -6,13 +6,14 @@
 {% endblock header %}
 {% block inner_wrapper %}
 <div class="container">
+
    <ol class="breadcrumb">
       <li><a href="{{url_for('main.index')}}">Home</a></li>
       <li class="active">Match View</li>
    </ol>
     
     <!-- match header  -->
-        {% include 'includes/match_header.inc.html'  %}  
+      {% include 'includes/match_header.inc.html'  %}  
     <!-- /match header -->
     
     <h2>General Info</h2>
@@ -31,14 +32,18 @@
          </div>
         </div>
     
-        <!-- previous meetings -->
-        <div class="general-info row panel panel-default">
+        <!-- last 5 matches -->
+        <div class="last-5-matches row panel panel-default">
             <div class="panel-heading">
                 <h3 class="panel-title">Previous meetings</h3>
             </div>
 
             <div class="panel-body">
-                <div class="previous-meetings col-sm-10">
+             <div class="team-fixtures-content col-sm-10">
+                 <div class="team-fixtures-content-home-matches">
+                 </div>
+                 <div class="team-fixtures-content-away-matches">
+                 </div>
                <table id="previous-meetings-grid" class="table table-condensed table-striped text-muted grid">
                   <tbody>
                      <tr class="item alt" data-id="829631">
@@ -60,121 +65,60 @@
             </div>
             </div>
         </div>
-        <!-- /previous meetings -->        
+        <!-- /last 5 matches -->       
     
-      <!-- /general info  -->
+        <!-- head to head -->
+        <div class="head-to-head row panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Previous meetings</h3>
+            </div>
 
-    <h2>Prediction Modules</h2>
-   <!-- modules -->
-   <div id="modules">
-      
-      <!--module league position-->
-      <div class="module-league-position module row panel panel-default" data="{{match.id}}">
-         <div class="panel-heading">
-            <h3 class="panel-title">Module League Position</h3>
-         </div>
-         <div class="panel-body">
-            <div class="away-team team col-sm-2 col-sm-offset-1 text-center">
-               <span class="league-position clearfix">{{lt_hometeam.team_name}}: {{lt_hometeam.position}}</span>
-            </div>
-            <div class="away-team team col-sm-2 col-sm-offset-1 text-center">
-               <span class="league-position clearfix">{{lt_awayteam.team_name}}: {{lt_awayteam.position}}</span>
-            </div>
-            <div class="league-position-comparison col-sm-10">
-               <!-- league position -->
-               <table id="form-grid" class="table table-condensed table-striped text-muted grid">
-                  <thead>
-                     <tr>
-                        <th class="position" data-property="Position">Position</th>
-                        <th class="team" data-property="TeamName">Team</th>
-                        <th class="p" data-property="P" title="Played">P</th>
-                        <th class="w" data-property="W" title="Win">W</th>
-                        <th class="d" data-property="D" title="Draw">D</th>
-                        <th class="l" data-property="L" title="Loss">L</th>
-                        <th class="gf" data-property="GF" title="Goals For">GF</th>
-                        <th class="ga" data-property="GA" title="Goals Against">GA</th>
-                        <th class="gd" data-property="GD" title="Goal Difference">GD</th>
-                        <th class="pts" data-property="Pts" title="Points">Pts</th>
-                        <th class="form" data-property="F" title="Form">Form</th>
-                     </tr>
-                  </thead>
+            <div class="panel-body">
+             <div class="previous-meetings col-sm-10">
+               <table id="previous-meetings-grid" class="table table-condensed table-striped text-muted grid">
                   <tbody>
-                     <tr>
-                        <td>{{lt_hometeam.position}}</td>
-                        <td>{{lt_hometeam.team_name}}</td>
-                        <td>{{lt_hometeam.matches_played}}</td>
-                        <td>{{lt_hometeam.w}}</td>
-                        <td>{{lt_hometeam.d}}</td>
-                        <td>{{lt_hometeam.l}}</td>
-                        <td>{{lt_hometeam.goals_for}}</td>
-                        <td>{{lt_hometeam.goals_against}}</td>
-                        <td>{{lt_hometeam.gp}}</td>
-                        <td>{{lt_hometeam.points}}</td>
-                        <td>{{lt_hometeam.form}}</td>
+                     <tr class="item alt" data-id="829631">
+                        <td class="date">07-12-2014</td>
+                        <td class="status"><span class="status-1 rc">FT</span></td>
+                        <td class="team home winner">West Ham</td>
+                        <td class="result"><span class="result-1 rc">3 : 1</span></td>
+                        <td class="team away">Swansea</td>
                      </tr>
-                     <tr>
-                        <td>{{lt_awayteam.position}}</td>
-                        <td>{{lt_awayteam.team_name}}</td>
-                        <td>{{lt_awayteam.matches_played}}</td>
-                        <td>{{lt_awayteam.w}}</td>
-                        <td>{{lt_awayteam.d}}</td>
-                        <td>{{lt_awayteam.l}}</td>
-                        <td>{{lt_awayteam.goals_for}}</td>
-                        <td>{{lt_awayteam.goals_against}}</td>
-                        <td>{{lt_awayteam.gp}}</td>
-                        <td>{{lt_awayteam.points}}</td>
-                        <td>{{lt_awayteam.form}}</td>
+                     <tr class="item alt" data-id="829631">
+                        <td class="date">07-12-2014</td>
+                        <td class="status"><span class="status-1 rc">FT</span></td>
+                        <td class="team home winner">West Ham</td>
+                        <td class="result"><span class="result-1 rc">3 : 1</span></td>
+                        <td class="team away">Swansea</td>
                      </tr>
                   </tbody>
                </table>
             </div>
-            <!-- league position winner -->
-            <div class="col-sm-2 text-center">
-               <span class="clearfix">Winner: {{ match.prediction_league_position.name }}</span>
             </div>
-            <!-- /league position winner -->
-         </div>
-      </div>
+        </div>
+        <!-- /head to head -->  
+      <!-- /general info  -->
+
+    <h2>Prediction Modules</h2>
+   
+   <!-- modules -->
+   <div id="modules">
+      
+      <!--module league position-->
+        {% include 'includes/module_league_position.inc.html' %}  
       <!-- /module league position -->
+       
       <!--module form-->
-      <div class="module-form module row panel panel-default" data="{{match.id}}">
-         <div class="panel-heading">
-            <h3 class="panel-title">Module Form</h3>
-         </div>
-         <div class="panel-body">
-            <div class="home-team team col-sm-2 col-xs-offset-1 text-center">
-               <span class="team-form clearfix">Form: {{match.hometeam.form}} </span>
-            </div>
-            <div class="away-team team col-sm-2 col-xs-offset-1 text-center">
-               <span class="team-form clearfix">Form: {{match.awayteam.form}} </span>
-            </div>
-            
-         </div>
-         <!-- module form result  -->
-         <div class="away-team team col-sm-2 col-xs-offset-1 text-center">
-            <span class="clearfix">Winner: {{ match.prediction_form.name }}</span>
-         </div>
-         <!-- /module form result -->
-      </div>
+        {% include 'includes/module_form.inc.html' %}  
       <!-- /module form -->
+
       <!-- module home/away -->
-      <div class="module-home-away row panel panel-default" data="{{match.id}}">
-         <div class="panel-heading">
-            <h3 class="panel-title">Home/Away</h3>
-         </div>
-         <div class="home-team team col-sm-2 col-xs-offset-1 text-center">
-            <span class="team-form clearfix">Home Team: {{match.hometeam.name}} </span>
-         </div>
-         <div class="away-team team col-sm-2 col-xs-offset-1 text-center">
-            <span class="team-form clearfix">Away Team: {{match.awayteam.name}} </span>
-         </div>
-         <div class="away-team team col-sm-2 col-xs-offset-1 text-center">
-            <span class="clearfix">Winner: {{match.prediction_homeaway.name}}</span>
-         </div>
-      </div>
+        {% include 'includes/module_home_away.inc.html' %}  
       <!-- /module home/away -->
+
    </div>
    <!--  /modules  -->
+
     {% if current_user.is_authenticated() %}
         <a href="{{ url_for('.save_match', match_id=match.id) }}" class="btn btn-primary pull-right">Save</a>
     {% endif %}

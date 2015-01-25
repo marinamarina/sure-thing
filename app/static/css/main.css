@@ -24,6 +24,17 @@ hr {
   border: 1px solid #e5e5e5;
 }
 
+ul {
+  list-style-image: none;
+  list-style-position: outside;
+  list-style-type: none;
+}
+
+a {
+  text-decoration: none;
+  color: #505050;
+}
+
 li.separate {
   margin: 4px 0 0 0;
   padding: 4px 0 0 0;
@@ -292,6 +303,50 @@ td {
 .module-league-position .league-position {
   color: orange;
   font-size: 1.2em;
+}
+
+.team-fixtures-content td {
+  width: 30%;
+}
+
+.team-fixtures-content .home {
+  text-align: left;
+}
+
+.team-fixtures-content .result a {
+  display: block;
+  padding: 0 .5em;
+  color: #444;
+  white-space: nowrap;
+  color: #555;
+  font-weight: bold;
+  font-size: 1.3em;
+}
+
+.grid .form .box.l {
+  background-color: #ff5b00;
+}
+
+.grid .form .box.w {
+  background-color: #6cc72a;
+}
+
+.grid .form .box.d {
+  background-color: #b8b8b8;
+}
+
+.grid .box {
+  display: inline-block;
+  width: 1.5em !important;
+  text-align: center;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.grid .form .box {
+  margin-right: .1667em;
+  color: white !important;
+  border-radius: 3px;
 }
 
 /* User profile */

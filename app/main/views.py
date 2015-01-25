@@ -293,10 +293,8 @@ def view_match_dashboard(match_id):
             # if user already has set custom weights for the match
             if match_specific_weights:
                 settings_item = ModuleUserMatchSettings.query.filter_by(user_id=me.id, match_id=savedmatch.id, module_id=module.id).first()
-                print(1)
             else:
                 # create a new one
-                print(2)
                 settings_item = ModuleUserMatchSettings(user_id=me.id, match_id=savedmatch.id, module_id=module.id)
 
             settings_item.weight = form[module.name + '_weight'].data
@@ -320,11 +318,16 @@ def view_match_dashboard(match_id):
 
 
     winner = Match.predicted_winner(savedmatch, user=me)
+    lt = Team.league_table()
+    lt_hometeam = lt[str(savedmatch.hometeam_id)]
+    lt_awayteam = lt[str(savedmatch.awayteam_id)]
 
     return render_template('main/view_match_dashboard.html',
                            form=form,
                            savedmatch=savedmatch,
                            user=current_user,
+                           lt_hometeam=lt_hometeam,
+                           lt_awayteam=lt_awayteam,
                            team_winner_name=winner[1],
                            probability=winner[2],
                            current_weights=match_specific_weights
