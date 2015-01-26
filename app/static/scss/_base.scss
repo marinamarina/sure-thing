@@ -8,6 +8,9 @@ body#surething {
 /* General styles */
 
 /* Navbar */
+.logo {
+    color: #FFFFFF;
+}
 .right-navbar-content {
     p {
         color: white;
@@ -121,6 +124,9 @@ body#surething {
 }
 
 /* Footer */
+footer {
+    position: relative;
+}
 .footer1 {
     .widget {
         font-size: 1.1em;

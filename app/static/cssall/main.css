@@ -1,4 +1,4 @@
-/* CSS files concatenated |  25-01-2015 */
+/* CSS files concatenated |  26-01-2015 */
 /*******************************/
 /*         Navigation         */
 /*******************************/
@@ -263,6 +263,10 @@ body#surething {
 
 /* General styles */
 /* Navbar */
+.logo {
+  color: #FFFFFF;
+}
+
 .right-navbar-content p {
   color: white;
 }
@@ -389,6 +393,10 @@ body#surething {
 }
 
 /* Footer */
+footer {
+  position: relative;
+}
+
 .footer1 .widget {
   font-size: 1.1em;
 }
@@ -689,6 +697,9 @@ td {
 
 /* Menu */
 .menu-wrap {
+  -webkit-box-shadow: 10px 0 10px -10px #777;
+  -moz-box-shadow: 10px 0 10px -10px #777;
+  box-shadow: 10px 0 10px -10px #777;
   position: absolute;
   z-index: 1001;
   width: 300px;
@@ -947,29 +958,29 @@ td {
     transition: all .4s ease 0s;
   }
 }
-.dashboard__inner {
-  min-height: 22em;
+.dashboard {
+  position: relative;
 }
 
-#saved-matches {
+.dashboard__inner-saved_matches {
   margin-top: 0;
   width: 100% !important;
 }
-#saved-matches .team-kit {
+.dashboard__inner-saved_matches .team-kit {
   height: 90px;
   width: 90px;
 }
-#saved-matches .committed_match {
+.dashboard__inner-saved_matches .committed-match {
   color: #6A6A6A;
   background-color: #DDD;
 }
-#saved-matches .predicted-winner {
+.dashboard__inner-saved_matches .predicted-winner {
   color: #FF981C;
   font-weight: bold;
   height: 20px;
   display: block;
 }
-#saved-matches .status {
+.dashboard__inner-saved_matches .status {
   margin-bottom: 94px;
   padding-top: 58px;
 }

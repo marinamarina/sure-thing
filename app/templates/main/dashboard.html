@@ -9,16 +9,20 @@
 {% endblock header %}
 
 {% block inner_wrapper %}
+<div class="dashboard">
     <!--sidebar-->
     {% include 'includes/sidebar_menu.inc.html' %}
     <!--/sidebar-->
-<div class="dashboard jumbotron container content-wrap">
+    <div class="jumbotron container content-wrap">
 
+    <!-- breadcrumbs -->
     <ol class="breadcrumb">
         <li><a href="{{ url_for('.index') }}">Home</a></li>
         <li class="active">Dashboard</li>
     </ol>
+    <!-- /breadcrumbs -->
 
+    <!-- content -->
     <div class="dashboard__inner top-space">
         {% if savedmatches %}
             {% include 'includes/saved_matches.inc.html' %}
@@ -32,6 +36,7 @@
         
         {% endif %}
     </div>
+</div>
 </div>
 </div>
 {% endblock %}

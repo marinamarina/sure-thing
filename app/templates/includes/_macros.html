@@ -4,7 +4,7 @@
 {% macro render_field(field, value="") %}
 <div class="top-margin">
     {{ field.label }} <span class="text-danger">*</span>
-    {{ field(class_="form-control", required="true", autofocus="true", value=value)|safe }}
+    {{ field(class_="form-control", required="false", autofocus="true", value=value)|safe }}
 </div>
 {% if field.errors %}
 <ul class=errors>

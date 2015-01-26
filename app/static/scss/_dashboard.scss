@@ -1,15 +1,14 @@
-.dashboard__inner {
-	min-height: 22em;
+.dashboard {
+	position: relative;
 }
-
-#saved-matches {
+.dashboard__inner-saved_matches {
 	margin-top: 0;
 	width: 100%!important;
 
 	.team-kit {
     	@include team-kit
 	}
-	.committed_match {
+	.committed-match {
     	color: #6A6A6A;
     	background-color: #DDD;
 	}
@@ -18,8 +17,7 @@
 		font-weight: bold;
 		height: 20px;
 		display: block;
-	}
-	
+	}	
 	.status {
 		margin-bottom: 94px;
 		padding-top: 58px;

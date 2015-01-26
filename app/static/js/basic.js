@@ -31,11 +31,11 @@ jQuery(document).ready(function($) {
     function toggleMenu() {
         if( isOpen ) {
             classie.remove( bodyEl, 'show-menu' );
-            $(openbtn).show();
+            //$(openbtn).show();
         }
         else {
             classie.add( bodyEl, 'show-menu' );
-            $(openbtn).delay(200).hide();
+            //$(openbtn).delay(200).hide();
 
         }
         isOpen = !isOpen;

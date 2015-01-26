@@ -152,6 +152,8 @@ def save_match(match_id):
         return redirect(url_for('.index'))
 
     me.save_match(match)
+    #redirect(url_for('.index'))
+
     flash("Congratulations, you have saved a match to your dashboard!")
     return redirect(url_for('.index'))
 
@@ -311,13 +313,10 @@ def view_match_dashboard(match_id):
         return redirect(url_for('.view_match_dashboard', match_id=savedmatch.id))
         flash('You have saved your match specific prediction settings, congratulations!')
 
-
     # if user has no betting settings, make each current weight equal to an empty string
     if not match_specific_weights:
         flash('match specific settings not found')
         match_specific_weights = ['' for i in range(0, len(modules))]
-
-
 
     winner = Match.predicted_winner(savedmatch, user=me)
     lt = Team.league_table()
