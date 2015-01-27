@@ -50,12 +50,9 @@ def index():
                for date in unique_dates
                if my_query.filter_by(date_stamp=date).all()
     }
-<<<<<<< HEAD
-=======
 
     #MatchForFormInfo(id=1788004, date_stamp=datetime.date(2014, 8, 18), time_stamp=datetime.time(19, 0), hometeam_id=9072, awayteam_id=9092, hometeam_score=1, awayteam_score=3, outcome='W')
 
->>>>>>> new-branch
     return dict(user=current_user, matches=matches, sort_order_reversed=sort_order_reversed)
 
 
@@ -128,12 +125,6 @@ def delete_all_messages():
     return redirect(url_for('.messages'))
 
 
-<<<<<<< HEAD
-@main.route('/leader_board')
-@templated()
-def leader_board():
-    users= User.query.order_by(User.win_points.desc()).all()
-=======
 @main.route('/leaderboard')
 @templated()
 def leaderboard():
@@ -141,7 +132,7 @@ def leaderboard():
               .order_by(User.win_points.desc())\
               .all()
 
->>>>>>> new-branch
+
     Winners = namedtuple('Winners',
                                'username win_points loss_points lsp')
 
