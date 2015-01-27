@@ -4,6 +4,10 @@ $imgpath :'../img/';
 	height: $size;
     width: $size;
 }
+@mixin buttons-bottom() {
+    margin-bottom: 20px;
+    overflow: hidden;
+}
 .jumbotron {
     background-color: transparent;
 }
@@ -21,6 +25,17 @@ $imgpath :'../img/';
 hr {
     border: 1px solid #e5e5e5;
 }
+ul {
+    list-style-image: none;
+    list-style-position: outside;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+a {
+    text-decoration: none;
+    color: #505050;
+}
 li.separate {
     margin: 4px 0 0 0;
     padding: 4px 0 0 0;
@@ -36,10 +51,10 @@ li.separate {
     color: red;
 }
 .vs {
-		font-size: 1.4em;
-		margin: 26px 0;
-		display: block;
-		font-weight: bold;
+	font-size: 1.4em;
+    margin: 26px 0;
+	display: block;
+	font-weight: bold;
 }
 .margin-top-20 {
     margin-top: 20px;

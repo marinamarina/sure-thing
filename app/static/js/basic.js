@@ -1,7 +1,26 @@
- $(document).ready(function(){
+(function ($) { 
     //connect to the socket server.
     var socket = io.connect('http://' + document.domain + ':' + location.port + '/test');
     var numbers_received = [];
+    
+    window.setTimeout(function() {
+    $(".alert").fadeTo(200, 0)
+               .slideUp(200, function(){
+        $(this).remove(); 
+    });
+}, 5000);
+        
+    
+    /* Making room for the menu */
+    $(".headroom").headroom({
+        "tolerance": 20,
+        "offset": 50,
+        "classes": {
+            "initial": "animated",
+            "pinned": "slideDown",
+            "unpinned": "slideUp"
+        }
+    });
 
 
     socket.on('data_updated', function(msg) {
@@ -25,3 +44,4 @@
     });
 
  });
+

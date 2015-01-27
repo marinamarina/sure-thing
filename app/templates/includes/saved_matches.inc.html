@@ -1,18 +1,18 @@
 {% from 'includes/_macros.html' import render_field, teamkitimage %}
 
 <!-- saved matches -->
-<div class="jumbotron top-space container" id="saved-matches">
+<div class="dashboard__inner-saved_matches jumbotron top-space container">
 
     {% for savedmatch in savedmatches %}
 
     <!--match-->
-    <div class="match row panel panel-default {% if savedmatch.committed %}committed_match{% endif %}"
+    <div class="match row panel panel-default {% if savedmatch.committed %}committed-match{% endif %}"
          data="{{savedmatch.id}}">
         <div class="panel-body">
 
             <div class="home-team team col-sm-4 text-center">
                 <span class="predicted-winner clearfix">
-                {% if savedmatch.predicted_winner==savedmatch.match.hometeam.id %}
+                {% if savedmatch.predicted_winner == savedmatch.match.hometeam.id %}
                     Predicted Winner
                 {% endif %}
                 </span>
@@ -43,7 +43,7 @@
                 <span class="team-form clearfix">{{savedmatch.match.awayteam.form}}</span>
                 <span class="team-last-result">3:0 Norwich</span>
             </div>
-            <div class="status col-xs-2 text-center">
+            <div class="status col-sm-2 text-center">
                 {% if savedmatch.match.was_played and savedmatch.committed %}
                      {% if savedmatch.bettor_won %}
                         <span>Won</span>

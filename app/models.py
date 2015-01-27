@@ -639,6 +639,24 @@ class Team(db.Model):
 
        return LastMatchInfo(opponent, score, outcome)
 
+    '''TODO'''
+    @property
+    def last_matches(self):
+        LastMatchInfo = namedtuple('LastMatchInfo', 'opponent, score outcome')
+        last_matches_data = faw.form_and_tendency(self.id)[:6]
+
+        for match in last_matches_data:
+            if match.hometeam_id != self.id:
+                opponent = Team.query.filter_by(id=match.hometeam_id).first().name
+            else:
+                opponent = Team.query.filter_by(id=match.awayteam_id).first().name
+
+            score = str(match.hometeam_score) + ':' + str(match.awayteam_score)
+            outcome = match.outcome
+
+
+        return LastMatchInfo(opponent, score, outcome)
+
 
     def __init__(self, **kwargs):
         super(Team, self).__init__(**kwargs)
@@ -707,13 +725,13 @@ class Match(db.Model):
 
     @staticmethod
     def update_all_matches():
-        'Inserting all the matches to the database'
+        """Inserting all the matches to the database"""
         matches = faw.all_matches
-        print("THIS RAN")
+        print('THIS RAN')
 
         for m in matches:
             # hope this will not be a bottleneck, find a smarter way to check what is already in the database??
-            #store last inserted match id in a variable?
+            # store last inserted match id in a variable?
 
             'find the match in the database'
             match = Match.query.filter_by(id=m.id).first()

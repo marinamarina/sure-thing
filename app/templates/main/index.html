@@ -11,6 +11,7 @@
         {% include 'includes/header.inc.html' %}
     {% endif %}
 {% endblock header %}
+{% block title %}Welcome{% endblock %}
 
 {% block inner_wrapper %}
     <!-- introduction -->
@@ -23,6 +24,7 @@
     <!-- /introduction -->
 
     <div class="jumbotron top-space container" id="matches-overview">
+        <h2> Premier League Fixtures &amp; Results </h2>
         <!-- menu -->
         <ul class="nav nav-pills" id="upcoming-past-nav">
             <li role="presentation" class="active"><a href="{{ url_for('.show_unplayed') }}">Upcoming fixtures</a></li>

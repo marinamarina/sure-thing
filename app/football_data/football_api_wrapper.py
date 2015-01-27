@@ -5,7 +5,6 @@ import json
 from datetime import datetime
 from collections import namedtuple, OrderedDict
 import urllib
-#from werkzeug.contrib.cache import SimpleCache
 import requests
 
 '''
@@ -14,11 +13,16 @@ import requests
 '''
 class FootballAPIWrapper:
     def __init__(self, methodName='runTest'):
+
+        '''self.app = app
+        if app is not None:
+            self.init_app(app)'''
+
         self._premier_league_id = '1204'
         self._base_url = 'http://football-api.com/api/?Action='
         self._data_dir = 'app/data'  #'../data'
-        self.proxy_on = False
-        #self.cache = SimpleCache()
+        self._proxy_on = False
+
 
     def _call_api(self, action=None, **kwargs):
         """
@@ -49,21 +53,22 @@ class FootballAPIWrapper:
         params = urllib.urlencode(params)
         print "My url {}".format(url + '&%s' % params)
 
-        try:
-            if self.proxy_on:
-                proxy = urllib2.ProxyHandler({'http': 'http://proxy1.rgu.ac.uk:8080'})
-                opener = urllib2.build_opener(proxy)
-                urllib2.install_opener(opener)
-
-            self.response = requests.get(url + '&%s' % params)
-
-        except Exception:
-            print 'Exception occured'
+        # rewrite for requests
+        '''if self.proxy_on:
+            proxy = urllib2.ProxyHandler({'http': 'http://proxy1.rgu.ac.uk:8080'})
+            opener = urllib2.build_opener(proxy)
+            urllib2.install_opener(opener)'''
+        if self._proxy_on:
+            http_proxy = {
+                "http": "http://1014481:He1kin2013@proxy1.rgu.ac.uk:8080/"
+            }
         else:
-            self.json_response = self.response.json()
+            http_proxy = {}
+
+        self.response = requests.get(url=url + '&%s' % params, proxies=http_proxy)
+        self.json_response = self.response.json()
 
         return self.json_response
-
 
     def feed_ids_names(self):
         """Create an team id -> name relationship"""
@@ -83,15 +88,16 @@ class FootballAPIWrapper:
     def _get_all_matches(self):
         """Get the matches json response from an API"""
         action = 'fixtures'
-        params = {'from_date': '01.08.' + str(self.date_tuple.beginning_year), 'to_date':'31.05.' + str(self.date_tuple.end_year)}
-        json_response = self._call_api(action, **params)
-        return json_response
+        params = {'from_date': '01.08.' + str(self.date_tuple.beginning_year), 'to_date' : '31.05.' + str(self.date_tuple.end_year)}
+        all_matches = self._call_api(action, **params)
+        return all_matches
+
 
     def _get_standings(self):
         'Get the standings json response from the API'
         action = 'standings'
-        json_response = self._call_api(action)
-        return json_response
+        data_standings = self._call_api(action)
+        return data_standings
 
     def write_standings_data (self):
         """Write standings json response to the local file"""
@@ -102,7 +108,6 @@ class FootballAPIWrapper:
             raw_data["date-time"] = self.date_tuple.today + ' ' + self.date_tuple.current_time
 
             with open(self._data_dir + '/all_matches.json', mode = 'w') as outfile:
-
                 json.dump(raw_data, outfile)
 
             outfile.close()
@@ -119,7 +124,6 @@ class FootballAPIWrapper:
             raw_data["date-time"] = self.date_tuple.today + ' ' + self.date_tuple.current_time
 
             with open(self._data_dir + '/standings.json', mode = 'w') as outfile:
-
                 json.dump(raw_data, outfile)
 
             outfile.close()
@@ -283,6 +287,24 @@ class FootballAPIWrapper:
             }
 
         return league_table
+
+    @staticmethod
+    def get_beginning_year(current_month, current_year):
+        'checking in which year the season began'
+        if current_month > 7:
+            season_began_in_year = current_year
+        else:
+            season_began_in_year = current_year - 1
+        return season_began_in_year
+
+    @staticmethod
+    def get_end_year(current_month, current_year):
+        'checking in which year the season began'
+        if current_month > 7:
+            season_ends_in_year = current_year + 1
+        else:
+            season_ends_in_year = current_year
+        return season_ends_in_year
 
     @staticmethod
     def get_beginning_year(current_month, current_year):

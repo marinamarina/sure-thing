@@ -12,19 +12,19 @@
 
 {% block inner_wrapper %}
 
-<div class="container">
-    <!-- breadcrumb -->
-    <ol class="breadcrumb">
-        <li><a href="{{ url_for('.index') }}">Home</a></li>
-        <li class="active">Messages</li>
-    </ol>
-    <!-- /breadcrumb -->
-
     <!-- sidebar -->
-    {% include 'includes/sidebar.inc.html' %}
+    {% include 'includes/sidebar_menu.inc.html' %}
     <!-- /sidebar -->
+    
+    <div class="dashboard jumbotron container content-wrap">
+        <!-- breadcrumb -->
+        <ol class="breadcrumb">
+            <li><a href="{{ url_for('.index') }}">Home</a></li>
+            <li class="active">Messages</li>
+        </ol>
+        <!-- /breadcrumb -->
 
-    <div class="row well">
+
         {% if messages.count() > 0 %}
 
 

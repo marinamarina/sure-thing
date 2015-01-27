@@ -4,7 +4,7 @@
 {% macro render_field(field, value="") %}
 <div class="top-margin">
     {{ field.label }} <span class="text-danger">*</span>
-    {{ field(class_="form-control", required="true", autofocus="true", value=value)|safe }}
+    {{ field(class_="form-control", required="false", autofocus="true", value=value)|safe }}
 </div>
 {% if field.errors %}
 <ul class=errors>
@@ -13,8 +13,6 @@
     {% endfor %}
 </ul>
 {% endif %}
-
-
 {% endmacro %}
 
 {# Macro to render checkboxes #}
@@ -31,6 +29,11 @@
 </div>
 {% endmacro %}
 
+{# Macro to render a submit form field for math preview #}
+{% macro render_submit_field_match_preview(field) %}
+    {{ field(class_="btn btn-action col-sm-1 col-sm-offset-9") }}
+{% endmacro %}
+
 {# Macro to render a team image #}
 {% macro teamkitimage(match, home=1) %}
     {% set img_url = '' %}
@@ -41,6 +44,20 @@
         {% set img_url = 'img/kits/' + match.awayteam.id ~ '_2.png' %}
     {% endif %}
     <img src="{{ url_for('static', filename=img_url, _external=True) }}" class="team-kit" alt="{{match.awayteam.name}}" />
+{% endmacro %}
+
+{# Macro to render embedded form fields #}
+{% macro render_embedded_field(field, value="") %}
+<div class="top-margin">
+    {{ field(class_="form-control", required="false", autofocus="true", value=value)|safe }}
+</div>
+{% if field.errors %}
+<ul class=errors>
+    {% for error in field.errors %}
+    <li>{{ error }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
 {% endmacro %}
 
 {# TODO Macro to render a team image for user profile #}

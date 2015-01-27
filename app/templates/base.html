@@ -11,7 +11,6 @@
         <link rel="stylesheet" href="{{ url_for('static', filename='cssall/main.css', _external=True) }}" />
 
     {% endblock styles %}
-    {% block title %} {{ super() }} Sure thing {% endblock title %}
     <!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
     <!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
     <!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
@@ -22,7 +21,7 @@
         <script src="js/html5shiv.js"></script>
         <script src="js/respond.min.js"></script>
        <![endif]-->
-
+           <title>{% block title %}{% endblock %} - SureThing</title>
 {% endblock head %}
 {% block navbar %}
     {% include 'includes/navbar.inc.html' %}
@@ -50,21 +49,17 @@
         <!--footer-->
         <div id="footer">
             {% include 'includes/footer.inc.html' %}
-
         </div>
         <!--/footer-->    
 {% endblock content %}
 
-{% block footer %}
-    {{ super() }}
-{% endblock footer %}
-
 
 {% block scripts %}
-    {{ super() }}
-    {{ moment.include_moment() }}
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.5/angular.min.js"></script>
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/0.9.16/socket.io.min.js"></script>
-    <script src="{{ url_for('static', filename='js/basic.js', _external=True) }} "></script>
+    <script src="{{ url_for('static', filename='js/vendor/require.js', _external=True) }} "></script>
+    <script src="{{ url_for('static', filename='js/main.js', _external=True) }} "></script>
+
+    {{ moment.include_jquery() }}
+    {{ moment.include_moment() }}
+
 {% endblock scripts %}

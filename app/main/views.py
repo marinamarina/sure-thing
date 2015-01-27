@@ -46,11 +46,16 @@ def index():
     query = db.session.query(Match.date_stamp.distinct().label("date_stamp"))
     unique_dates = [row.date_stamp for row in query.all()]
 
-
     matches = {date: my_query.filter_by(date_stamp=date).all()
                for date in unique_dates
                if my_query.filter_by(date_stamp=date).all()
     }
+<<<<<<< HEAD
+=======
+
+    #MatchForFormInfo(id=1788004, date_stamp=datetime.date(2014, 8, 18), time_stamp=datetime.time(19, 0), hometeam_id=9072, awayteam_id=9092, hometeam_score=1, awayteam_score=3, outcome='W')
+
+>>>>>>> new-branch
     return dict(user=current_user, matches=matches, sort_order_reversed=sort_order_reversed)
 
 
@@ -123,10 +128,20 @@ def delete_all_messages():
     return redirect(url_for('.messages'))
 
 
+<<<<<<< HEAD
 @main.route('/leader_board')
 @templated()
 def leader_board():
     users= User.query.order_by(User.win_points.desc()).all()
+=======
+@main.route('/leaderboard')
+@templated()
+def leaderboard():
+    users=User.query\
+              .order_by(User.win_points.desc())\
+              .all()
+
+>>>>>>> new-branch
     Winners = namedtuple('Winners',
                                'username win_points loss_points lsp')
 
@@ -144,6 +159,8 @@ def save_match(match_id):
         return redirect(url_for('.index'))
 
     me.save_match(match)
+    #redirect(url_for('.index'))
+
     flash("Congratulations, you have saved a match to your dashboard!")
     return redirect(url_for('.index'))
 
@@ -287,10 +304,8 @@ def view_match_dashboard(match_id):
             # if user already has set custom weights for the match
             if match_specific_weights:
                 settings_item = ModuleUserMatchSettings.query.filter_by(user_id=me.id, match_id=savedmatch.id, module_id=module.id).first()
-                print(1)
             else:
                 # create a new one
-                print(2)
                 settings_item = ModuleUserMatchSettings(user_id=me.id, match_id=savedmatch.id, module_id=module.id)
 
             settings_item.weight = form[module.name + '_weight'].data
@@ -305,20 +320,24 @@ def view_match_dashboard(match_id):
         return redirect(url_for('.view_match_dashboard', match_id=savedmatch.id))
         flash('You have saved your match specific prediction settings, congratulations!')
 
-
     # if user has no betting settings, make each current weight equal to an empty string
     if not match_specific_weights:
         flash('match specific settings not found')
         match_specific_weights = ['' for i in range(0, len(modules))]
 
-
-
     winner = Match.predicted_winner(savedmatch, user=me)
+    lt = Team.league_table()
+    lt_hometeam = lt[str(savedmatch.hometeam_id)]
+    lt_awayteam = lt[str(savedmatch.awayteam_id)]
+
+    flash(savedmatch.hometeam.last_matches)
 
     return render_template('main/view_match_dashboard.html',
                            form=form,
                            savedmatch=savedmatch,
                            user=current_user,
+                           lt_hometeam=lt_hometeam,
+                           lt_awayteam=lt_awayteam,
                            team_winner_name=winner[1],
                            probability=winner[2],
                            current_weights=match_specific_weights

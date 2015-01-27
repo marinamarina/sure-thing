@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% from 'includes/_macros.html' import render_field %}
+
+{% block header %}
+    <header id="head" class="secondary"></header>
+{% endblock header %}
+
+{% block title %}Leaderboard{% endblock %}
+
+{% block inner_wrapper %}
+    <div class="container">
+        <h3>{{title}}</h3>
+        <p>Leaderboard</p>
+        <div class="leaderboard-table col-sm-12">
+
+         <!-- leaderboard table -->
+         <table id="form-grid" class="table table-condensed table-striped text-muted grid">
+            <thead>
+               <tr>
+                  <th class="leaderbord-position">Position</th>
+                  <th class="user">User</th>
+                  <th class="location">Location</th>
+                  <th class="p" data-property="P" title="Played">P</th>
+                  <th class="w" data-property="W" title="Win">W</th>
+                  <th class="l" data-property="L" title="Loss">L</th>
+                  <th class="user">Fav team</th>
+               </tr>
+            </thead>
+            <tbody>
+            	{% for user in users %}
+               	<tr>
+                  <td>{{loop.index}}</td>
+                  <td>{{user.username}}</td>
+                  <td>{{user.location}}</td>
+                  <td>{{user.win_points + user.loss_points}}</td>
+                  <td>{{user.win_points}}</td>
+                  <td>{{user.loss_points}}</td>
+                  <td>{{user.fav_team}}</td>
+               	</tr>
+               {% endfor %}		
+            </tbody>
+         </table>
+      </div>
+    </div>
+{% endblock inner_wrapper %}

@@ -8,29 +8,49 @@
 {% endblock header %}
 
 {% block inner_wrapper %}
-
-<div class="container">
-
-    <ol class="breadcrumb">
-        <li><a href="{{ url_for('.index') }}">Home</a></li>
-        <li><a href="{{ url_for('.dashboard') }}">Dashboard</a></li>
-        <li class="active">Prediction Settings</li>
-    </ol>
-
     <!--sidebar-->
-    {% include 'includes/sidebar.inc.html' %}
+    {% include 'includes/sidebar_menu.inc.html' %}
     <!--/sidebar-->
 
-    <!--prediction weight form-->
-    <form method="POST" class="form-horizontal" role="form">
+    <div class="prediction-settings jumbotron container content-wrap">
 
-        {{ render_field(form.league_position_weight, current_weights[0].weight) }}
-        {{ render_field(form.form_weight, current_weights[1].weight) }}
-        {{ render_field(form.home_away_weight, current_weights[2].weight) }}
-        {{ form.submit() }}
-    </form>
-    <!-- /prediction weight form -->
+        <ol class="breadcrumb">
+            <li><a href="{{ url_for('.index') }}">Home</a></li>
+            <li><a href="{{ url_for('.dashboard') }}">Dashboard</a></li>
+            <li class="active">Prediction Settings</li>
+        </ol>
 
-</div>
+        <!--prediction weight form-->
+            <div class="row">          
+            <!-- Article main content -->
+            <article class="col-xs-12 maincontent">
+                <div class="col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">
+                    <div class="panel panel-default">
+                        <div class="panel-body">
+                            <h3 class="underlined-title thin text-center">Prediction settings</h3>
+                            <p class="text-muted text-center">Please, adjust your default percentage for each prediction module</p>
+
+
+                            <form method="POST" class= "form-register" role="form">
+                                {{ render_field(form.league_position_weight, current_weights[0].weight) }}
+                                {{ render_field(form.form_weight, current_weights[1].weight) }}
+                                {{ render_field(form.home_away_weight, current_weights[2].weight) }}
+                                <hr />
+                               <div class="clearfix">
+                                {{ render_submit_field(form.submit) }}
+                                </div>
+                                
+                            </form>
+                        </div>
+                    </div>
+
+                </div>
+                
+            </article>
+            <!-- /Article -->
+
+        </div>
+        <!-- /prediction weight form -->
+    </div>
 </div>
 {% endblock %}

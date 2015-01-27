@@ -23,12 +23,8 @@
                     {{ teamkitimage(match, home=1) }}
 
                     <span class="team-name clearfix">{{match.hometeam.name}}</span>
-                    <span class="team-form clearfix">{{match.hometeam.form}}</span>
-                    <span class="win team-last-result">{{match.hometeam.last_match.score}} {{match.hometeam.last_match.opponent}}</span>
-                    {{ win_loss_draw_icon(match, home=True) }}
-
                 </div>
-                <div class="kick-off col-sm-2 text-muted text-center">
+                <div class="info-block col-sm-2 text-muted text-center">
                     <span class="vs">VS</span>
                     <span class="clearfix"> DATE: {{match.date}}</span>
                     <span class="clearfix">KO: {{match.time}} </span>
@@ -41,9 +37,6 @@
                 <div class="away-team team col-sm-3 margin-top-20 text-center">
                      {{ teamkitimage(match, home=2) }}
                     <span class="team-name clearfix">{{match.awayteam.name}}</span>
-                    <span class="team-form clearfix">{{match.awayteam.form}}</span>
-                    <span class="win team-last-result">{{match.awayteam.last_match.score}} {{match.awayteam.last_match.opponent}}</span>
-                    {{ win_loss_draw_icon(match, home=False) }}
                 </div>
  
                 <div class="status col-sm-1 margin-top-20 text-center">
@@ -54,7 +47,7 @@
                 <div class="btn-group-xs pull-right" role="group">
                     <a class="btn btn-primary">Comments ></a>
                     {% if not match.was_played %}
-                    <a href="{{ url_for('.view_match', match_id=match.id) }}" class="btn btn-primary">View game > </a>
+                        <a href="{{ url_for('.view_match', match_id=match.id) }}" class="btn btn-primary">Preview > </a>
                     {% if current_user.is_authenticated() %}
                     <a href="{{ url_for('.save_match', match_id=match.id) }}" class="btn btn-primary">Save</a>
                     {% endif %}

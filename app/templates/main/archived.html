@@ -10,7 +10,10 @@
 
 {% block inner_wrapper %}
 
-<div class="container">
+    <!--sidebar-->
+    {% include 'includes/sidebar_menu.inc.html' %}
+    <!--/sidebar-->
+<div class="archived jumbotron container content-wrap">
 
     <ol class="breadcrumb">
         <li><a href="{{ url_for('.index') }}">Home</a></li>
@@ -18,15 +21,9 @@
         <li class="active">Archived Matches</li>
     </ol>
 
-    <!--sidebar-->
-    {% include 'includes/sidebar.inc.html' %}
-    <!--/sidebar-->
-
-    <div class="row well">
         {% if savedmatches.length != 0 %}
             {% include 'includes/saved_matches.inc.html' %}
         {% endif %}
     </div>
 
-</div>
 {% endblock %}

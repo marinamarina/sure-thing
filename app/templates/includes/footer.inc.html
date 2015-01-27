@@ -1,69 +1,64 @@
-    <footer id="footer" class="top-space">
-        <!--footer1-->
-        <div class="footer1">
-            <div class="container">
-                <div class="row">
+<footer>
+<!-- top footer -->
+<div class="footer1">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4 widget">
+                <h3 class="widget-title">Contact</h3>
 
-                    <div class="col-md-4 widget">
-                        <h3 class="widget-title">Contact</h3>
-
-                        <div class="widget-body">
-                            <p>+01224 12345678 <br />
-                                <a href="mailto:#">info@surething.click</a><br />
-                                <br />
-                                234 Garthdee Road, Aberdeen City, AB 12345
-                            </p>
-                        </div>
-                    </div>
-
-                    <div class="col-md-4 widget">
-                        <h3 class="widget-title">Keep in touch</h3>
-
-                        <div class="widget-body">
-                            <p class="follow-me-icons">
-                                <a href=""><i class="fa fa-twitter fa-2"></i></a>
-                                <a href=""><i class="fa fa-dribbble fa-2"></i></a>
-                                <a href=""><i class="fa fa-github fa-2"></i></a>
-                                <a href=""><i class="fa fa-facebook fa-2"></i></a>
-                            </p>
-                        </div>
-                    </div>
-
-                    <div class="col-md-4 widget">
-                        <div class="widget-body">
-                            <div class="links">
-                                <h3 class="widget-title"><i class="glyphicon glyphicon-link"></i> Links</h3>
-
-
-
-
-            <ul>
-                <li><a href="{{ url_for('main.index') }}">Home</a></li>
-                <li><a href="{{ url_for('main.index') }}">Help</a></li>
-                <li><a href="">Contact</a></li>
-                <li><a href="https://twitter.com/SureThing" target="_blank">Twitter</a></li>
-                <li><a href="https://www.facebook.com/surething" target="_blank">Facebook</a></li>
-                <li><a href="{{ url_for('main.terms_and_conditions') }}">Terms &amp; Conditions</a></li>
-                <li><a href="{{ url_for('main.privacy_policy') }}">Privacy Policy</a></li>
-            </ul>
-
-        </div><!-- close col md 6 -->
-                        </div>
-                    </div>
-
-                </div>
-                <!-- /row of widgets -->
-            </div>
-        </div>
-        <!--/footer1-->
-
-        <!--footer2-->
-        <div class="footer2">
-           <div class="row">
-                <div class="col-md-12">
-                    <p class="copyright">© Copyright Surething 2014 - RC Version</p>
+                <div class="widget-body">
+                    <p>+01224 12345678 <br />
+                        <a href="mailto:#">info@surething.click</a><br />
+                        <br />
+                        234 Garthdee Road, Aberdeen City, AB 12345
+                    </p>
                 </div>
             </div>
+
+            <div class="col-md-4 widget">
+                <h3 class="widget-title">Keep in touch</h3>
+
+                <div class="widget-body">
+                    <p class="follow-me-icons">
+                        <a href=""><i class="fa fa-twitter fa-2"></i></a>
+                        <a href=""><i class="fa fa-dribbble fa-2"></i></a>
+                        <a href=""><i class="fa fa-github fa-2"></i></a>
+                        <a href=""><i class="fa fa-facebook fa-2"></i></a>
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-md-4 widget">
+                <div class="widget-body">
+                    <div class="links">
+                        <h3 class="widget-title"><i class="glyphicon glyphicon-link"></i> Links</h3>
+                        <ul>
+                            <li><a href="{{ url_for('main.index') }}">Home</a></li>
+                            <li><a href="{{ url_for('main.index') }}">Help</a></li>
+                            <li><a href="">Contact</a></li>
+                            <li><a href="https://twitter.com/SureThing" target="_blank">Twitter</a></li>
+                            <li><a href="https://www.facebook.com/surething" target="_blank">Facebook</a></li>
+                            <li><a href="{{ url_for('main.terms_and_conditions') }}">Terms &amp; Conditions</a></li>
+                            <li><a href="{{ url_for('main.privacy_policy') }}">Privacy Policy</a></li>
+                        </ul>
+
+                    </div>
+                </div>
+            </div>
+
         </div>
-        <!--/footer2-->
-    </footer>
+        <!-- /row of widgets -->
+    </div>
+</div>
+<!-- /top footer -->
+
+<!-- bottom footer-->
+<div class="footer2">
+    <div class="row">
+        <div class="col-md-12">
+            <p class="copyright">© Copyright Surething 2014 - RC Version</p>
+        </div>
+    </div>
+</div>
+<!--/ bottom footer -->
+</footer>

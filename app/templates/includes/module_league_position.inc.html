@@ -1,0 +1,68 @@
+<div class="module-league-position module row panel panel-default" data="{{match.id}}">
+   <div class="panel-heading">
+      <h3 class="panel-title">Module League Position</h3>
+   </div>
+   <div class="panel-body">
+      <div class="away-team team col-sm-2 col-sm-offset-1 text-center">
+         <span class="league-position clearfix">{{lt_hometeam.team_name}}: {{lt_hometeam.position}}</span>
+      </div>
+      <div class="away-team team col-sm-2 col-sm-offset-1 text-center">
+         <span class="league-position clearfix">{{lt_awayteam.team_name}}: {{lt_awayteam.position}}</span>
+      </div>
+      <div class="league-position-comparison col-sm-10">
+         <!-- league position -->
+         <table id="form-grid" class="table table-condensed table-striped text-muted grid">
+            <thead>
+               <tr>
+                  <th class="position" data-property="Position">Position</th>
+                  <th class="team" data-property="TeamName">Team</th>
+                  <th class="p" data-property="P" title="Played">P</th>
+                  <th class="w" data-property="W" title="Win">W</th>
+                  <th class="d" data-property="D" title="Draw">D</th>
+                  <th class="l" data-property="L" title="Loss">L</th>
+                  <th class="gf" data-property="GF" title="Goals For">GF</th>
+                  <th class="ga" data-property="GA" title="Goals Against">GA</th>
+                  <th class="gd" data-property="GD" title="Goal Difference">GD</th>
+                  <th class="pts" data-property="Pts" title="Points">Pts</th>
+                  <th class="form" data-property="F" title="Form">Form</th>
+               </tr>
+            </thead>
+            <tbody>
+               <tr>
+                  <td>{{lt_hometeam.position}}</td>
+                  <td>{{lt_hometeam.team_name}}</td>
+                  <td>{{lt_hometeam.matches_played}}</td>
+                  <td>{{lt_hometeam.w}}</td>
+                  <td>{{lt_hometeam.d}}</td>
+                  <td>{{lt_hometeam.l}}</td>
+                  <td>{{lt_hometeam.goals_for}}</td>
+                  <td>{{lt_hometeam.goals_against}}</td>
+                  <td>{{lt_hometeam.gp}}</td>
+                  <td>{{lt_hometeam.points}}</td>
+                  <td>{{lt_hometeam.form}}</td>
+               </tr>
+               <tr>
+                  <td>{{lt_awayteam.position}}</td>
+                  <td>{{lt_awayteam.team_name}}</td>
+                  <td>{{lt_awayteam.matches_played}}</td>
+                  <td>{{lt_awayteam.w}}</td>
+                  <td>{{lt_awayteam.d}}</td>
+                  <td>{{lt_awayteam.l}}</td>
+                  <td>{{lt_awayteam.goals_for}}</td>
+                  <td>{{lt_awayteam.goals_against}}</td>
+                  <td>{{lt_awayteam.gp}}</td>
+                  <td>{{lt_awayteam.points}}</td>
+                  <td>{{lt_awayteam.form}}</td>
+               </tr>
+            </tbody>
+         </table>
+      </div>
+      <!-- league position winner -->
+      <div class="col-sm-2 text-center">
+         <span class="clearfix">Winner: {{ match.prediction_league_position.name }}</span>
+         {{ input }}
+
+      </div>
+      <!-- /league position winner -->
+   </div>
+</div>
