@@ -5,7 +5,7 @@
 {% block title %}Dashboard{% endblock %}
 
 {% block header %}
-    <header id="head" class="secondary"></header>
+<header id="head" class="secondary"></header>
 {% endblock header %}
 
 {% block inner_wrapper %}
@@ -15,28 +15,30 @@
     <!--/sidebar-->
     <div class="jumbotron container content-wrap">
 
-    <!-- breadcrumbs -->
-    <ol class="breadcrumb">
-        <li><a href="{{ url_for('.index') }}">Home</a></li>
-        <li class="active">Dashboard</li>
-    </ol>
-    <!-- /breadcrumbs -->
+        <!-- breadcrumbs -->
+        <ol class="breadcrumb">
+            <li><a href="{{ url_for('.index') }}">Home</a></li>
+            <li class="active">Dashboard</li>
+        </ol>
+        <!-- /breadcrumbs -->
 
-    <!-- content -->
-    <div class="dashboard__inner top-space">
-        {% if savedmatches %}
+        <!-- content -->
+        <div class="dashboard__inner top-space">
+            {% if savedmatches %}
             {% include 'includes/saved_matches.inc.html' %}
-        {% else %}
+            {% else %}
             <div class="dashboard__inner-no_matches text-center">
                 <p>This is your dashboard!</p>
                 <p><i class="fa fa-dashboard fa-5x"></i></p>
                 <p><a href="{{url_for('main.index')}}">Start saving your matches now! &nbsp;<i class="fa fa-arrow-right"></i></a></p>
             </div>
-
-        
-        {% endif %}
+            
+            {% endif %}
+        </div>
     </div>
 </div>
 </div>
-</div>
+{% endblock %}
+{% block scripts %}
+    {{ super() }}
 {% endblock %}

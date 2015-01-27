@@ -1,47 +1,14 @@
-jQuery(document).ready(function($) {
+(function ($) { 
     //connect to the socket server.
     var socket = io.connect('http://' + document.domain + ':' + location.port + '/test');
     var numbers_received = [];
-    var bodyEl = document.body,
-        content = document.querySelector( '.content-wrap' ),
-        openbtn = document.getElementById( 'open-button' ),
-        closebtn = document.getElementById( 'close-button' ),
-        isOpen = false;
-
-    function init() {
-        initEvents();
-    }
-
-    function initEvents() {
-        openbtn.addEventListener( 'click', toggleMenu );
-
-        if( closebtn ) {
-            closebtn.addEventListener( 'click', toggleMenu );
-        }
-
-        // close the menu element if the target it´s not the menu element or one of its descendants..
-        content.addEventListener( 'click', function(ev) {
-            var target = ev.target;
-            if( isOpen && target !== openbtn ) {
-                toggleMenu();
-            }
-        } );
-    }
-
-    function toggleMenu() {
-        if( isOpen ) {
-            classie.remove( bodyEl, 'show-menu' );
-            //$(openbtn).show();
-        }
-        else {
-            classie.add( bodyEl, 'show-menu' );
-            //$(openbtn).delay(200).hide();
-
-        }
-        isOpen = !isOpen;
-    }
-
-    init();
+    
+    window.setTimeout(function() {
+    $(".alert").fadeTo(200, 0)
+               .slideUp(200, function(){
+        $(this).remove(); 
+    });
+}, 5000);
         
     
     /* Making room for the menu */
@@ -89,4 +56,4 @@ jQuery(document).ready(function($) {
         navMessages.removeClass('orange');
     });
 
- });
+ }());

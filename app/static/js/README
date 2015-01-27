@@ -1,0 +1,12 @@
+README
+
+observer.js can be replaced by event emitter or any similar plugin
+
+NOTICE
+In the previous version I was initialising model, view(s) and controller in main.js (controller took model and view(s) as an agrument). However I decided to drop it and to initialise controller in main.js, and view(s) + model in controller.
+
+Reason1: otherwise model, controller and view(s) modules are being called twice via require.js (first in main.js and then in each other).  
+
+Reason2: this helps to stick to the pattern's rules (view knows only about model, controller about both view and model, model does not know anything about controller or view).
+
+I require only CONTROLLER in the main.js!

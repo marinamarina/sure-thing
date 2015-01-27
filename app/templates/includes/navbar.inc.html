@@ -28,7 +28,6 @@
                 </li>
                 {% endfor %}
 
-
                 {% if not current_user.is_authenticated() %}
                     <li class="indented"><a href="{{url_for('auth.login') }}">LOG IN</a></li>
                     <li><a class="btn" href="{{url_for('auth.register') }}">REGISTER</a></li>

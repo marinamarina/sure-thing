@@ -1,18 +1,18 @@
 {% extends "base.html" %}
-{% from 'includes/_macros.html' import render_field, render_submit_field, teamkitimage %}
-{% block title %}Match view{% endblock %}
+{% from 'includes/_macros.html' import render_embedded_field, render_submit_field, render_submit_field_match_preview,
+    teamkitimage %}
 {% block header %}
 <header id="head" class="secondary"></header>
 {% endblock header %}
 {% block inner_wrapper %}
-<div class="container">
+<div class="view-match-dashboard container jumbotron">
+    <form method="POST" class="form-horizontal" role="form">
+
     <ol class="breadcrumb">
         <li><a href="{{ url_for('.index') }}">Home</a></li>
         <li><a href="{{url_for('.dashboard') }}">Dashboard</a></li>
         <li class="active">Saved Match</li>
     </ol>
-
-    <!-- modules -->
 
     <!-- match header  -->
     {% with match=savedmatch %}
@@ -20,69 +20,52 @@
     {% endwith %}
     <!-- /match header -->
 
-    <!--module league position-->
-    {% with match=savedmatch %}
-        {% include 'includes/module_league_position.inc.html'  %}  
-    {% endwith %}
-    <!-- /module league position -->
+    <h2>Prediction Modules</h2>
 
-     <!--module form-->
-    <div class="module row panel panel-default" data="{{savedmatch.match_id}}">
-        <div class="panel panel-info">
-            <div class="panel-heading">
-                <h3 class="panel-title">Form</h3>
-            </div>
+    <!-- modules -->
+    <div class="view-match-dashboard__modules">
+        <!-- form for saving match specific settings starts here -->
 
-            <div class="home-team team col-sm-2 col-xs-offset-1 text-center">
-                <span class="team-form clearfix">Form: {{ savedmatch.hometeam.form }} </span>
+        {% with match=savedmatch %}
 
-                <span class="team-last-result">3:0 Norwich</span>
-            </div>
-            <div class="away-team team col-sm-2 col-xs-offset-1 text-center">
-                <span class="team-form clearfix">Form: {{ savedmatch.awayteam.form }} </span>
-                <span class="team-last-result">3:0 Norwich</span>
-            </div>
-            <div class="away-team team col-sm-2 col-sm-offset-1 text-center">
-                <span class="clearfix">Winner: {{ savedmatch.prediction_form.name }}</span>
-            </div>
+            <!--module league position-->
+            {% with input=render_embedded_field(form.league_position_weight, current_weights[0].weight) %}
+                {% include 'includes/module_league_position.inc.html' %}
+            {% endwith %}
+            <!-- /module league position -->
 
-        </div>
+            <!--module form-->
+            {% with input=render_embedded_field(form.form_weight, current_weights[1].weight) %}
+                {% include 'includes/module_form.inc.html' %} 
+            {% endwith %}
+            <!-- /module form -->
+
+            <!-- module home/away -->
+            {% with input=render_embedded_field(form.home_away_weight, current_weights[2].weight) %}
+                {% include 'includes/module_home_away.inc.html' %} 
+            {% endwith %}
+            <!-- /module home/away -->
+
+        {% endwith %}
+
     </div>
-    <!-- /module form -->
+    <!--  /modules  -->
 
-    <!-- module home/away -->
-    <div class="module row panel panel-default" data="{{savedmatch.match_id}}">
-        <div class="panel panel-info">
-            <div class="panel-heading">
-                <h3 class="panel-title">Home/Away</h3>
-            </div>
-
-            <div class="home-team team col-sm-2 col-sm-offset-1 text-center">
-                <span class="team-form clearfix">Home Team: {{ savedmatch.hometeam.name }} </span>
-            </div>
-            <div class="away-team team col-sm-2 col-sm-offset-1 text-center">
-                <span class="team-form clearfix">Away Team: {{ savedmatch.awayteam.name }} </span>
-            </div>
-            <div class="away-team team col-sm-2 col-sm-offset-1 text-center">
-                <span class="clearfix">Winner: {{ savedmatch.prediction_homeaway.name }}</span>
-            </div>
-        </div>
-    </div>
-    <!-- module home/away -->
-
-</div>
-
-    {% include 'includes/prediction_settings_match.inc.html' %}
-
-<!--  /modules  -->
 <!-- overall winner -->
-     <h2>Predicted Winner</h2>
-      <h2 id="teamWinner">{{ team_winner_name }}</h2>
-      <h2>{{ probability }}</h2>
+<h2>Predicted Winner</h2>
+<h2 id="teamWinner">{{ team_winner_name }}</h2>
+<h2>{{ probability }}</h2>
 <!-- /overall winner -->
-{% if not savedmatch.committed %}
-    <a href="{{ url_for('.commit_match', match_id=savedmatch.id) }}" class="btn btn-primary" id="commitToBet">Commit</a>
-{% endif %}
 
+{% if not savedmatch.committed %}
+<div class="view-match-dashboard__buttons">
+    {{ render_submit_field_match_preview(form.submit) }}
+    
+    <!-- form for saving match specific settings ends here -->
+
+    <a href="{{ url_for('.commit_match', match_id=savedmatch.id) }}" class="btn btn-primary pull-right" id="commitToBet" style="margin-left: 1em;">Commit</a>
+</div>
+{% endif %}
+</form>
 </div>
 {% endblock inner_wrapper %}

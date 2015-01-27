@@ -4,6 +4,10 @@ $imgpath :'../img/';
 	height: $size;
     width: $size;
 }
+@mixin buttons-bottom() {
+    margin-bottom: 20px;
+    overflow: hidden;
+}
 .jumbotron {
     background-color: transparent;
 }

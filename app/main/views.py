@@ -323,6 +323,8 @@ def view_match_dashboard(match_id):
     lt_hometeam = lt[str(savedmatch.hometeam_id)]
     lt_awayteam = lt[str(savedmatch.awayteam_id)]
 
+    flash(savedmatch.hometeam.last_matches)
+
     return render_template('main/view_match_dashboard.html',
                            form=form,
                            savedmatch=savedmatch,

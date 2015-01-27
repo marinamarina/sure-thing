@@ -1,3 +1,9 @@
+.view-match__buttons {
+    @include buttons-bottom;
+}
+.view-match-dashboard__buttons {
+    @include buttons-bottom; 
+}
 team {
     width: 14em;
     padding: 5px 12px 0 0

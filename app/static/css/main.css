@@ -95,8 +95,8 @@ body#surething {
 }
 
 #head.secondary {
-  height: 79px;
-  min-height: 79px;
+  height: 106px;
+  min-height: 106px;
   padding-top: 0px;
 }
 
@@ -264,6 +264,16 @@ footer {
 
 #modules .league-position-comparison {
   margin-top: 30px;
+}
+
+.view-match__buttons {
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+
+.view-match-dashboard__buttons {
+  margin-bottom: 20px;
+  overflow: hidden;
 }
 
 team {

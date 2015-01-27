@@ -5,123 +5,125 @@
 <header id="head" class="secondary"></header>
 {% endblock header %}
 {% block inner_wrapper %}
-<div class="container">
+<div class="view-match container">
 
-   <ol class="breadcrumb">
-      <li><a href="{{url_for('main.index')}}">Home</a></li>
-      <li class="active">Match View</li>
-   </ol>
-    
-    <!-- match header  -->
-      {% include 'includes/match_header.inc.html'  %}  
-    <!-- /match header -->
-    
-    <h2>General Info</h2>
-    <!-- general info  -->
-      <div class="general-info row panel panel-default">
-         <div class="panel-heading">
-            <h3 class="panel-title">General info</h3>
-         </div>
-         <div class="panel-body">
-            <div class="away-team team col-sm-2 col-xs-offset-1 text-center">
-               <span class="team-name clearfix">Blah</span>
-            </div>
-            <div class="away-team team col-sm-2 col-xs-offset-1 text-center">
-               <span class="team-name clearfix">Blah</span>
-            </div>
-         </div>
-        </div>
-    
-        <!-- last 5 matches -->
-        <div class="last-5-matches row panel panel-default">
-            <div class="panel-heading">
-                <h3 class="panel-title">Previous meetings</h3>
-            </div>
+  <ol class="breadcrumb">
+    <li><a href="{{url_for('main.index')}}">Home</a></li>
+    <li class="active">Match View</li>
+</ol>
 
-            <div class="panel-body">
-             <div class="team-fixtures-content col-sm-10">
-                 <div class="team-fixtures-content-home-matches">
-                 </div>
-                 <div class="team-fixtures-content-away-matches">
-                 </div>
-               <table id="previous-meetings-grid" class="table table-condensed table-striped text-muted grid">
-                  <tbody>
-                     <tr class="item alt" data-id="829631">
-                        <td class="date">07-12-2014</td>
-                        <td class="status"><span class="status-1 rc">FT</span></td>
-                        <td class="team home winner">West Ham</td>
-                        <td class="result"><span class="result-1 rc">3 : 1</span></td>
-                        <td class="team away">Swansea</td>
-                     </tr>
-                     <tr class="item alt" data-id="829631">
-                        <td class="date">07-12-2014</td>
-                        <td class="status"><span class="status-1 rc">FT</span></td>
-                        <td class="team home winner">West Ham</td>
-                        <td class="result"><span class="result-1 rc">3 : 1</span></td>
-                        <td class="team away">Swansea</td>
-                     </tr>
-                  </tbody>
-               </table>
-            </div>
-            </div>
-        </div>
-        <!-- /last 5 matches -->       
-    
-        <!-- head to head -->
-        <div class="head-to-head row panel panel-default">
-            <div class="panel-heading">
-                <h3 class="panel-title">Previous meetings</h3>
-            </div>
+<!-- match header  -->
+{% include 'includes/match_header.inc.html'  %}  
+<!-- /match header -->
 
-            <div class="panel-body">
-             <div class="previous-meetings col-sm-10">
-               <table id="previous-meetings-grid" class="table table-condensed table-striped text-muted grid">
-                  <tbody>
-                     <tr class="item alt" data-id="829631">
-                        <td class="date">07-12-2014</td>
-                        <td class="status"><span class="status-1 rc">FT</span></td>
-                        <td class="team home winner">West Ham</td>
-                        <td class="result"><span class="result-1 rc">3 : 1</span></td>
-                        <td class="team away">Swansea</td>
-                     </tr>
-                     <tr class="item alt" data-id="829631">
-                        <td class="date">07-12-2014</td>
-                        <td class="status"><span class="status-1 rc">FT</span></td>
-                        <td class="team home winner">West Ham</td>
-                        <td class="result"><span class="result-1 rc">3 : 1</span></td>
-                        <td class="team away">Swansea</td>
-                     </tr>
-                  </tbody>
-               </table>
-            </div>
-          </div>
-        </div>
-        <!-- /head to head -->  
-      <!-- /general info  -->
+<h2>General Info</h2>
+<!-- general info  -->
+<div class="view-match__general-info row panel panel-default">
+   <div class="panel-heading">
+      <h3 class="panel-title">General info</h3>
+  </div>
+  <div class="panel-body">
+      <div class="away-team team col-sm-2 col-xs-offset-1 text-center">
+         <span class="team-name clearfix">Blah</span>
+     </div>
+     <div class="away-team team col-sm-2 col-xs-offset-1 text-center">
+         <span class="team-name clearfix">Blah</span>
+     </div>
+ </div>
+</div>
 
-    <h2>Prediction Modules</h2>
-   
-   <!-- modules -->
-   <div id="modules">
-      
-      <!--module league position-->
-        {% include 'includes/module_league_position.inc.html' %}  
-      <!-- /module league position -->
-       
-      <!--module form-->
-        {% include 'includes/module_form.inc.html' %}  
-      <!-- /module form -->
+<!-- last 5 matches -->
+<div class="last-5-matches row panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">Previous meetings</h3>
+</div>
 
-      <!-- module home/away -->
-        {% include 'includes/module_home_away.inc.html' %}  
-      <!-- /module home/away -->
-
+<div class="panel-body">
+ <div class="team-fixtures-content col-sm-10">
+   <div class="team-fixtures-content-home-matches">
    </div>
-   <!--  /modules  -->
+   <div class="team-fixtures-content-away-matches">
+   </div>
+   <table id="previous-meetings-grid" class="table table-condensed table-striped text-muted grid">
+      <tbody>
+         <tr class="item alt" data-id="829631">
+            <td class="date">07-12-2014</td>
+            <td class="status"><span class="status-1 rc">FT</span></td>
+            <td class="team home winner">West Ham</td>
+            <td class="result"><span class="result-1 rc">3 : 1</span></td>
+            <td class="team away">Swansea</td>
+        </tr>
+        <tr class="item alt" data-id="829631">
+            <td class="date">07-12-2014</td>
+            <td class="status"><span class="status-1 rc">FT</span></td>
+            <td class="team home winner">West Ham</td>
+            <td class="result"><span class="result-1 rc">3 : 1</span></td>
+            <td class="team away">Swansea</td>
+        </tr>
+    </tbody>
+</table>
+</div>
+</div>
+</div>
+<!-- /last 5 matches -->       
 
-    {% if current_user.is_authenticated() %}
-        <a href="{{ url_for('.save_match', match_id=match.id) }}" class="btn btn-primary pull-right">Save</a>
-    {% endif %}
+<!-- head to head -->
+<div class="head-to-head row panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">Previous meetings</h3>
+</div>
+
+<div class="panel-body">
+ <div class="previous-meetings col-sm-10">
+   <table id="previous-meetings-grid" class="table table-condensed table-striped text-muted grid">
+      <tbody>
+         <tr class="item alt" data-id="829631">
+            <td class="date">07-12-2014</td>
+            <td class="status"><span class="status-1 rc">FT</span></td>
+            <td class="team home winner">West Ham</td>
+            <td class="result"><span class="result-1 rc">3 : 1</span></td>
+            <td class="team away">Swansea</td>
+        </tr>
+        <tr class="item alt" data-id="829631">
+            <td class="date">07-12-2014</td>
+            <td class="status"><span class="status-1 rc">FT</span></td>
+            <td class="team home winner">West Ham</td>
+            <td class="result"><span class="result-1 rc">3 : 1</span></td>
+            <td class="team away">Swansea</td>
+        </tr>
+    </tbody>
+</table>
+</div>
+</div>
+</div>
+<!-- /head to head -->  
+<!-- /general info  -->
+
+<h2>Prediction Modules</h2>
+
+<!-- modules -->
+<div class="view-match__modules">
+
+  <!--module league position-->
+  {% include 'includes/module_league_position.inc.html' %}  
+  <!-- /module league position -->
+
+  <!--module form-->
+  {% include 'includes/module_form.inc.html' %}  
+  <!-- /module form -->
+
+  <!-- module home/away -->
+  {% include 'includes/module_home_away.inc.html' %}  
+  <!-- /module home/away -->
+
+</div>
+<!--  /modules  -->
+
+{% if current_user.is_authenticated() %}
+<div class="view-match__buttons">
+  <a href="{{ url_for('.save_match', match_id=match.id) }}" class="btn btn-primary pull-right">Save</a>
+</div>
+{% endif %}
 </div>
 <!--  /outer container  -->
 
