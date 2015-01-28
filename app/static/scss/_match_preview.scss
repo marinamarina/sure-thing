@@ -4,6 +4,18 @@
 .view-match-dashboard__buttons {
     @include buttons-bottom; 
 }
+.winner {
+    font-weight: bold;
+}
+.show-more-toggle a {
+    color: #222;
+    font-size: 1.2em;
+    font-weight: bold;
+    text-decoration: none;
+}
+.module-league-position__expand {
+    margin-bottom: 1em;
+}
 team {
     width: 14em;
     padding: 5px 12px 0 0
@@ -68,10 +80,10 @@ td {
 .grid .form .box.l {
     background-color: #ff5b00;
 }
-.grid .form .box.w{
+.grid .form .box.w {
     background-color: #6cc72a;
 }
-.grid .form .box.d{
+.grid .form .box.d {
     background-color: #b8b8b8;
 }
 .grid .box {
@@ -83,6 +95,7 @@ td {
 }
 .grid .form .box {
     margin-right: .1667em;
+    padding: 0;
     color: #fff!important;
     border-radius: 3px;
 }

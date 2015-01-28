@@ -37,15 +37,13 @@
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown"><img alt="avatar" class="img-circle pull-left" data-user="{{user.id}}" height="25" width="25"
                              src="{{user.avatar()}}"/>{{user.username}} <b class="caret"></b></a>
                         <ul class="dropdown-menu">
-							<li><a href="{{ url_for('auth.user', username=user.username) }}">My profile</a></li>
+                            <li><a href="{{ url_for('auth.user', username=user.username) }}">My profile</a></li>
                             <li class><a href="{{ url_for('auth.edit_profile') }}">Edit profile</a></li>
                             <li><a href="{{ url_for('auth.change_password') }}">Change Password</a></li>
                             <li><a href="{{ url_for('auth.change_email_request') }}">Change Email</a></li>
                             <li class="separate"><a href="{{ url_for('auth.logout') }}">Log Out</a></li>
-						</ul>
-
+                        </ul>
                     </a>
-
                 </li>
                 <li>
                 <a class="pull-left" id="messages" href="{{url_for('main.messages') }}">

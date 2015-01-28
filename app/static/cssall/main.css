@@ -1,4 +1,4 @@
-/* CSS files concatenated |  26-01-2015 */
+/* CSS files concatenated |  28-01-2015 */
 /*******************************/
 /*         Navigation         */
 /*******************************/
@@ -252,6 +252,7 @@ li.separate {
 /* Typography */
 body#surething {
   font-family: 'Open Sans', sans-serif;
+  -webkit-font-smoothing: antialiased;
 }
 
 /* Layout specific */
@@ -393,10 +394,6 @@ body#surething {
 }
 
 /* Footer */
-footer {
-  position: relative;
-}
-
 .footer1 .widget {
   font-size: 1.1em;
 }
@@ -459,6 +456,21 @@ footer {
 .view-match-dashboard__buttons {
   margin-bottom: 20px;
   overflow: hidden;
+}
+
+.winner {
+  font-weight: bold;
+}
+
+.show-more-toggle a {
+  color: #222;
+  font-size: 1.2em;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.module-league-position__expand {
+  margin-bottom: 1em;
 }
 
 team {
@@ -555,6 +567,7 @@ td {
 
 .grid .form .box {
   margin-right: .1667em;
+  padding: 0;
   color: white !important;
   border-radius: 3px;
 }
@@ -972,25 +985,29 @@ td {
   position: relative;
 }
 
-.dashboard__inner-saved_matches {
+.content-wrap .breadcrumb {
+  margin-left: 40px;
+}
+
+.dashboard__saved_matches {
   margin-top: 0;
   width: 100% !important;
 }
-.dashboard__inner-saved_matches .team-kit {
+.dashboard__saved_matches .team-kit {
   height: 90px;
   width: 90px;
 }
-.dashboard__inner-saved_matches .committed-match {
+.dashboard__saved_matches .committed-match {
   color: #6A6A6A;
   background-color: #DDD;
 }
-.dashboard__inner-saved_matches .predicted-winner {
+.dashboard__saved_matches .predicted-winner {
   color: #FF981C;
   font-weight: bold;
   height: 20px;
   display: block;
 }
-.dashboard__inner-saved_matches .status {
+.dashboard__saved_matches .status {
   margin-bottom: 94px;
   padding-top: 58px;
 }

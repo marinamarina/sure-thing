@@ -37,11 +37,11 @@ def index():
     show_played_matches = bool(request.cookies.get('show_played_matches', ''))
 
     if show_played_matches:
-        my_query = Match.query.filter_by(was_played=False).order_by(Match.time_stamp.asc())
-        sort_order_reversed = False
-    else:
         my_query = Match.query.filter_by(was_played=True).order_by(Match.time_stamp.asc())
         sort_order_reversed = True
+    else:
+        my_query = Match.query.filter_by(was_played=False).order_by(Match.time_stamp.asc())
+        sort_order_reversed = False
 
     query = db.session.query(Match.date_stamp.distinct().label("date_stamp"))
     unique_dates = [row.date_stamp for row in query.all()]

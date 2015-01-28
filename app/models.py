@@ -237,7 +237,7 @@ class SavedForLater(db.Model):
         lsp=0
         rateArr=map(int, rate.split('/'))
         print rateArr
-        if (rateArr[0] > rateArr[1]):
+        if rateArr[0] > rateArr[1]:
             lsp = 1 + rateArr[0] / rateArr[1]
         else:
             lsp = rateArr[0] / rateArr[1]
@@ -256,17 +256,17 @@ class SavedForLater(db.Model):
     def __repr__(self):
         return "<SavedForLater {}/{}> " \
                "userid: {}, matchid: {}, date:{}, committed:{}, " \
-               "weight_league_position: {}" \
+               "weight_league_position: {} " \
                "predicted_winner:{}"\
             .format(
-            self.match.hometeam.name,
-            self.match.awayteam.name,
-            self.users_id,
-            self.match_id,
-            self.match.date,
-            self.committed,
-            self.weight_league_position,
-            self.predicted_winner
+                self.match.hometeam.name,
+                self.match.awayteam.name,
+                self.users_id,
+                self.match_id,
+                self.match.date,
+                self.committed,
+                self.weight_league_position,
+                self.predicted_winner
     )
 
     @staticmethod
@@ -642,21 +642,33 @@ class Team(db.Model):
     '''TODO'''
     @property
     def last_matches(self):
-        LastMatchInfo = namedtuple('LastMatchInfo', 'opponent, score outcome')
+        LastMatchInfo = namedtuple('LastMatchInfo', 'id date opponent hometeam awayteam score outcome')
         last_matches_data = faw.form_and_tendency(self.id)[:6]
+        output_data = []
 
         for match in last_matches_data:
+            print match
             if match.hometeam_id != self.id:
                 opponent = Team.query.filter_by(id=match.hometeam_id).first().name
             else:
                 opponent = Team.query.filter_by(id=match.awayteam_id).first().name
 
             score = str(match.hometeam_score) + ':' + str(match.awayteam_score)
-            outcome = match.outcome
+
+            match_data = Match.query.filter_by(id=match.id).first()
+            hometeam = match_data.hometeam.name
+            awayteam = match_data.awayteam.name
+
+            last_match = LastMatchInfo(match.id, match.date, opponent, hometeam, awayteam, score, match.outcome)
+            #print last_match
+
+            output_data.append(last_match)
 
 
-        return LastMatchInfo(opponent, score, outcome)
+        print output_data
 
+
+        return output_data
 
     def __init__(self, **kwargs):
         super(Team, self).__init__(**kwargs)
@@ -717,6 +729,8 @@ class Match(db.Model):
     hometeam_score = db.Column(db.String(4))
     awayteam_score = db.Column(db.String(4))
     saved_for_later = db.relationship('SavedForLater', backref='saved_matches', lazy='dynamic')
+    users_who_saved_match = association_proxy('saved_by_users', 'users_id')
+
     comments = db.relationship('Comment', backref='match', lazy='dynamic')
 
     '''def __init__(self, id, hometeam_id, awayteam_id, date, time, date_stamp, time_stamp):
@@ -788,7 +802,7 @@ class Match(db.Model):
 
     @staticmethod
     def predicted_winner(match, user=None):
-
+        """predicted winner based on user prediction settings"""
         total_weight = 0
         module_winners = [match.prediction_league_position, match.prediction_form, match.prediction_homeaway]
         prediction_modules = PredictionModule.query.all()
@@ -832,7 +846,7 @@ class Match(db.Model):
 
     @property
     def actual_winner(self):
-        'who actually won the match?'
+        """who actually won the match?"""
         if self.hometeam_score != '?' and self.awayteam_score != '?':
             if (int(self.hometeam_score) > int(self.awayteam_score)):
                 return self.hometeam_id

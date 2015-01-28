@@ -1,9 +1,6 @@
 {% extends "base.html" %}
 {% from 'includes/_macros.html' import render_field %}
 
-{% block title %}
-        {{title}}
-{% endblock %}
 {% block header %}
     {% if current_user.is_authenticated() %}
         <header id="head" class="secondary"></header>

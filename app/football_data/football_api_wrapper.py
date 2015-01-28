@@ -222,7 +222,7 @@ class FootballAPIWrapper:
 
         all_played_matches = self.played_matches
         form_and_tendency_data = dict()
-        MatchForFormInfo = namedtuple('MatchForFormInfo', 'id, date_stamp, time_stamp, hometeam_id, awayteam_id,'
+        MatchForFormInfo = namedtuple('MatchForFormInfo', 'id, date_stamp, date, time_stamp, hometeam_id, awayteam_id,'
                                                           'hometeam_score, awayteam_score, outcome')
 
         # loop through the team ids
@@ -252,6 +252,7 @@ class FootballAPIWrapper:
                     matchForFormInfo = MatchForFormInfo(
                             match.id,
                             match.date_stamp,
+                            match.date,
                             match.time_stamp,
                             match.hometeam_id,
                             match.awayteam_id,

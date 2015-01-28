@@ -1,7 +1,10 @@
 .dashboard {
 	position: relative;
 }
-.dashboard__inner-saved_matches {
+.content-wrap .breadcrumb {
+	margin-left: 40px;
+}
+.dashboard__saved_matches {
 	margin-top: 0;
 	width: 100%!important;
 

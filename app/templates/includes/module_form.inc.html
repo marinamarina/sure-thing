@@ -1,3 +1,5 @@
+{{ moment.include_moment() }}
+
 <div class="module-form module row panel panel-default" data="{{match.id}}">
    <div class="panel-heading">
       <h3 class="panel-title">Module Form</h3>
@@ -14,114 +16,83 @@
          <div class="last-6-fixtures__home col-sm-6">
             <table class="table table-condensed table-striped text-muted grid">
                <tbody>
-                  <!--tr class="alt">
-                     <td>
-                        <ul style="text-align: left">
-                           <li class="team home">
-                              <a class="team-link " title="Swansea" href="/Teams/259">Swansea</a></li>
-                        </ul>
-                     </td>
-                     <td class="result">
-                        <a href="/Matches/829668">1 : 2</a></td>
-                     <td>
-                        <ul>
-                           <li class="date ta-right">14-12-2014</li>
-                           <li class="team away winner"><a class="team-link " title="Tottenham" href="/Teams/30">Tottenham</a></li>
-                        </ul>
-                     </td>
-                     <td class="form">
-                        <a class=" box l" href="/Matches/829668">l</a>
-                     </td>
-                  </tr-->
 
                   {% for last_match in match.hometeam.last_matches %}
                   <tr class="alt ">
                      <td>
                         <ul style="text-align: left">
-                           <li class="team home">
-                              <a class="team-link " title="Swansea" href="/Teams/259">Swansea</a></li>
+                           <li class="team home
+                           {% if last_match.hometeam==match.hometeam.name %} winner
+                              {% endif %}
+                           ">
+                              <span class="team" title="{{ last_match.hometeam }}">
+                                 {{ last_match.hometeam }}
+                              </span>
+                           </li>
                         </ul>
                      </td>
                      <td class="result">
-                        <a href="/Matches/829668">{{ last_match }}</a></td>
+                        <a href="{{ url_for('.view_match', match_id=last_match.id) }}">{{ last_match.score }}</a></td>
                      <td>
                         <ul>
-                           <li class="date ta-right">14-12-2014</li>
-                           <li class="team away winner"><a class="team-link " title="Tottenham" href="/Teams/30">Tottenham</a></li>
+                           <li class="date ta-right">{{ last_match.date}}</li>
+                           <li class="team away{% if last_match.awayteam==match.hometeam.name %} winner{% endif %}">
+                              <span class="team" title="{{ last_match.awayteam }}">
+                                 {{ last_match.awayteam }}
+                              </span>
+                           </li>
+                           </li>
                         </ul>
                      </td>
                      <td class="form">
-                        <a class=" box w" href="/Matches/829668">w</a>
+                        <span class=" box{% if last_match.outcome=='W' %} w {% elif last_match.outcome=='D' %} d {% else %} l {% endif %}">{{last_match.outcome}}</span>
                      </td>
                   </tr>
                   {% endfor %}
-                  <!--tr class="alt ">
-                     <td>
-                        <ul style="text-align: left">
-                           <li class="team home">
-                              <a class="team-link " title="Swansea" href="/Teams/259">Swansea</a></li>
-                        </ul>
-                     </td>
-                     <td class="result">
-                        <a href="/Matches/829668">1 : 2</a></td>
-                     <td>
-                        <ul>
-                           <li class="date ta-right">14-12-2014</li>
-                           <li class="team away winner"><a class="team-link " title="Tottenham" href="/Teams/30">Tottenham</a></li>
-                        </ul>
-                     </td>
-                     <td class="form">
-                        <a class=" box l" href="/Matches/829668">l</a>
-                     </td>
-                  </tr-->
+                  
                </tbody>
 
             </table>
          </div>
-         <div class="last-6-fixtures__home col-sm-6">
-            <table id="form-grid" class="table table-condensed table-striped text-muted grid">
+         <div class="last-6-fixtures__away col-sm-6">
+            <table class="table table-condensed table-striped text-muted grid">
                <tbody>
-                  <!--tr class="alt ">
-                     <td>
-                        <ul style="text-align: left">
-                           <li class="team home">
-                              <a class="team-link " title="Swansea" href="/Teams/259">Swansea</a></li>
-                        </ul>
-                     </td>
-                     <td class="result">
-                        <a href="/Matches/829668">1 : 2</a></td>
-                     <td>
-                        <ul>
-                           <li class="date ta-right">14-12-2014</li>
-                           <li class="team away winner"><a class="team-link " title="Tottenham" href="/Teams/30">Tottenham</a></li>
-                        </ul>
-                     </td>
-                     <td class="form">
-                        <a class=" box d" href="/Matches/829668">d</a>
-                     </td>
-                  </tr-->
-                  {% for match in match.awayteam.last_matches %}
+
+                  {% for last_match in match.awayteam.last_matches %}
                   <tr class="alt ">
                      <td>
                         <ul style="text-align: left">
-                           <li class="team home">
-                              <a class="team-link " title="Swansea" href="/Teams/259">Swansea</a></li>
+                           <li class="team home
+                           {% if last_match.awayteam==match.hometeam.name %} winner
+                              {% endif %}
+                           ">
+                              <span class="team" title="{{ last_match.hometeam }}">
+                                 {{ last_match.hometeam }}
+                              </span>
+                           </li>
                         </ul>
                      </td>
                      <td class="result">
-                        <a href="/Matches/829668">1 : 2</a></td>
+                        <a href="{{ url_for('.view_match', match_id=last_match.id) }}">{{ last_match.score }}</a></td>
                      <td>
                         <ul>
-                           <li class="date ta-right">14-12-2014</li>
-                           <li class="team away winner"><a class="team-link " title="Tottenham" href="/Teams/30">Tottenham</a></li>
+                           <li class="date ta-right">{{ last_match.date }}</li>
+                           <li class="team away{% if last_match.awayteam==match.awayteam.name %} winner {% endif %}">
+                              <span class="team" title="{{ last_match.awayteam }}">
+                                 {{ last_match.awayteam }}
+                              </span>
+                           </li>
+                           </li>
                         </ul>
                      </td>
                      <td class="form">
-                        <a class=" box w" href="/Matches/829668">w</a>
+                        <span class=" box {% if last_match.outcome=='W' %} w {% elif last_match.outcome=='D' %} d {% else %} l {% endif %}">{{last_match.outcome}}</span>
                      </td>
                   </tr>
                   {% endfor %}
+               
                </tbody>
+
             </table>
          </div>
          

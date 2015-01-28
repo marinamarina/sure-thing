@@ -9,6 +9,6 @@ require.config({
     }
 });
 
-require(['app'], function(app) {
-  app.init();
+require(['app', 'classie'], function(app, classie) {
+  app.init(classie);
 });

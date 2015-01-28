@@ -22,7 +22,6 @@
         }
     });
 
-
     socket.on('data_updated', function(msg) {
         console.log('Data updated at: ' + msg.time);
     });

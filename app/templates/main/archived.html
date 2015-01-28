@@ -9,21 +9,23 @@
 {% endblock header %}
 
 {% block inner_wrapper %}
+    <div class="dashboard">
 
-    <!--sidebar-->
-    {% include 'includes/sidebar_menu.inc.html' %}
-    <!--/sidebar-->
-<div class="archived jumbotron container content-wrap">
+        <!--sidebar-->
+            {% include 'includes/sidebar_menu.inc.html' %}
+        <!--/sidebar-->
+        <div class="dashboard__archived jumbotron container content-wrap">
 
-    <ol class="breadcrumb">
-        <li><a href="{{ url_for('.index') }}">Home</a></li>
-        <li><a href="{{ url_for('.dashboard') }}">Dashboard</a></li>
-        <li class="active">Archived Matches</li>
-    </ol>
+            <ol class="breadcrumb">
+                <li><a href="{{ url_for('.index') }}">Home</a></li>
+                <li><a href="{{ url_for('.dashboard') }}">Dashboard</a></li>
+                <li class="active">Archived Matches</li>
+            </ol>
 
-        {% if savedmatches.length != 0 %}
-            {% include 'includes/saved_matches.inc.html' %}
-        {% endif %}
+            {% if savedmatches.length != 0 %}
+                {% include 'includes/saved_matches.inc.html' %}
+            {% endif %}
+        </div>
     </div>
 
 {% endblock %}

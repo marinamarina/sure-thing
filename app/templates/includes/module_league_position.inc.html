@@ -9,7 +9,15 @@
       <div class="away-team team col-sm-2 col-sm-offset-1 text-center">
          <span class="league-position clearfix">{{lt_awayteam.team_name}}: {{lt_awayteam.position}}</span>
       </div>
-      <div class="league-position-comparison col-sm-10">
+      
+      <div class="module-league-position__comparison col-sm-10 top-space">
+         <div class="module-league-position__expand" class="show-more-toggle">
+            <a href="#">
+               <span class="text">Expand League Table</span>
+               <i class="fa fa-chevron-down"></i>
+            </a>
+         </div>
+
          <!-- league position -->
          <table id="form-grid" class="table table-condensed table-striped text-muted grid">
             <thead>
@@ -39,7 +47,12 @@
                   <td>{{lt_hometeam.goals_against}}</td>
                   <td>{{lt_hometeam.gp}}</td>
                   <td>{{lt_hometeam.points}}</td>
-                  <td>{{lt_hometeam.form}}</td>
+                  <td class="form">
+                    {% for ch in lt_hometeam.form %}
+                     <a class="box 
+                      {% if ch=='W' %} w {% elif ch=='D' %} d {% else %} l {% endif %}">{{ch}} </a>
+                    {% endfor %}     
+                  </td>
                </tr>
                <tr>
                   <td>{{lt_awayteam.position}}</td>
@@ -52,7 +65,12 @@
                   <td>{{lt_awayteam.goals_against}}</td>
                   <td>{{lt_awayteam.gp}}</td>
                   <td>{{lt_awayteam.points}}</td>
-                  <td>{{lt_awayteam.form}}</td>
+                  <td class="form">
+                    {% for ch in lt_awayteam.form %}
+                     <a class="box 
+                      {% if ch=='W' %} w {% elif ch=='D' %} d {% else %} l {% endif %}">{{ch}} </a>
+                    {% endfor %}     
+                  </td>
                </tr>
             </tbody>
          </table>
