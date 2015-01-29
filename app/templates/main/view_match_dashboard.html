@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% from 'includes/_macros.html' import render_embedded_field, render_submit_field, render_submit_field_match_preview,
     teamkitimage %}
+{% block title %}{{savedmatch.hometeam.name}} VS {{savedmatch.awayteam.name}}{% endblock %}
 {% block header %}
 <header id="head" class="secondary"></header>
 {% endblock header %}
@@ -69,3 +70,6 @@
 </form>
 </div>
 {% endblock inner_wrapper %}
+{% block scripts %}
+    {{ super() }}
+{% endblock %}

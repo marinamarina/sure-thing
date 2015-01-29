@@ -32,7 +32,7 @@
                         </ul>
                      </td>
                      <td class="result">
-                        <a href="{{ url_for('.view_match', match_id=last_match.id) }}">{{ last_match.score }}</a></td>
+                        <a href="{{ url_for('.view_played_match', match_id=last_match.id) }}">{{ last_match.score }}</a></td>
                      <td>
                         <ul>
                            <li class="date ta-right">{{ last_match.date}}</li>
@@ -73,7 +73,7 @@
                         </ul>
                      </td>
                      <td class="result">
-                        <a href="{{ url_for('.view_match', match_id=last_match.id) }}">{{ last_match.score }}</a></td>
+                        <a href="{{ url_for('.view_played_match', match_id=last_match.id) }}">{{ last_match.score }}</a></td>
                      <td>
                         <ul>
                            <li class="date ta-right">{{ last_match.date }}</li>

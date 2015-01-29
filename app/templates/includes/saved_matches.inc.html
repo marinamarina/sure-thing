@@ -9,7 +9,6 @@
     <div class="match row panel panel-default {% if savedmatch.committed %}committed-match{% endif %}"
          data="{{savedmatch.id}}">
         <div class="panel-body">
-
             <div class="home-team team col-sm-4 text-center">
                 <span class="predicted-winner clearfix">
                 {% if savedmatch.predicted_winner == savedmatch.match.hometeam.id %}
@@ -19,17 +18,15 @@
 
                 {{ teamkitimage(savedmatch.match, home=1) }}
                 <span class="team-name clearfix">{{savedmatch.match.hometeam.name}}</span>
-                <span class="team-form clearfix">{{savedmatch.match.hometeam.form}}</span>
-                <span class="team-last-result">3:0 Norwich</span>
-
             </div>
             <div class="team-name col-sm-2 text-muted text-center">
                 <span class="vs">VS</span>
                 <span class="clearfix"> DATE: {{savedmatch.match.date}}</span>
-                <span class="clearfix">KO: {{savedmatch.match.time}}</span>
+                <span class="clearfix">KICK OFF: {{savedmatch.match.time}}</span>
                 {% if savedmatch.match.hometeam_score != '?' %}
-                        <span class="hometeam_score orange">{{savedmatch.match.hometeam_score}} :</span>
-                        <span class="awayteam_score orange">{{savedmatch.match.awayteam_score}}</span>
+                    <span class="hometeam_score orange">{{savedmatch.match.hometeam_score}} :</span>
+                    <span class="awayteam_score orange">{{savedmatch.match.awayteam_score}}</span>
+
                 {% endif %}
             </div>
             <div class="away-team team col-sm-4 text-center">
@@ -40,8 +37,6 @@
                 </span>
                 {{ teamkitimage(savedmatch.match, home=2) }}
                 <span class="team-name clearfix">{{savedmatch.match.awayteam.name}}</span>
-                <span class="team-form clearfix">{{savedmatch.match.awayteam.form}}</span>
-                <span class="team-last-result">3:0 Norwich</span>
             </div>
             <div class="status col-sm-2 text-center">
                 {% if savedmatch.match.was_played and savedmatch.committed %}
@@ -54,15 +49,20 @@
             </div>
 
             <div class="btn-group-xs pull-right" role="group">
+                
                 {% if not savedmatch.was_played %}
-                <a href="{{ url_for('.view_match_dashboard', match_id=savedmatch.match_id) }}"
-                   class="btn btn-primary">View
-                    game > </a>
+                    <a href="{{ url_for('.view_match_dashboard', match_id=savedmatch.match_id) }}"
+                       class="btn btn-primary">View match > </a>
+                {% else %}
+                    <a href="{{ url_for('.view_played_match', match_id=savedmatch.match_id) }}"
+                       class="btn btn-primary">View match stats > </a>
                 {% endif %}
+
                 <a class="btn btn-primary">Comments ></a>
                 <a href="{{ url_for('.remove_match', match_id=savedmatch.match_id) }}"
                    class="btn btn-primary">Remove</a>
             </div>
+
         </div>
     </div>
     <!--/match-->

@@ -1,0 +1,126 @@
+{% from 'includes/_macros.html' import teamkitimage, win_loss_draw_icon %}
+{% extends "base.html" %}
+{% block title %}{{match.hometeam.name}} VS {{match.awayteam.name}}{% endblock %}
+{% block header %}
+<header id="head" class="secondary"></header>
+{% endblock header %}
+{% block inner_wrapper %}
+<div class="view_played_match container jumbotron">
+
+    <ol class="breadcrumb">
+        <li><a href="{{ url_for('.index') }}">Home</a></li>
+        <li><a href="{{url_for('.dashboard') }}">Dashboard</a></li>
+        <li class="active">Archived Match</li>
+    </ol>
+
+    <!-- match header  -->
+    {% include 'includes/match_header.inc.html'  %}
+    <!-- /match header -->
+
+    <h2>Users' Prediction Stats</h2>
+
+    <!-- stats block -->
+    <div class="view_match_dashboard__info_blocks row panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">Match Prediction Results</h3>
+        </div>
+        <div class="panel-body">
+
+        <div class="stats_outer_wrapper col-md-6 col-md-offset-3">
+            <div class="stats_inner_wrapper">
+                <h2 class="stats_title text-center">Actual match result</h2>        
+                <div class="stats_header">
+                    <div class="stats_super_impact stats_header_left">
+                        {% if match.actual_winner_name %}
+                            <p class="text-center"> {{ match.actual_winner_name }} won the match with a score</p>
+                        {% else %}
+                            <p class="text-center"> Both teams drawn with a score</p>
+                        {% endif %}
+                        <p class="stats_super_impact__fig text-center">{{ match.hometeam_score }} :
+                        {{ match.awayteam_score }}</p>
+                    </div>
+                </div>
+                <ul class="stats_impact-figures ns_separator">
+                    <li class="stats_impact ">
+                        <p><i class="fa fa-3x fa-user"></i>&nbsp;&nbsp;overall amount of users who saved this match to their dashboards is <span class="stats_impact__fig">
+                        {{ sm_count }}</span></p>
+                    </li>
+                    <li class="stats_impact">
+                        <p><i class="fa fa-3x fa-user"></i>&nbsp;&nbsp;out of this number <span class="stats_impact__fig">{{ committed_count }}</span> users made a bet on this match </p>
+                    </li>
+                    {% if committed_count > 0 %}
+                    <li class="stats_impact ">
+                        <p><i class="fa fa-3x fa-thumbs-up"></i>&nbsp;&nbsp;from the all users who committed the bet <span class="stats_impact__fig">{{ won_bet_count }}</span> users' prediction was right</p>
+                    </li>
+                    <li class="stats_impact">
+                        <p><i class="fa fa-3x fa-thumbs-down"></i>&nbsp;&nbsp;and <span class="stats_impact__fig">{{ lost_bet_count }}</span> users lost the bet predicting a wrong result</p>
+                    </li>
+                    {% endif %}
+                </ul>
+                <div class="stats_footer stats_small-text "></div>
+            </div>
+        </div>
+        </div>
+    </div>
+    <!--  /stats block  -->
+
+    <!-- users prediction block-->
+    <div class="view_match_dashboard__chart row panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">Users' prediction</h3>
+        </div>
+        <div class="panel-body">
+            <div class="teamkits col-md-8 col-md-offset-2">
+                <div class="teamkits__home text-center">
+                    {{ teamkitimage(match, home=1) }}
+                    <span class="team_name clearfix">{{match.hometeam.name}}</span>
+                </div>
+                 <div class="teamkits__away text-center pull-right">
+                    {{ teamkitimage(match, home=2) }}
+                    <span class="team_name clearfix">{{match.awayteam.name}}</span>
+                </div>
+
+            </div>
+            <div class="users_prediction_preferences col-md-6 col-md-offset-3">
+                <div class="labels">
+                    <div class="label home {% if home_share==0 %} hidden {% endif %} text-center" style="width: {{ home_share }}%">Home</div>
+                    <div class="label {% if draw_share==0 %} hidden {% endif %} text-center" style="width: {{ draw_share }} %">Draw</div>
+                    <div class="label away {% if away_share==0 %} hidden {% endif %} text-center" style="width: {{ away_share }}%">Away</div>
+                </div>
+                <div class="border_graph">
+                    <div class="bar home{% if home_share==0 %} hidden {% endif %} text-center" style="width: {{ home_share }}%">
+                        {% if home_share > 0 %}{{ home_share }}% {% endif %}
+                    </div>
+                    <div class="bar draw {% if draw_share==0 %} hidden {% endif %} text-center" style="width: {{ draw_share }}%">{% if draw_share > 0 %}{{ draw_share }}%{% endif %}</div>
+                    <div class="bar away {% if away_share==0 %} hidden {% endif %} text-center" style="width: {{ away_share }}%">
+                        {% if away_share > 0%}{{ away_share }}%{% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--  /winner prediction block -->
+
+    {% if committed_count > 0 %}
+    <!-- chart block -->
+    <div class="view_match_dashboard__chart row panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">Average Prediction Settings</h3>
+        </div>
+        <div class="panel-body">
+
+        </div>
+    </div>
+    {% endif %}
+
+    {% if is_saved and is_committed %}
+        <h2>I have this match saved in my dashboard and committed</h2>
+    {% endif %}
+    
+
+
+</div>
+{% endblock inner_wrapper %}
+{% block scripts %}
+{{ super() }}
+{% endblock %}

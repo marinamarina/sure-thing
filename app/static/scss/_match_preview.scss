@@ -7,6 +7,9 @@
 .winner {
     font-weight: bold;
 }
+.bold {
+       font-weight: bold; 
+}
 .show-more-toggle a {
     color: #222;
     font-size: 1.2em;
@@ -98,4 +101,89 @@ td {
     padding: 0;
     color: #fff!important;
     border-radius: 3px;
+}
+
+/* Played matches */
+.stats_datapic_stat {
+    max-width: 624px;
+    max-width: 585px\9;
+    margin: 1em 0;
+    color: #404040;
+    font-size: 16px;
+    font-family: Arial;
+}
+
+.stats_datapic_stat-- .stats_outer_wrapper .stats_inner_wrapper {
+    max-width: 49%;
+}
+.stats_datapic_stat .stats_inner_wrapper .stats_title {
+    font-size: 1.125em;
+    font-weight: bold;
+    padding: 8px 0 0 0;
+}
+.stats_datapic_stat .stats_inner_wrapper .stats_header {
+    margin-bottom: 12px;
+}
+.stats_datapic_stat .stats_separator {
+    border-top: 1px solid #CCCCCC;
+}
+.stats_datapic_stat .stats_outer_wrapper .stats_outer_wrapper_img_src {
+    display: block;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    color: white;
+    padding: 3px;
+    font-size: 0.75em;
+    font-weight: bold;
+}
+.stats_super_impact__fig {
+    font-size: 3em!important;
+    font-weight: bold!important;
+    margin-top: 0em;
+    padding-bottom: 4px;
+    color: #007F7F;
+}
+.stats_impact__fig {
+    color: #F78A05;
+    font-size: 1.625em;
+    font-weight: bold;
+    margin: 5px 0;
+}
+.teamkits__home, .teamkits__away {
+    float: left;
+    height: 90px;
+    width: 90px;
+}
+.users_prediction_preferences {
+    padding: 20px 0;
+
+    .label {
+        float: left;
+        height: 30px;
+        color: #505050;
+        font-size: 1.2em;
+        border-right: 2px solid #FFFFFF;
+        
+    }
+    .bar {
+        float: left;
+        padding-top: 7px;
+        height: 35px;
+        text-indent: 10px;
+        font-weight: bold;
+        border-right: 2px solid #FFFFFF;
+        &.away {
+            background-color: #007F7F;
+            direction: rtl;
+        }
+        &.draw {
+            background-color: lightgrey;
+        }
+        &.home {
+            background-color: #F78A05;
+        }
+
+    }
+    
 }

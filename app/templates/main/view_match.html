@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% from 'includes/_macros.html' import render_field, win_loss_draw_icon %}
-{% block title %}Match View{% endblock %}
+{% block title %}{{match.hometeam.name}} VS {{match.awayteam.name}}{% endblock %}
 {% block header %}
 <header id="head" class="secondary"></header>
 {% endblock header %}
@@ -129,3 +129,6 @@
 
 </div>
 {% endblock inner_wrapper %}
+{% block scripts %}
+    {{ super() }}
+{% endblock %}

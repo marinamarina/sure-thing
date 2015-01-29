@@ -15,17 +15,13 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <h1 class="logo">SURETHING</h1>
+            <h1 class="logo"><a href="{{ url_for('main.index') }}">SURETHING</a></h1>
         </div>
         <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav pull-right" id="navigation">
                 {% for href, id, caption in navigation_bar %}
-                    <li{% if active_page == id %} class="active"{% endif %}>
-                <a href="{{ href|e }}">{{ caption|e }}
-
-                </a>
-
-                </li>
+                    <li{% if active_page == id %} class="active"{% endif %}><a href="{{ href|e }}">{{ caption|e }}</a>
+                    </li>
                 {% endfor %}
 
                 {% if not current_user.is_authenticated() %}

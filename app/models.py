@@ -524,6 +524,11 @@ class User(UserMixin, db.Model):
     def has_match_saved(self, match):
         return self.saved_matches.filter_by(match_id=match.id).first() is not None
 
+    def has_match_committed(self, match):
+        sm = self.saved_matches.filter_by(match_id=match.id).first()
+        if sm is not None:
+            return sm.committed
+
     def list_matches(self, *args, **kwargs):
         'insert your match id as a parameter in case you want to see only one match'
         return [match
@@ -758,7 +763,6 @@ class Match(db.Model):
             match.hometeam_score = m.hometeam_score
             match.awayteam_score = m.awayteam_score
 
-
             if m.ft_score != '':
                 match.was_played = True
             else:
@@ -854,7 +858,12 @@ class Match(db.Model):
                 return -1
             else:
                 return self.awayteam_id
-
+    @property
+    def actual_winner_name(self):
+        if self.actual_winner==-1:
+            return None
+        else:
+            return Team.query.filter_by(id=self.actual_winner).first().name
 
     def __repr__(self):
         return "<Match> date:{} time: {} id:{} {}/{} was_played {} score: {}:{}".format(
