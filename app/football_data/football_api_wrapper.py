@@ -233,7 +233,7 @@ class FootballAPIWrapper:
 
             # loop through the matches and pick the right ones
             for match in all_played_matches:
-                if team_id==match.hometeam_id or team_id==match.awayteam_id:
+                if team_id == match.hometeam_id or team_id == match.awayteam_id:
 
                     if team_id == match.hometeam_id:
                         team_is_at_home = True
@@ -268,26 +268,26 @@ class FootballAPIWrapper:
         return form_and_tendency_data[id]
 
     def feed_league_table(self):
-        '''
+        """
         Create a dictionary with the current standings
         Read the data from a local file
         :return league_table dictionary
-        '''
+        """
         with open(self.data_dir + '/standings.json', 'r') as localfile:
             standings_data = json.load(localfile)
+
         localfile.close()
-        league_table = OrderedDict()
         TeamInfo = namedtuple('TeamInfo', 'position team_name matches_played w d l goals_for goals_against gp points form')
 
-
-        league_table = {team['stand_team_id'] : TeamInfo(team['stand_position'], team['stand_team_name'], team['stand_round'],
+        league_table = OrderedDict({team['stand_team_id'] : TeamInfo(team['stand_position'], team['stand_team_name'], team['stand_round'],
                         team['stand_overall_w'], team['stand_overall_d'], team['stand_overall_l'],
                         team['stand_overall_gs'], team['stand_overall_ga'], team['stand_gd'], team['stand_points'], team['stand_recent_form'])
 
                         for team in standings_data['standings']
-            }
+            })
 
         return league_table
+
 
     @staticmethod
     def get_beginning_year(current_month, current_year):

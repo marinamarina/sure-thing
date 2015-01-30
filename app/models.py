@@ -148,12 +148,37 @@ class Comments(db.Model):
 
 #db.event.listen(Comment.body, 'set', Comment.on_changed_body)
 '''
+
+class ModuleUserMatchSettings(db.Model):
+    'set custom user % for each match'
+    __tablename__='moduleusermatchsettings'
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
+    match_id = db.Column(db.Integer, db.ForeignKey('savedforlater.match_id'), primary_key=True)
+    module_id = db.Column(db.Integer, db.ForeignKey('prediction_modules.id'), primary_key=True)
+    weight = db.Column(db.Float)
+    user = db.relationship('User', backref = "user_match_assoc")
+
+
+    #hometeam = db.relationship('Match', backref=db.backref('hometeam'), lazy='dynamic', primaryjoin="Match.hometeam_id==Team.id")
+
+
+    def __repr__(self):
+        return "<ModuleUserMatchSettings> user_id: {}/match_id: {} (module_id: {}, weight:{})".format(
+            self.user_id,
+            self.match_id,
+            self.module_id,
+            self.weight
+        )
+
 class PredictionModule(db.Model):
     __tablename__ = 'prediction_modules'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64), index=True)
     description = db.Column(db.String(64))
     weight = db.Column(db.Float)
+    module = db.relationship('ModuleUserMatchSettings', backref=db.backref('module'),
+                                  lazy='dynamic',
+                                  primaryjoin='ModuleUserMatchSettings.module_id==PredictionModule.id')
 
     @staticmethod
     def insert_modules():
@@ -190,24 +215,6 @@ class ModuleUserSettings(db.Model):
     def __repr__(self):
         return "<ModuleUserSettings> user_id: {}, module_id: {}, weight:{}".format(
             self.user_id,
-            self.module_id,
-            self.weight
-        )
-
-
-class ModuleUserMatchSettings(db.Model):
-    'set custom user % for each match'
-    __tablename__='moduleusermatchsettings'
-    user_id=db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
-    match_id=db.Column(db.Integer, db.ForeignKey('savedforlater.match_id'), primary_key=True)
-    module_id = db.Column(db.Integer, db.ForeignKey('prediction_modules.id'), primary_key=True)
-    weight = db.Column(db.Float)
-    user = db.relationship("User", backref = "user_match_assoc")
-
-    def __repr__(self):
-        return "<ModuleUserMatchSettings> user_id: {}/match_id: {} (module_id: {}, weight:{})".format(
-            self.user_id,
-            self.match_id,
             self.module_id,
             self.weight
         )
@@ -503,12 +510,10 @@ class User(UserMixin, db.Model):
     def is_following(self, user):
         return self.followed.filter_by(followed_id=user.id).first() is not None
 
-
     def is_followed_by(self, user):
         return self.follower.filter_by(follower_id=user.user_id).first() is not None
 
     def save_match(self, match):
-        '''!!!add restriction to only save matches that have not yet been played'''
         if not self.has_match_saved(match):
             #self.saved_matches.append(match)
             s = SavedForLater(user=self, match=match)
@@ -530,18 +535,19 @@ class User(UserMixin, db.Model):
             return sm.committed
 
     def list_matches(self, *args, **kwargs):
-        'insert your match id as a parameter in case you want to see only one match'
+        """insert your match id as a parameter in case you want to see only one match"""
         return [match
                 for match in self.saved_matches.filter_by(**kwargs).order_by(*args)
         ]
 
     def list_prediction_settings(self, **kwargs):
-       'insert your module id as a parameter in case you want to see only one module value'
+       """insert your module id as a parameter in case you want to see only one module value"""
        return [settings
                 for settings in self.prediction_settings.filter_by(**kwargs)
                 ]
 
     def list_match_specific_settings(self, **kwargs):
+        """insert your match id AND module id as a parameter in case you want to see only one module value"""
         return [settings
                 for settings in self.match_specific_settings.filter_by(**kwargs)
                 ]
@@ -644,15 +650,14 @@ class Team(db.Model):
 
        return LastMatchInfo(opponent, score, outcome)
 
-    '''TODO'''
     @property
     def last_matches(self):
-        LastMatchInfo = namedtuple('LastMatchInfo', 'id date opponent hometeam awayteam score outcome')
+        LastMatchInfo = namedtuple('LastMatchInfo', 'id date opponent hometeam awayteam hometeam_score awayteam_score '
+                                                    'score outcome')
         last_matches_data = faw.form_and_tendency(self.id)[:6]
         output_data = []
 
         for match in last_matches_data:
-            print match
             if match.hometeam_id != self.id:
                 opponent = Team.query.filter_by(id=match.hometeam_id).first().name
             else:
@@ -664,16 +669,45 @@ class Team(db.Model):
             hometeam = match_data.hometeam.name
             awayteam = match_data.awayteam.name
 
-            last_match = LastMatchInfo(match.id, match.date, opponent, hometeam, awayteam, score, match.outcome)
-            #print last_match
+            last_match = LastMatchInfo(match.id, match.date, opponent, hometeam, awayteam,
+                                       match.hometeam_score, match.awayteam_score, score, match.outcome)
 
             output_data.append(last_match)
 
-
-        print output_data
-
-
         return output_data
+
+    @property
+    def form_last_matches(self):
+        """
+        Create a dictionary with the current standings for 6 last matches
+        :return league_table , anordered dictionary
+        """
+        # matches data for the team
+        TeamInfo = namedtuple('TeamInfo', 'team_name matches_played w d l gf ga gd pts form')
+        matches_data = self.last_matches
+
+        wins = sum([1 for match in matches_data if match.outcome == 'W'])
+        draws = sum([1 for match in matches_data if match.outcome == 'D'])
+        losses = sum([1 for match in matches_data if match.outcome == 'L'])
+
+        gf = 0
+        ga = 0
+
+        for m in matches_data:
+            # finding goals for, if team is at home, sum all goals that hometeam scored
+            # this team is at home
+            if m.hometeam!=m.opponent:
+                gf += m.awayteam_score
+                ga += m.hometeam_score
+            else:
+                gf += m.hometeam_score
+                ga += m.awayteam_score
+
+        gd = gf - ga
+
+        league_table = TeamInfo(self.name, 6, wins, draws, losses, gf, ga, gd, 3*wins + 1*losses, self.form)
+
+        return league_table
 
     def __init__(self, **kwargs):
         super(Team, self).__init__(**kwargs)
@@ -721,7 +755,7 @@ class Team(db.Model):
             )
 
 class Match(db.Model):
-    'represents a football match'
+    """represents a football match"""
     __tablename__ = 'matches'
     id = db.Column(db.Integer, primary_key=True)
     date = db.Column(db.String(16))
@@ -745,8 +779,7 @@ class Match(db.Model):
     @staticmethod
     def update_all_matches():
         """Inserting all the matches to the database"""
-        matches = faw.all_matches
-        print('THIS RAN')
+        matches = faw.unplayed_matches
 
         for m in matches:
             # hope this will not be a bottleneck, find a smarter way to check what is already in the database??
@@ -769,7 +802,6 @@ class Match(db.Model):
                 match.was_played = False
 
             db.session.add(match)
-
 
         try:
             db.session.commit()

@@ -1,7 +1,7 @@
 {% from 'includes/_macros.html' import teamkitimage, win_loss_draw_icon %}
 <div class="match_header row panel panel-default top-space" data="{{match.id}}">
    <div class="panel-body">
-      <div class="away-team team col-sm-2 col-sm-offset-1 text-center">
+      <div class="away-team team col-sm-2 {% if match.was_played %}col-sm-offset-2{% else %}col-sm-offset-1{% endif %} text-center">
          <h4 class="team-name">{{match.hometeam.name}}</h4>
          {{ teamkitimage(match, home=1) }}
          <span class="win team-last-result">{{match.hometeam.last_match.score}} {{match.hometeam.last_match.opponent}}</span>

@@ -79,8 +79,12 @@ body#surething {
 
 /* General styles */
 /* Navbar */
-.logo {
+.logo a {
   color: #FFFFFF;
+}
+.logo a:hover {
+  color: #FFFFFF;
+  text-decoration: none;
 }
 
 .right-navbar-content p {
@@ -109,6 +113,16 @@ body#surething {
   height: 278px;
   min-height: initial;
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
+}
+
+/* Nav pills */
+#upcoming-past-nav > li > a {
+  color: #505050;
+}
+
+#upcoming-past-nav .active > a {
+  background-color: #F78A05;
+  color: #FFFFFF;
 }
 
 /* Breadcrumb */
@@ -314,6 +328,10 @@ grid .alt td {
   background-color: #F2F2F2;
 }
 
+td.played {
+  font-weight: bold;
+}
+
 .grid .result .result-1 {
   color: #fff;
   background-color: #8f8f8f;
@@ -325,10 +343,12 @@ grid .alt td {
 
 .team.home {
   text-align: right;
+  margin-top: 20px;
 }
 
-.result {
+.last-6-fixtures table .result {
   width: 2.9em;
+  padding-top: 25px;
   font-weight: bold;
   border-radius: 3px 3px 3px 3px;
 }

@@ -38,6 +38,9 @@ team {
 grid .alt td {
     background-color: #F2F2F2;
 }
+td.played {
+    font-weight: bold;
+}
 .grid .result .result-1 {
     color: #fff;
     background-color: #8f8f8f;
@@ -48,9 +51,11 @@ grid .alt td {
 }
 .team.home {
     text-align: right;
+    margin-top: 20px;
 }
-.result {
+.last-6-fixtures table .result {
     width: 2.9em;
+    padding-top: 25px;
     
     font-weight: bold;
     border-radius: 3px 3px 3px 3px;

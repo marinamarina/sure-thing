@@ -1,18 +1,100 @@
 {{ moment.include_moment() }}
+{% from 'includes/_macros.html' import teamkitimage, win_loss_draw_icon %}
 
 <div class="module-form module row panel panel-default" data="{{match.id}}">
    <div class="panel-heading">
       <h3 class="panel-title">Module Form</h3>
    </div>
    <div class="panel-body">
-      <div class="home-team team col-sm-2 col-xs-offset-1 text-center">
-         <span class="team-form clearfix">Form: {{match.hometeam.form}} </span>
+      
+      <!-- form info comparison -->
+      <div class="comparison col-sm-10 top-space">
+         <table id="form-grid" class="table table-condensed table-striped text-muted grid">
+            <thead>
+               <tr>
+                  <th class="position" data-property="Position">Position</th>
+                  <th class="team" data-property="TeamName">Team</th>
+                  <th class="p" data-property="P" title="Played">P</th>
+                  <th class="w" data-property="W" title="Win">W</th>
+                  <th class="d" data-property="D" title="Draw">D</th>
+                  <th class="l" data-property="L" title="Loss">L</th>
+                  <th class="gf" data-property="GF" title="Goals For">GF</th>
+                  <th class="ga" data-property="GA" title="Goals Against">GA</th>
+                  <th class="gd" data-property="GD" title="Goal Difference">GD</th>
+                  <th class="pts" data-property="Pts" title="Points">Pts</th>
+                  <th class="form" data-property="F" title="Form">Form</th>
+               </tr>
+            </thead>
+            <tbody>
+               <tr>
+                  <td>xxxx</td>
+                  <td>{{match.hometeam.form_last_matches.team_name}}</td>
+                  <td class="played">6</td>
+                  <td>{{match.hometeam.form_last_matches.w}}</td>
+                  <td>{{match.hometeam.form_last_matches.d}}</td>
+                  <td>{{match.hometeam.form_last_matches.l}}</td>
+                  <td>{{match.hometeam.form_last_matches.gf}}</td>
+                  <td>{{match.hometeam.form_last_matches.ga}}</td>
+                  <td>{{match.hometeam.form_last_matches.gd}}</td>
+                  <td>{{match.hometeam.form_last_matches.pts}}</td>
+                  <td class="form">
+                    {% set count = 0 %}
+                    {% for ch in match.hometeam.form_last_matches.form %}
+                     <a href="{{ url_for('.view_played_match', match_id=match.hometeam.last_matches[count].id) }}" class="box 
+                      {% if ch=='W' %} w {% elif ch=='D' %} d {% else %} l {% endif %}">{{ch}} </a>
+                     {% set count = count + 1 %}
+                    {% endfor %}    
+                    {% set count = 0 %} 
+                  </td>
+               </tr>
+               <tr>
+                  <td>xxxx</td>
+                  <td>{{match.awayteam.form_last_matches.team_name}}</td>
+                  <td class="played">6</td>
+                  <td>{{match.awayteam.form_last_matches.w}}</td>
+                  <td>{{match.awayteam.form_last_matches.d}}</td>
+                  <td>{{match.awayteam.form_last_matches.l}}</td>
+                  <td>{{match.awayteam.form_last_matches.gf}}</td>
+                  <td>{{match.awayteam.form_last_matches.ga}}</td>
+                  <td>{{match.awayteam.form_last_matches.gd}}</td>
+                  <td>{{match.awayteam.form_last_matches.pts}}</td>
+                  <td class="form">
+                    {% set count = 0 %}
+                    {% for ch in match.awayteam.form_last_matches.form %}
+                     <a href="{{ url_for('.view_played_match', match_id=match.awayteam.last_matches[count].id) }}" class="box 
+                      {% if ch=='W' %} w {% elif ch=='D' %} d {% else %} l {% endif %}">{{ch}} </a>
+                     {% set count = count + 1 %}
+                    {% endfor %}    
+                    {% set count = 0 %} 
+                  </td>
+               </tr>
+            </tbody>
+         </table>
       </div>
-      <div class="away-team team col-sm-2 col-xs-offset-1 text-center">
-         <span class="team-form clearfix">Form: {{match.awayteam.form}} </span>
-      </div>
+      <!-- /form info comparison -->
 
-      <div class="last-6-fixtures col-sm-10">
+      <!-- module form result  -->
+      <div class="away-team team col-sm-2 text-center">
+         <span class="clearfix">Winner: {{ match.prediction_form.name }}</span>
+         {{ input }}
+      </div>
+      <!-- /module form result -->
+
+      <!-- teamkits -->
+      <div class="teamkits col-md-10">
+         <div class="teamkits__home text-center">
+           {{ teamkitimage(match, home=1) }}
+           <span class="team_name clearfix">{{match.hometeam.name}}</span>
+        </div>
+        <div class="teamkits__away text-center pull-right">
+           {{ teamkitimage(match, home=2) }}
+           <span class="team_name clearfix">{{match.awayteam.name}}</span>
+        </div>
+     </div>
+     <!-- teamkits -->
+      
+      <!-- form info last 6 fixtures -->
+      <div class="last-6-fixtures col-sm-10 top-space">
          <div class="last-6-fixtures__home col-sm-6">
             <table class="table table-condensed table-striped text-muted grid">
                <tbody>
@@ -21,13 +103,8 @@
                   <tr class="alt ">
                      <td>
                         <ul style="text-align: left">
-                           <li class="team home
-                           {% if last_match.hometeam==match.hometeam.name %} winner
-                              {% endif %}
-                           ">
-                              <span class="team" title="{{ last_match.hometeam }}">
-                                 {{ last_match.hometeam }}
-                              </span>
+                           <li class="team home {% if last_match.hometeam==match.hometeam.name %} winner{% endif %}">
+                              <span class="team" title="{{ last_match.hometeam }}">{{ last_match.hometeam }}</span>
                            </li>
                         </ul>
                      </td>
@@ -36,22 +113,19 @@
                      <td>
                         <ul>
                            <li class="date ta-right">{{ last_match.date}}</li>
+
                            <li class="team away{% if last_match.awayteam==match.hometeam.name %} winner{% endif %}">
-                              <span class="team" title="{{ last_match.awayteam }}">
-                                 {{ last_match.awayteam }}
-                              </span>
+                              <span class="team" title="{{ last_match.awayteam }}">{{ last_match.awayteam }}</span>
                            </li>
-                           </li>
+                           
                         </ul>
                      </td>
                      <td class="form">
                         <span class=" box{% if last_match.outcome=='W' %} w {% elif last_match.outcome=='D' %} d {% else %} l {% endif %}">{{last_match.outcome}}</span>
                      </td>
                   </tr>
-                  {% endfor %}
-                  
+                  {% endfor %}                  
                </tbody>
-
             </table>
          </div>
          <div class="last-6-fixtures__away col-sm-6">
@@ -98,13 +172,6 @@
          
 
       </div>
-
-   <!-- module form result  -->
-   <div class="away-team team col-sm-2 text-center">
-      <span class="clearfix">Winner: {{ match.prediction_form.name }}</span>
-      {{ input }}
-   </div>
-   <!-- /module form result -->
       
    </div>
 

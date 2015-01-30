@@ -9,8 +9,12 @@ body#surething {
 /* General styles */
 
 /* Navbar */
-.logo {
+.logo a {
     color: #FFFFFF;
+    &:hover {
+        color: #FFFFFF;
+        text-decoration: none;
+    }
 }
 .right-navbar-content {
     p {
@@ -32,6 +36,15 @@ body#surething {
     min-height: initial; 
     box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22); 
 }
+/* Nav pills */
+#upcoming-past-nav >li >a {
+    color: #505050;
+ }
+ #upcoming-past-nav .active > a {
+    background-color: #F78A05;
+    color: #FFFFFF;
+}
+
 /* Breadcrumb */
 .breadcrumb {
     margin: 0;

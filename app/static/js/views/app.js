@@ -23,15 +23,23 @@ define(['headroom1', 'headroom'],
 
  				/* Making room for the menu */
 
-				$(".headroom").headroom({
-    				"tolerance": 20,
-    				"offset": 50,
-    				"classes": {
-        				"initial": "animated",
-        				"pinned": "slideDown",
-        				"unpinned": "slideUp"
-    				}
-    			})
+			$(".headroom").headroom({
+    			"tolerance": 20,
+    			"offset": 50,
+    			"classes": {
+        			"initial": "animated",
+        			"pinned": "slideDown",
+        			"unpinned": "slideUp"
+    			}
+    		});
+
+            /*allCookies = document.cookie;
+            console.log(allCookies.getItem('showed_played_matches').split('=')[1])*/
+
+            $("#upcoming-past-nav li").click(function(){
+                $(".active").removeClass("active");
+                $(this).addClass("active");
+            });
 
             if (openbtn) {
                 openbtn.addEventListener( 'click', toggleMenu );

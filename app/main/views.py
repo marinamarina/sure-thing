@@ -286,8 +286,6 @@ def view_match_dashboard(match_id):
     match_specific_weights = me.list_match_specific_settings(match_id=savedmatch.id)
     modules = PredictionModule.query.all()
 
-
-
     if form.validate_on_submit():
         '''if(me.list_matches(match_id=match_id)[0].committed):
             return redirect(url_for('.view_match_dashboard', match_id=match_id))'''
@@ -325,6 +323,8 @@ def view_match_dashboard(match_id):
     return render_template('main/view_match_dashboard.html',
                            form=form,
                            savedmatch=savedmatch,
+                           #sm_home_form=savedmatch.hometeam.form_last_matches,
+                           #sm_away_form=savedmatch.awayteam.form_last_matches,
                            user=current_user,
                            lt_hometeam=lt_hometeam,
                            lt_awayteam=lt_awayteam,
@@ -338,6 +338,12 @@ def view_match_dashboard(match_id):
 def view_played_match(match_id):
     me = current_user
     match = Match.query.filter_by(id=match_id).first()
+    sm = me.list_matches(match_id=match.id)
+    prediction = Match.predicted_winner(match, me)
+    predicted_winner = prediction.team_winner_name
+    predicted_probability = int(prediction.probability * 100)
+
+    match_settings = me.list_match_specific_settings(match_id=match.id)
     match_is_saved = me.has_match_saved(match)
     match_is_committed = me.has_match_committed(match)
 
@@ -373,16 +379,20 @@ def view_played_match(match_id):
 
     return render_template('main/view_played_match.html',
                            match=match,
+                           sm=sm,
                            is_saved = match_is_saved,
                            is_committed = match_is_committed,
                            sm_count = saved_matches_count,
                            committed_count = saved_matches_committed_count,
                            won_bet_count = saved_matches_won_bet_count,
-                           lost_bet_count = saved_matches_lost_bet_count,
-                           home_share = saved_matches_predicted_home_share,
-                           away_share = saved_matches_predicted_away_share,
-                           draw_share = saved_matches_predicted_draw_share,
-                           user=current_user)
+                           lost_bet_count=saved_matches_lost_bet_count,
+                           home_share=saved_matches_predicted_home_share,
+                           away_share=saved_matches_predicted_away_share,
+                           draw_share=saved_matches_predicted_draw_share,
+                           user=current_user,
+                           match_settings=match_settings,
+                           predicted_winner=predicted_winner,
+                           probability=predicted_probability)
 
 '''   post = Post.query.get_or_404(id)
     form = CommentPostForm()

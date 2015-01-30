@@ -4,7 +4,7 @@
 
 <html>
     {% block head %}
-    <link rel="Shortcut Icon" href="{{ url_for('static', filename='favicon.png') }}" type="image/x-icon" />
+    <link rel="shortcut icon" type="image/png" href="{{ url_for('static', filename='favicon.png', _external=True) }}">
     {% block styles %}
         {{ super() }}
         <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:300,400,700" media="screen" />
