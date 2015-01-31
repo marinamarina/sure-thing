@@ -6,6 +6,7 @@ from datetime import datetime
 from collections import namedtuple, OrderedDict
 import urllib
 import requests
+import os
 
 '''
     TODO: switch to API version 2
@@ -20,7 +21,8 @@ class FootballAPIWrapper:
 
         self._premier_league_id = '1204'
         self._base_url = 'http://football-api.com/api/?Action='
-        self._data_dir = 'app/data'  #'../data'
+        self._basedir = os.path.dirname(__file__)
+        self._datadir = os.path.abspath( os.path.join(self._basedir, '..', 'data') )
         self._proxy_on = False
 
 
@@ -72,7 +74,7 @@ class FootballAPIWrapper:
 
     def feed_ids_names(self):
         """Create an team id -> name relationship"""
-        with open(self._data_dir + '/standings.json', 'r') as localfile:
+        with open(self._datadir + '/standings.json', 'r') as localfile:
             standings_data = json.load(localfile)
         localfile.close()
 
@@ -101,13 +103,15 @@ class FootballAPIWrapper:
 
     def write_standings_data (self):
         """Write standings json response to the local file"""
+        print('\n-----WRITING STANDINGS----')
+
         raw_data = dict()
 
         try:
             raw_data["standings"] = self._get_standings()["teams"]
             raw_data["date-time"] = self.date_tuple.today + ' ' + self.date_tuple.current_time
 
-            with open(self._data_dir + '/all_matches.json', mode = 'w') as outfile:
+            with open(self._datadir + '/standings.json', mode = 'w') as outfile:
                 json.dump(raw_data, outfile)
 
             outfile.close()
@@ -118,12 +122,18 @@ class FootballAPIWrapper:
 
     def write_matches_data(self):
         """Write matches json response to the local file"""
+        print('\n-----WRITING MATCHES----')
+
         raw_data = dict()
         try:
             raw_data["matches"] = self._get_all_matches()["matches"]
             raw_data["date-time"] = self.date_tuple.today + ' ' + self.date_tuple.current_time
 
-            with open(self._data_dir + '/standings.json', mode = 'w') as outfile:
+            with open(self._datadir + '/test.txt', 'wb') as localfile:
+               localfile.write("Keekaboos")
+            localfile.close()
+
+            with open(self._datadir + '/all_matches.json', mode='w') as outfile:
                 json.dump(raw_data, outfile)
 
             outfile.close()
@@ -134,7 +144,7 @@ class FootballAPIWrapper:
 
     def feed_ids_names(self):
         """Create a team id -> name relationship"""
-        with open(self.data_dir + '/standings.json', 'r') as localfile:
+        with open(self._datadir + '/standings.json', 'r') as localfile:
             standings_data = json.load(localfile)
         localfile.close()
 
@@ -154,9 +164,11 @@ class FootballAPIWrapper:
         :return tuple of two arrays of tuples
         """
 
-        with open(self._data_dir + '/all_matches.json', 'r') as localfile:
+        with open(self._datadir + '/all_matches.json', 'r') as localfile:
+
             matches_data = json.load(localfile)
         localfile.close()
+
 
         MatchInfo = namedtuple('MatchInfo',
                                'id date time date_stamp time_stamp '
@@ -197,7 +209,7 @@ class FootballAPIWrapper:
         Read the data from a local file
         :return league_table dictionary
         '''
-        with open(self._data_dir + '/standings.json', 'r') as localfile:
+        with open(self._datadir + '/standings.json', 'r') as localfile:
             standings_data = json.load(localfile)
         localfile.close()
         league_table = OrderedDict()
@@ -273,7 +285,7 @@ class FootballAPIWrapper:
         Read the data from a local file
         :return league_table dictionary
         """
-        with open(self.data_dir + '/standings.json', 'r') as localfile:
+        with open(self._datadir + '/standings.json', 'r') as localfile:
             standings_data = json.load(localfile)
 
         localfile.close()

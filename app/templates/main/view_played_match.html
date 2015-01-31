@@ -33,7 +33,7 @@
                             {% if match.actual_winner_name %}
                             <p class="text-center"> {{ match.actual_winner_name }} won the match with a score</p>
                             {% else %}
-                            <p class="text-center"> Both teams drawn with a score</p>
+                            <p class="text-center">Draw</p>
                             {% endif %}
                             <p class="stats_super_impact__fig text-center">{{ match.hometeam_score }} :
                                 {{ match.awayteam_score }}</p>
@@ -116,11 +116,11 @@
             <!-- feedback for the current user -->
             <div class="view_match_dashboard__feedback row panel panel-default">
                 <div class="panel-heading">
-                    <h3 class="panel-title">User Feedback</h3>
+                    <h3 class="panel-title">Your Prediction</h3>
                 </div>
                 <div class="panel-body">
                     {% if predicted_winner == 'Draw' %}
-                    <p>You predicted that <span class="stats_impact__fig">{{ match.hometeam.name }}</span> was going to draw against
+                    <p>You predicted that <span class="stats_impact__fig">{{ match.hometeam.name }}</span> were going to draw with
                         <span class="stats_impact__fig">{{ match.awayteam.name }}</span>.</p>
                         {% else %}
                         <p>Your prediction was that <span class="stats_impact__fig">{{ predicted_winner }}</span> was going to win with probability of <span class="stats_impact__fig">{{probability}}%</span>.</p>

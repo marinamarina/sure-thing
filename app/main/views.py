@@ -32,7 +32,7 @@ def index():
     show_played_matches = False
     Match.update_all_matches()
 
-    #we get the value of the show_followed cookie from the request cookie dictionary
+    #we get the value of the show_played_matches cookie from the request cookie dictionary
     #and convert it to boolean
     show_played_matches = bool(request.cookies.get('show_played_matches', ''))
 
@@ -375,7 +375,6 @@ def view_played_match(match_id):
         saved_matches_predicted_away_share = 0
 
     saved_matches_predicted_draw_share = 100 - saved_matches_predicted_home_share - saved_matches_predicted_away_share
-    print saved_matches_predicted_away_share, saved_matches_predicted_home_share, saved_matches_predicted_draw_share
 
     return render_template('main/view_played_match.html',
                            match=match,
