@@ -24,8 +24,14 @@
                 <span class="clearfix"> DATE: {{savedmatch.match.date}}</span>
                 <span class="clearfix">KICK OFF: {{savedmatch.match.time}}</span>
                 {% if savedmatch.match.hometeam_score != '?' %}
+                <p>
                     <span class="hometeam_score orange">{{savedmatch.match.hometeam_score}} :</span>
                     <span class="awayteam_score orange">{{savedmatch.match.awayteam_score}}</span>
+                </p>
+                    {% if not savedmatch.match.was_played and savedmatch.match.hometeam_score != '?' %}
+                            <span class="box live clearfix">Live</span>
+                    {% endif %}
+
 
                 {% endif %}
             </div>

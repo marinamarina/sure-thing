@@ -3,7 +3,7 @@ from flask import render_template, redirect, url_for, abort, flash, \
 from flask_login import login_required, current_user
 from . import main
 from .forms import UserDefaultPredictionSettings, UserMatchPredictionSettings
-from .. import db, socketio, cache
+from .. import db, socketio
 from ..models import User, Permission, Team, \
     Match, SavedForLater, PredictionModule, Message, \
     ModuleUserSettings, ModuleUserMatchSettings
@@ -30,10 +30,7 @@ def inject_permissions():
 @templated()
 def index():
     show_played_matches = False
-    #data = app.redis.lrange("clouds", 0, -1)
-    #resp = Response(json.dumps(data), status=200, mimetype='application/json')
-    #return resp
-    #Match.update_all_matches()
+    Match.update_all_matches()
 
     #we get the value of the show_played_matches cookie from the request cookie dictionary
     #and convert it to boolean
@@ -340,8 +337,9 @@ def view_match_dashboard(match_id):
 @login_required
 def view_played_match(match_id):
     me = current_user
+
     match = Match.query.filter_by(id=match_id).first()
-    sm = me.list_matches(match_id=match.id)
+
     prediction = Match.predicted_winner(match, me)
     predicted_winner = prediction.team_winner_name
     predicted_probability = int(prediction.probability * 100)
@@ -378,6 +376,8 @@ def view_played_match(match_id):
         saved_matches_predicted_away_share = 0
 
     saved_matches_predicted_draw_share = 100 - saved_matches_predicted_home_share - saved_matches_predicted_away_share
+
+    sm = me.list_matches(match_id=match.id)[0]
 
     return render_template('main/view_played_match.html',
                            match=match,

@@ -8,7 +8,7 @@ from config import config
 from gevent import monkey
 from flask_socketio import SocketIO
 from football_data.football_api_wrapper import FootballAPIWrapper
-from flask_cache import Cache
+from celery import Celery
 import redis
 
 
@@ -28,7 +28,6 @@ moment = Moment()
 faw = FootballAPIWrapper()
 faw.api_key = '2890be06-81bd-b6d7-1dcb4b5983a0' # set as an environment variable
 socketio = SocketIO()
-cache = Cache(config=  {'CACHE_TYPE': 'simple'})
 
 
 '''def background_thread():
@@ -41,19 +40,22 @@ cache = Cache(config=  {'CACHE_TYPE': 'simple'})
                       {'data': 'Data updated', 'count': count},
                       namespace='/test')'''
 
-
 def create_app(config_name):
     app = Flask(__name__)
 
     #loading configurations into the app
     app.config.from_object(config[config_name])
 
+    # Celery configuration
+    app.config.update(
+        CELERY_BROKER_URL='redis://localhost:6379'
+    )
+
     #initialise the application
     config[config_name].init_app(app)
 
     bootstrap.init_app(app)
     mail.init_app(app)
-    cache.init_app(app)
     db.init_app(app)
 
 
@@ -65,6 +67,8 @@ def create_app(config_name):
     moment.init_app(app)
     login_manager.init_app(app)
     socketio.init_app(app)
+    celery = Celery(app.name, broker=app.config['CELERY_BROKER_URL'])
+    celery.conf.update(app.config)
 
     #attach routes and custom error pages here
     from main import main as main_blueprint
@@ -74,3 +78,4 @@ def create_app(config_name):
     app.register_blueprint(auth_blueprint, url_prefix='/auth')
 
     return app
+

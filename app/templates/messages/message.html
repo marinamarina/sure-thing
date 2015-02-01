@@ -25,4 +25,4 @@
     FORM MODULE Winner - {{savedmatch.match.prediction_form.name}} - {{savedmatch.weight_form*100 }}% <br />
     HOME-AWAY MODULE Winner: {{savedmatch.match.prediction_homeaway.name}} - {{savedmatch.weight_home_away*100 }}%. <br />
 </p>
-
+<a href="{{url_for('main.view_played_match', match_id=savedmatch.match.id)}}">View match stats ></a>

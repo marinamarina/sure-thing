@@ -1,4 +1,4 @@
-from . import db, faw, cache
+from . import db, faw
 from werkzeug.security import generate_password_hash, check_password_hash
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from flask_login import UserMixin, AnonymousUserMixin
@@ -263,7 +263,9 @@ class SavedForLater(db.Model):
     def __repr__(self):
         return "<SavedForLater {}/{}> " \
                "userid: {}, matchid: {}, date:{}, committed:{}, " \
-               "weight_league_position: {} " \
+               "w_league_position: {} " \
+               "w_form: {} " \
+               "w_home_away: {} " \
                "predicted_winner:{}"\
             .format(
                 self.match.hometeam.name,
@@ -273,6 +275,8 @@ class SavedForLater(db.Model):
                 self.match.date,
                 self.committed,
                 self.weight_league_position,
+                self.weight_form,
+                self.weight_home_away,
                 self.predicted_winner
     )
 
@@ -781,36 +785,38 @@ class Match(db.Model):
         """Inserting all the matches to the database"""
         print("THIS RAN!!!")
         matches = faw.all_matches
+        anchor = faw.played_matches[len(faw.played_matches)-1].id
+        print anchor
 
         for m in matches:
-            # hope this will not be a bottleneck, find a smarter way to check what is already in the database??
-            # store last inserted match id in a variable?
 
-            'find the match in the database'
-            match = Match.query.filter_by(id=m.id).first()
+            if m.id >= anchor:
 
-            'if not in the database, create a new match'
-            if match is None:
-                match = Match(id=m.id, hometeam_id = m.hometeam_id, awayteam_id = m.awayteam_id, date = m.date, time = m.time,
+                'find the match in the database'
+                match = Match.query.filter_by(id=m.id).first()
+
+                'if not in the database, create a new match'
+                if match is None:
+                    match = Match(id=m.id, hometeam_id = m.hometeam_id, awayteam_id = m.awayteam_id, date = m.date, time = m.time,
                         date_stamp = m.date_stamp, time_stamp = m.time_stamp)
 
-            match.hometeam_score = m.hometeam_score
-            match.awayteam_score = m.awayteam_score
+                match.hometeam_score = m.hometeam_score
+                match.awayteam_score = m.awayteam_score
 
-            if m.ft_score != '':
-                match.was_played = True
-            else:
-                match.was_played = False
+                if m.ft_score != '':
+                    match.was_played = True
+                else:
+                    match.was_played = False
 
-            db.session.add(match)
+                db.session.add(match)
 
-        try:
-            db.session.commit()
-        except:
-            db.session.rollback()
-            raise
-        finally:
-            db.session.close()
+            try:
+                db.session.commit()
+            except:
+                db.session.rollback()
+                raise
+            finally:
+                db.session.close()
 
     @property
     def prediction_league_position(self):

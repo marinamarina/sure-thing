@@ -30,8 +30,13 @@
                     <span class="clearfix">KICK OFF: {{match.time}} </span>
                     <span>Score:</span>
                     {% if match.hometeam_score %}
+                    <p>
                         <span class="hometeam_score orange">{{match.hometeam_score}} :</span>
                         <span class="awayteam_score orange">{{match.awayteam_score}}</span>
+                    </p>
+                    {% endif %}
+                    {% if not match.was_played and match.hometeam_score != '?' %}
+                            <span class="box live clearfix">Live</span>
                     {% endif %}
                 </div>
                 <div class="away-team team col-sm-3 margin-top-20 text-center">

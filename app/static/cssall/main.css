@@ -1,4 +1,4 @@
-/* CSS files concatenated |  30-01-2015 */
+/* CSS files concatenated |  01-02-2015 */
 /*******************************/
 /*         Navigation         */
 /*******************************/
@@ -189,6 +189,7 @@ img.pull-left { margin-right: 10px; }
 
 .orange {
   color: #FF981C;
+  font-weight: bold;
 }
 
 .img-circle {
@@ -247,6 +248,23 @@ li.separate {
 
 .margin-top-20 {
   margin-top: 20px;
+}
+
+.box {
+  display: inline-block;
+  width: 1.5em !important;
+  text-align: center;
+  font-weight: bold;
+  text-transform: uppercase;
+  margin-right: .1667em;
+  padding: 0;
+  color: white !important;
+  border-radius: 3px;
+}
+
+.box.live {
+  background-color: red;
+  width: 2.5em !important;
 }
 
 /* Typography */
@@ -569,31 +587,16 @@ td {
   font-size: 1.3em;
 }
 
-.grid .form .box.l {
+.box.l {
   background-color: #ff5b00;
 }
 
-.grid .form .box.w {
+.box.w {
   background-color: #6cc72a;
 }
 
-.grid .form .box.d {
+.box.d {
   background-color: #b8b8b8;
-}
-
-.grid .box {
-  display: inline-block;
-  width: 1.5em !important;
-  text-align: center;
-  font-weight: bold;
-  text-transform: uppercase;
-}
-
-.grid .form .box {
-  margin-right: .1667em;
-  padding: 0;
-  color: white !important;
-  border-radius: 3px;
 }
 
 /* Played matches */
@@ -658,6 +661,10 @@ td {
 
 .users_prediction_preferences {
   padding: 20px 0;
+}
+.users_prediction_preferences .labels, .users_prediction_preferences border_graph {
+  overflow: hidden;
+  width: 100%;
 }
 .users_prediction_preferences .label {
   float: left;

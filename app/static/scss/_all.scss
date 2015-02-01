@@ -13,6 +13,7 @@ $imgpath :'../img/';
 }
 .orange {
     color: #FF981C;
+    font-weight: bold;
 }
 
 .img-circle { border-radius: 50%; }
@@ -58,4 +59,19 @@ li.separate {
 }
 .margin-top-20 {
     margin-top: 20px;
+}
+.box {
+    display: inline-block;
+    width: 1.5em!important;
+    text-align: center;
+    font-weight: bold;
+    text-transform: uppercase;
+    margin-right: .1667em;
+    padding: 0;
+    color: #fff!important;
+    border-radius: 3px;
+}
+.box.live {
+    background-color: red;
+    width: 2.5em!important;
 }

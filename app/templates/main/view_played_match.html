@@ -125,10 +125,11 @@
                         {% else %}
                         <p>Your prediction was that <span class="stats_impact__fig">{{ predicted_winner }}</span> was going to win with probability of <span class="stats_impact__fig">{{probability}}%</span>.</p>
                         {% endif %}
+                        {{ sm }}
                         {% if sm.bettor_won %}
-                        <p>Congratulations, you <span class="stats_impact__fig">Won</span> this bet!</p>
+                            <p>Congratulations, you <span class="stats_impact__fig">Won</span> this bet!</p>
                         {% else %}
-                        <p>Unfortunately, you <span class="stats_impact__fig">Lost</span> this bet.</p>
+                            <p>Unfortunately, you <span class="stats_impact__fig">Lost</span> this bet.</p>
                         {% endif %}
 
                     </div>

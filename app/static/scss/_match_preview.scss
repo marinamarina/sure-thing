@@ -85,27 +85,14 @@ td {
     font-weight: bold;
     font-size: 1.3em;
 }
-.grid .form .box.l {
+.box.l {
     background-color: #ff5b00;
 }
-.grid .form .box.w {
+.box.w {
     background-color: #6cc72a;
 }
-.grid .form .box.d {
+.box.d {
     background-color: #b8b8b8;
-}
-.grid .box {
-    display: inline-block;
-    width: 1.5em!important;
-    text-align: center;
-    font-weight: bold;
-    text-transform: uppercase;
-}
-.grid .form .box {
-    margin-right: .1667em;
-    padding: 0;
-    color: #fff!important;
-    border-radius: 3px;
 }
 
 /* Played matches */

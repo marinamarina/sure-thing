@@ -164,8 +164,8 @@ class FootballAPIWrapper:
         """
 
         with open(self._datadir + '/all_matches.json', 'r') as localfile:
-
             matches_data = json.load(localfile)
+            from pprint import pprint
         localfile.close()
 
 

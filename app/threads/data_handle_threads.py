@@ -52,9 +52,9 @@ class DataUpdateThread(Thread):
             time = datetime.today().strftime("%Y-%m-%d %H:%M:%S")
             socketio.emit('data_updated', {'time' : time}, namespace='/test')
 
-            app=current_app._get_current_object()
-            print app
-            sleep(self.delay)
+            #app=current_app._get_current_object()
+            #print app
+            #sleep(self.delay)
 
         '''sleep(30)
             with app.app_context():
