@@ -9,6 +9,7 @@ from gevent import monkey
 from flask_socketio import SocketIO
 from football_data.football_api_wrapper import FootballAPIWrapper
 from flask_cache import Cache
+import redis
 
 
 #gunicorn -b 0.0.0.0:5000 --log-config log.conf --pid=app.pid myfile:app
@@ -27,7 +28,7 @@ moment = Moment()
 faw = FootballAPIWrapper()
 faw.api_key = '2890be06-81bd-b6d7-1dcb4b5983a0' # set as an environment variable
 socketio = SocketIO()
-#cache = Cache(config={'CACHE_TYPE': 'simple'})
+cache = Cache(config=  {'CACHE_TYPE': 'simple'})
 
 
 '''def background_thread():
@@ -52,7 +53,9 @@ def create_app(config_name):
 
     bootstrap.init_app(app)
     mail.init_app(app)
+    cache.init_app(app)
     db.init_app(app)
+
 
     with app.app_context():
         # Extensions like Flask-SQLAlchemy now know what the "current" app
@@ -62,7 +65,6 @@ def create_app(config_name):
     moment.init_app(app)
     login_manager.init_app(app)
     socketio.init_app(app)
-
 
     #attach routes and custom error pages here
     from main import main as main_blueprint

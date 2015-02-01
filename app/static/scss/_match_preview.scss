@@ -162,7 +162,10 @@ td {
 }
 .users_prediction_preferences {
     padding: 20px 0;
-
+    .labels, border_graph {
+        overflow: hidden;
+        width: 100%;
+    }
     .label {
         float: left;
         height: 30px;

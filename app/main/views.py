@@ -3,7 +3,7 @@ from flask import render_template, redirect, url_for, abort, flash, \
 from flask_login import login_required, current_user
 from . import main
 from .forms import UserDefaultPredictionSettings, UserMatchPredictionSettings
-from .. import db, socketio
+from .. import db, socketio, cache
 from ..models import User, Permission, Team, \
     Match, SavedForLater, PredictionModule, Message, \
     ModuleUserSettings, ModuleUserMatchSettings
@@ -30,7 +30,10 @@ def inject_permissions():
 @templated()
 def index():
     show_played_matches = False
-    Match.update_all_matches()
+    #data = app.redis.lrange("clouds", 0, -1)
+    #resp = Response(json.dumps(data), status=200, mimetype='application/json')
+    #return resp
+    #Match.update_all_matches()
 
     #we get the value of the show_played_matches cookie from the request cookie dictionary
     #and convert it to boolean

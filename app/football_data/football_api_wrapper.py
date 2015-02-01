@@ -137,7 +137,6 @@ class FootballAPIWrapper:
                 json.dump(raw_data, outfile)
 
             outfile.close()
-            print ('matches updated!')
         except KeyError:
             print ('*********Please, update your IP address!*********')
 

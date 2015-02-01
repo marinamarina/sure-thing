@@ -5,6 +5,7 @@ require.config({
         'headroom1': 'vendor/headroom.min',
         'headroom' : 'vendor/jQuery.headroom.min',
         'classie' : 'vendor/classie',
+        'cookie': 'vendor/jquery.cookie',
         'app' : 'views/app'
     }
 });

@@ -1,10 +1,10 @@
-from . import db, faw
+from . import db, faw, cache
 from werkzeug.security import generate_password_hash, check_password_hash
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from flask_login import UserMixin, AnonymousUserMixin
 from flask import current_app, request
 from . import login_manager
-from datetime import datetime
+from datetime import datetime, time
 import hashlib
 from flask import flash, render_template
 from sqlalchemy.ext.associationproxy import association_proxy
@@ -779,6 +779,7 @@ class Match(db.Model):
     @staticmethod
     def update_all_matches():
         """Inserting all the matches to the database"""
+        print("THIS RAN!!!")
         matches = faw.all_matches
 
         for m in matches:

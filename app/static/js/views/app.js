@@ -1,4 +1,4 @@
-define(['headroom1', 'headroom'],
+define(['headroom1', 'headroom', 'cookie'],
 	function(headroom) {
 		//connect to the socket server.
     	var socket = io.connect('http://' + document.domain + ':' + location.port + '/test');
@@ -12,7 +12,8 @@ define(['headroom1', 'headroom'],
                 content = document.querySelector( '.content-wrap' ),
                 openbtn = document.getElementById( 'open-button' ),
                 closebtn = document.getElementById( 'close-button' ),
-                isOpen = false;
+                isOpen = false,
+                played_matches_cooks = $.cookie("show_played_matches");
 
     		window.setTimeout(function() {
 				$(".alert").fadeTo(200, 0)
@@ -21,8 +22,8 @@ define(['headroom1', 'headroom'],
 					});
 				}, 1000);
 
- 				/* Making room for the menu */
-
+ 			
+            /* Making room for the content of the page */
 			$(".headroom").headroom({
     			"tolerance": 20,
     			"offset": 50,
@@ -32,7 +33,9 @@ define(['headroom1', 'headroom'],
         			"unpinned": "slideUp"
     			}
     		});
-
+            
+  
+            //if played_matches_cooks == 1 
             /*allCookies = document.cookie;
             console.log(allCookies.getItem('showed_played_matches').split('=')[1])*/
 

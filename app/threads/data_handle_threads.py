@@ -1,10 +1,11 @@
 from threading import Event, Thread
 from random import random
 from time import sleep
-from .. import socketio
-from .. import faw
-
+from .. import socketio, faw
+from flask import current_app
+import sys, os
 from datetime import datetime
+
 
 #random number Generator Thread
 thread = Thread()
@@ -12,7 +13,7 @@ thread_stop_event = Event()
 
 class RandomThread(Thread):
     def __init__(self):
-        self.delay = 600 #seconds
+        self.delay = 400 #seconds change to 6000
         super(RandomThread, self).__init__()
 
     def randomNumberGenerator(self):
@@ -43,7 +44,6 @@ class DataUpdateThread(Thread):
         Ideally to be run in a separate thread?
         """
         #infinite loop of data updates
-        print "Updating the data"
         while not thread_stop_event.isSet():
             print('Data written to the server at ' + datetime.today().strftime("%Y-%m-%d %H:%M:%S"))
             faw.write_matches_data()
@@ -52,10 +52,19 @@ class DataUpdateThread(Thread):
             time = datetime.today().strftime("%Y-%m-%d %H:%M:%S")
             socketio.emit('data_updated', {'time' : time}, namespace='/test')
 
-            #with current_app.app_context():
-            #    Match.update_all_matches()
-
+            app=current_app._get_current_object()
+            print app
             sleep(self.delay)
+
+        '''sleep(30)
+            with app.app_context():
+                print("meow")
+                #current_app.app_context.push()
+                from ..models import Match
+                #print app
+                Match.update_all_matches()'''
+
+
 
     def run(self):
         self.dataUpdate()
