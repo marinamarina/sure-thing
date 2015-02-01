@@ -40,6 +40,8 @@
                   <td class="form">
                     {% set count = 0 %}
                     {% for ch in match.hometeam.form_last_matches.form %}
+                      {{match.hometeam.last_matches[count].id}}
+
                      <a href="{{ url_for('.view_played_match', match_id=match.hometeam.last_matches[count].id) }}" class="box 
                       {% if ch=='W' %} w {% elif ch=='D' %} d {% else %} l {% endif %}">{{ch}} </a>
                      {% set count = count + 1 %}

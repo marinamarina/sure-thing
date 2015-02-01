@@ -25,8 +25,12 @@
 
         <!-- menu -->
         <ul class="nav nav-pills" id="upcoming-past-nav">
-            <li role="presentation" class="active"><a href="{{ url_for('.show_unplayed') }}">Upcoming fixtures</a></li>
-            <li role="presentation"><a href="{{ url_for('.show_played') }}">Previous Results</a></li>
+            <li role="presentation" class="active unplayed">
+                <a href="{{ url_for('.show_unplayed') }}">Upcoming fixtures</a>
+            </li>
+            <li role="presentation" class="played">
+                <a href="{{ url_for('.show_played') }}">Previous Results</a>
+            </li>
         </ul>
         <!--/ menu -->
 

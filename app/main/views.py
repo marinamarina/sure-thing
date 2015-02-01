@@ -281,9 +281,10 @@ def prediction_settings():
 @login_required
 def view_match_dashboard(match_id):
     me = current_user
-    savedmatch = me.list_matches(match_id=match_id)[0].match
+    savedmatch = me.list_matches(match_id=match_id)[0]
+    match = savedmatch.match
     form = UserMatchPredictionSettings()
-    match_specific_weights = me.list_match_specific_settings(match_id=savedmatch.id)
+    match_specific_weights = me.list_match_specific_settings(match_id=match.id)
     modules = PredictionModule.query.all()
 
     if form.validate_on_submit():
@@ -293,10 +294,10 @@ def view_match_dashboard(match_id):
         for module in modules:
             # if user already has set custom weights for the match
             if match_specific_weights:
-                settings_item = ModuleUserMatchSettings.query.filter_by(user_id=me.id, match_id=savedmatch.id, module_id=module.id).first()
+                settings_item = ModuleUserMatchSettings.query.filter_by(user_id=me.id, match_id=match.id, module_id=module.id).first()
             else:
                 # create a new one
-                settings_item = ModuleUserMatchSettings(user_id=me.id, match_id=savedmatch.id, module_id=module.id)
+                settings_item = ModuleUserMatchSettings(user_id=me.id, match_id=match.id, module_id=module.id)
 
             settings_item.weight = form[module.name + '_weight'].data
 
@@ -315,14 +316,15 @@ def view_match_dashboard(match_id):
         flash('match specific settings not found')
         match_specific_weights = ['' for i in range(0, len(modules))]
 
-    winner = Match.predicted_winner(savedmatch, user=me)
+    winner = Match.predicted_winner(match, user=me)
     lt = Team.league_table()
-    lt_hometeam = lt[str(savedmatch.hometeam_id)]
-    lt_awayteam = lt[str(savedmatch.awayteam_id)]
+    lt_hometeam = lt[str(match.hometeam_id)]
+    lt_awayteam = lt[str(match.awayteam_id)]
 
     return render_template('main/view_match_dashboard.html',
                            form=form,
                            savedmatch=savedmatch,
+                           match=match,
                            #sm_home_form=savedmatch.hometeam.form_last_matches,
                            #sm_away_form=savedmatch.awayteam.form_last_matches,
                            user=current_user,
@@ -377,7 +379,9 @@ def view_played_match(match_id):
 
     saved_matches_predicted_draw_share = 100 - saved_matches_predicted_home_share - saved_matches_predicted_away_share
 
-    sm = me.list_matches(match_id=match.id)[0]
+    saved_match = me.list_matches(match_id=match.id)
+    sm = [] if not saved_match else saved_match.first()
+
 
     return render_template('main/view_played_match.html',
                            match=match,

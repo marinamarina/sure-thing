@@ -13,7 +13,9 @@ define(['headroom1', 'headroom', 'cookie'],
                 openbtn = document.getElementById( 'open-button' ),
                 closebtn = document.getElementById( 'close-button' ),
                 isOpen = false,
-                played_matches_cooks = $.cookie("show_played_matches");
+                played_matches_cooks = $.cookie("show_played_matches"),
+                unplayedButton = $("#upcoming-past-nav li.unplayed");
+                playedButton = $("#upcoming-past-nav li.played");
 
     		window.setTimeout(function() {
 				$(".alert").fadeTo(200, 0)
@@ -35,7 +37,17 @@ define(['headroom1', 'headroom', 'cookie'],
     		});
             
   
-            //if played_matches_cooks == 1 
+            if (played_matches_cooks == 1) {
+                unplayedButton
+                .removeClass("active")
+                .siblings()
+                .addClass("active")
+            } else {
+                playedButton    
+                .removeClass("active")
+                .siblings()
+                .addClass("active")
+            }
             /*allCookies = document.cookie;
             console.log(allCookies.getItem('showed_played_matches').split('=')[1])*/
 

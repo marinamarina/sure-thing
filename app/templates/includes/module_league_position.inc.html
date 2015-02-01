@@ -70,10 +70,13 @@
             <td>{{lt_awayteam.gp}}</td>
             <td>{{lt_awayteam.points}}</td>
             <td class="form">
-             {% for ch in lt_awayteam.form %}
-             <a class="box 
-             {% if ch=='W' %} w {% elif ch=='D' %} d {% else %} l {% endif %}">{{ch}} </a>
-             {% endfor %}     
+             {% set count = 0 %}
+                    {% for ch in lt_awayteam.form %}
+                     <a href="{{ url_for('.view_played_match', match_id=match.awayteam.last_matches[count].id) }}" class="box 
+                      {% if ch=='W' %} w {% elif ch=='D' %} d {% else %} l {% endif %}">{{ch}} </a>
+                     {% set count = count + 1 %}
+                    {% endfor %}    
+                    {% set count = 0 %}   
           </td>
        </tr>
     </tbody>

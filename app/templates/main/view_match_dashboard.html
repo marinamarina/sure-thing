@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% from 'includes/_macros.html' import render_embedded_field, render_submit_field, render_submit_field_match_preview,
     teamkitimage %}
-{% block title %}{{savedmatch.hometeam.name}} VS {{savedmatch.awayteam.name}}{% endblock %}
+{% block title %}{{match.hometeam.name}} VS {{match.awayteam.name}}{% endblock %}
 {% block header %}
 <header id="head" class="secondary"></header>
 {% endblock header %}
@@ -16,9 +16,7 @@
     </ol>
 
     <!-- match header  -->
-    {% with match=savedmatch %}
-        {% include 'includes/match_header.inc.html'  %}
-    {% endwith %}
+    {% include 'includes/match_header.inc.html'  %}
     <!-- /match header -->
 
     <h2>Prediction Modules</h2>
@@ -27,7 +25,6 @@
     <div class="view-match-dashboard__modules">
         <!-- form for saving match specific settings starts here -->
 
-        {% with match=savedmatch %}
 
             <!--module league position-->
             {% with input=render_embedded_field(form.league_position_weight, current_weights[0].weight) %}
@@ -47,7 +44,6 @@
             {% endwith %}
             <!-- /module home/away -->
 
-        {% endwith %}
 
     </div>
     <!--  /modules  -->
@@ -64,7 +60,7 @@
     
     <!-- form for saving match specific settings ends here -->
 
-    <a href="{{ url_for('.commit_match', match_id=savedmatch.id) }}" class="btn btn-primary pull-right" id="commitToBet" style="margin-left: 1em;">Commit</a>
+    <a href="{{ url_for('.commit_match', match_id=match.id) }}" class="btn btn-primary pull-right" id="commitToBet" style="margin-left: 1em;">Commit</a>
 </div>
 {% endif %}
 </form>
