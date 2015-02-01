@@ -224,7 +224,6 @@ class FootballAPIWrapper:
 
         return league_table
 
-
     def form_and_tendency(self, id):
         """I need to output all matches played by the team (tendency and result)
         structure of the returned data:

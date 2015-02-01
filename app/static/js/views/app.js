@@ -1,4 +1,4 @@
-define(['headroom1', 'headroom', 'cookie'],
+define(['headroom1', 'headroom', 'cookie', 'bootstrap'],
 	function(headroom) {
 		//connect to the socket server.
     	var socket = io.connect('http://' + document.domain + ':' + location.port + '/test');
