@@ -134,12 +134,19 @@ def profile(user):
 @auth.route('/user/<username>')
 @login_required
 def user(username):
-    user = User.query.filter_by(username=username).first()
-    if user is None:
+    me = User.query.filter_by(username=username).first()
+    if me is None:
         abort(404)
+    won_bets =[]
+
+    for m in me.list_matches(committed=True):
+        if m.bettor_won:
+            won_bets.append(m)
+    won_bets = won_bets[-3:]
+
     #posts = Post.query.filter_by(author=user).order_by(Post.timestamp.desc()).all()
 
-    return render_template('auth/user.html', user=user)  #posts=posts
+    return render_template('auth/user.html', viewed_user=me, won_bets=won_bets)  #posts=posts
 
 
 @auth.route('/edit_profile', methods=['GET', 'POST'])

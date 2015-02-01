@@ -31,11 +31,11 @@
 
                 <li class="right-navbar-content dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                            <img alt="avatar" class="img-circle pull-left" data-user="{{user.id}}" height="25" width="25"
-                             src="{{user.avatar()}}" />{{user.username}} <b class="caret"></b></a>
+                            <img alt="avatar" class="img-circle pull-left" data-user="{{current_user.id}}" height="25" width="25"
+                             src="{{current_user.avatar()}}" />{{current_user.username}} <b class="caret"></b></a>
                         <ul class="dropdown-menu" role="menu">
                             <li>
-                                <a href="{{ url_for('auth.user', username=user.username) }}">My profile</a>
+                                <a href="{{ url_for('auth.user', username=current_user.username) }}">My profile</a>
                             </li>
                             <li class>
                                 <a href="{{ url_for('auth.edit_profile') }}">Edit profile</a>

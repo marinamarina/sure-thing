@@ -380,7 +380,7 @@ def view_played_match(match_id):
     saved_matches_predicted_draw_share = 100 - saved_matches_predicted_home_share - saved_matches_predicted_away_share
 
     saved_match = me.list_matches(match_id=match.id)
-    sm = [] if not saved_match else saved_match.first()
+    sm = [] if not saved_match else saved_match[0]
 
 
     return render_template('main/view_played_match.html',
@@ -551,6 +551,23 @@ def show_followers(username):
     return render_template('main/followers.html', user=followed_user, title=str(username) + "'s followers",
                            follows=follows)
 
+# user profile to view by other users
+@main.route('/user/<username>')
+@login_required
+def user(username):
+    me = User.query.filter_by(username=username).first()
+    if me is None:
+        abort(404)
+    won_bets =[]
+
+    for m in me.list_matches(committed=True):
+        if m.bettor_won:
+            won_bets.append(m)
+    won_bets = won_bets[-3:]
+
+    #posts = Post.query.filter_by(author=user).order_by(Post.timestamp.desc()).all()
+
+    return render_template('main/user.html', viewed_user=me, won_bets=won_bets)  #posts=posts
 
 #a route to show the users followed by our selected user
 @main.route('/show_followed_users/<username>')

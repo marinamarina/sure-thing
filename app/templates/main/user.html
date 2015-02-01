@@ -11,7 +11,7 @@
 <div class="container target">
     <div class="row">
         <div class="col-sm-10">
-            <h1 class="">{{user.username}}</h1>
+            <h1 class="">{{viewed_user.username}}</h1>
 
             <button type="button" class="btn btn-success">Follow me</button>
             <button type="button" class="btn btn-info">Send me a message</button>
@@ -19,7 +19,7 @@
         </div>
         <div class="col-sm-2">
             <a href="/users" class="pull-right">
-            <img title="profile image" class="img-circle img-responsive" src="{{ user.avatar(size=256) }}" />
+            <img title="profile image" class="img-circle img-responsive" src="{{ viewed_user.avatar(size=256) }}" />
             </a>
         </div>
     </div>
@@ -33,18 +33,18 @@
 
                 </li>
                 <li class="list-group-item text-right"><span class="pull-left">
-                                <strong class="">Member Since</strong></span> {{ moment(user.member_since).format('L')
+                                <strong class="">Member Since</strong></span> {{ moment(viewed_user.member_since).format('L')
                     }}
                 </li>
                 <li class="list-group-item text-right"><span class="pull-left"><strong class="">Last
-                    seen</strong></span> {{ moment(user.last_seen).fromNow() }}
+                    seen</strong></span> {{ moment(viewed_user.last_seen).fromNow() }}
                 </li>
                 <li class="list-group-item text-right"><span class="pull-left"><strong class="">Full
-                    name</strong></span> {{user.real_name}}
+                    name</strong></span> {{viewed_user.real_name}}
                 </li>
                 <li class="list-group-item text-right"><span class="pull-left"><strong
                         class="">Location: </strong></span>
-                    <a href="http://maps.google.com/?q={{ user.location }}">{{ user.location }}</a>
+                    <a href="http://maps.google.com/?q={{ viewed_user.location }}">{{ viewed_user.location }}</a>
                 </li>
             </ul>
 
@@ -54,8 +54,8 @@
                 </li>
                 <li class="list-group-item text-right"><span class="pull-left"><strong
                         class="">Fav team</strong></span>
-                    {% if user.fav_team %}
-                        {{user.fav_team}}
+                    {% if viewed_user.fav_team %}
+                        {{viewed_user.fav_team}}
                     {% else %}
                         None
                     {% endif %}
@@ -66,13 +66,13 @@
                 <li class="list-group-item text-muted">Activity&nbsp;<i class="fa fa-dashboard fa-1x"></i>
                 </li>
                 <li class="list-group-item text-right"><span class="pull-left"><strong
-                        class="">Games bet on</strong></span> {{user.win_points + user.loss_points}}
+                        class="">Games bet on</strong></span> {{viewed_user.win_points + viewed_user.loss_points}}
                 </li>
                 <li class="list-group-item text-right"><span class="pull-left"><strong
-                        class="">Bets won</strong></span> {{user.win_points}}
+                        class="">Bets won</strong></span> {{viewed_user.win_points}}
                 </li>
                 <li class="list-group-item text-right"><span class="pull-left"><strong
-                        class="">Bets lost</strong></span> {{user.loss_points}}
+                        class="">Bets lost</strong></span> {{viewed_user.loss_points}}
                 </li>
                 <li class="list-group-item text-right"><span class="pull-left"><strong
                         class="">Followers</strong></span> 78
@@ -91,8 +91,8 @@
         <!--/col-3-->
         <div class="col-sm-9" contenteditable="false" style="">
            <div class="panel panel-default">
-                <div class="panel-heading">About {{user.username}}</div>
-                <div class="panel-body"> {{user.about_me}}
+                <div class="panel-heading">About {{viewed_user.username}}</div>
+                <div class="panel-body"> {{viewed_user.about_me}}
 
                 </div>
             </div>
@@ -131,7 +131,7 @@
         </div>
 
         <div class="panel panel-default">
-            <div class="panel-heading">{{user.username}}'s comments</div>
+            <div class="panel-heading">{{viewed_user.username}}'s comments</div>
             <div class="panel-body"> To be added...
 
             </div>
