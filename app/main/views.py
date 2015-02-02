@@ -3,7 +3,7 @@ from flask import render_template, redirect, url_for, abort, flash, \
 from flask_login import login_required, current_user
 from . import main
 from .forms import UserDefaultPredictionSettings, UserMatchPredictionSettings
-from .. import db, socketio
+from .. import db, socketio, cache
 from ..models import User, Permission, Team, \
     Match, SavedForLater, PredictionModule, Message, \
     ModuleUserSettings, ModuleUserMatchSettings

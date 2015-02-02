@@ -1,8 +1,6 @@
 {% extends 'base.html' %}
 {% import "bootstrap/wtf.html" as wtf %}
-{% block title %}
-<h2>Login</h2>
-{% endblock %}
+{% block title %}Unconfirmed{% endblock %}
 {% block inner_container %}
 <p>
     Dear {{ current_user.username }}, you have not confirmed your account yet.

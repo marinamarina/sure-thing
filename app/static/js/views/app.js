@@ -35,7 +35,16 @@ define(['headroom1', 'headroom', 'cookie', 'bootstrap'],
         			"unpinned": "slideUp"
     			}
     		});
-            
+            $('ul.tabs li').click(function(){
+                var tab_id = $(this).attr('data-tab');
+
+                $('ul.tabs li').removeClass('current');
+                $('.tab-content').removeClass('current');
+
+                $(this).addClass('current');
+                $("#"+tab_id).addClass('current');
+            })
+
   
             if (played_matches_cooks == 1) {
                 unplayedButton

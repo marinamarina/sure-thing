@@ -1,4 +1,4 @@
-from . import db, faw
+from . import db, faw, cache
 from werkzeug.security import generate_password_hash, check_password_hash
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from flask_login import UserMixin, AnonymousUserMixin
@@ -640,55 +640,28 @@ class Team(db.Model):
 
     @property
     def last_match(self):
-       LastMatchInfo = namedtuple('LastMatchInfo', 'opponent, score outcome')
-       last_match_data = faw.form_and_tendency(self.id)[0]
+        """ Previous match result """
+        last_match_data = faw.form_and_tendency(self.id)[0]
 
-       if last_match_data.hometeam_id != self.id:
-           opponent = Team.query.filter_by(id=last_match_data.hometeam_id).first().name
-       else:
-           opponent = Team.query.filter_by(id=last_match_data.awayteam_id).first().name
-
-       score = str(last_match_data.hometeam_score) + ':' + str(last_match_data.awayteam_score)
-       outcome = last_match_data.outcome
-       from pprint import pprint
-
-       return LastMatchInfo(opponent, score, outcome)
+        return last_match_data
 
     @property
     def last_matches(self):
-        LastMatchInfo = namedtuple('LastMatchInfo', 'id date opponent hometeam awayteam hometeam_score awayteam_score '
-                                                    'score outcome')
+        """ Last 6 matches for the team """
         last_matches_data = faw.form_and_tendency(self.id)[:6]
-        output_data = []
 
-        for match in last_matches_data:
-            if match.hometeam_id != self.id:
-                opponent = Team.query.filter_by(id=match.hometeam_id).first().name
-            else:
-                opponent = Team.query.filter_by(id=match.awayteam_id).first().name
-
-            score = str(match.hometeam_score) + ':' + str(match.awayteam_score)
-
-            match_data = Match.query.filter_by(id=match.id).first()
-            hometeam = match_data.hometeam.name
-            awayteam = match_data.awayteam.name
-
-            last_match = LastMatchInfo(match.id, match.date, opponent, hometeam, awayteam,
-                                       match.hometeam_score, match.awayteam_score, score, match.outcome)
-
-            output_data.append(last_match)
-
-        return output_data
+        return last_matches_data
 
     @property
-    def form_last_matches(self):
+    def form_last_6(self):
         """
-        Create a dictionary with the current standings for 6 last matches
-        :return league_table , anordered dictionary
+        Create a tuple with the current values (wins, losses) for 6 last matches
+        :return league_table tuple
         """
         # matches data for the team
-        TeamInfo = namedtuple('TeamInfo', 'team_name matches_played w d l gf ga gd pts form')
-        matches_data = self.last_matches
+        TeamInfo = namedtuple('TeamInfo', 'name w d l gf ga gd pts form')
+        matches_data = faw.form_and_tendency(self.id)[:6]
+
 
         wins = sum([1 for match in matches_data if match.outcome == 'W'])
         draws = sum([1 for match in matches_data if match.outcome == 'D'])
@@ -697,21 +670,89 @@ class Team(db.Model):
         gf = 0
         ga = 0
 
+        # t=Team.query.first()
         for m in matches_data:
             # finding goals for, if team is at home, sum all goals that hometeam scored
             # this team is at home
-            if m.hometeam!=m.opponent:
+            if m.hometeam_id != m.opponent_id:
                 gf += m.awayteam_score
                 ga += m.hometeam_score
             else:
+                # this team is away
                 gf += m.hometeam_score
                 ga += m.awayteam_score
 
         gd = gf - ga
 
-        league_table = TeamInfo(self.name, 6, wins, draws, losses, gf, ga, gd, 3*wins + 1*losses, self.form)
+        league_table = TeamInfo(self.name, wins, draws, losses, gf, ga, gd, 3*wins + 1*losses, self.form)
 
         return league_table
+
+    @property
+    def form_home_away(self):
+        """
+        Create two tuples with the current values (wins, losses) for 6 last matches home/away performance
+        :return two league_table tuples
+        """
+        # matches data for the team
+        HomeAway = namedtuple('HomeAway', 'home away')
+
+        TeamInfo = namedtuple('TeamInfo', 'name w d l gf ga gd pts form')
+        matches_data = faw.form_and_tendency(self.id)
+        home = away= 0
+        home_wins = away_wins = 0
+        home_losses = away_losses = 0
+        home_draws = away_draws = 0
+        home_gf = away_gf = 0
+        home_ga = away_ga = 0
+        home_form = away_form = ''
+
+        for m in matches_data:
+            if home == 6 and away == 6:
+                break
+            if m.home:
+                if home == 6:
+                    continue
+                else:
+                    home += 1
+                if m.outcome == 'W':
+                    home_wins += 1
+                    home_form += 'W'
+                elif m.outcome == 'L':
+                    home_losses += 1
+                    home_form += 'L'
+                else:
+                    home_draws += 1
+                    home_form += 'D'
+                # finding goals for, if team is at home, sum all goals that hometeam scored
+                # this team is at home
+                home_gf += m.hometeam_score
+                home_ga += m.awayteam_score
+            else:
+                if away == 6:
+                    continue
+                else:
+                    away += 1
+
+                if m.outcome == 'W':
+                    away_wins += 1
+                    away_form += 'W'
+                elif m.outcome == 'L':
+                    away_losses += 1
+                    away_form += 'L'
+                else:
+                    away_draws += 1
+                    away_form += 'D'
+                away_gf += m.awayteam_score
+                away_ga += m.hometeam_score
+
+
+        home = TeamInfo(self.name, home_wins, home_draws, home_losses, home_gf, home_ga, home_gf-home_ga,
+                        3*home_wins + 1*home_losses, home_form)
+        away = TeamInfo(self.name, away_wins, away_draws, away_losses, away_gf, away_ga, away_gf-away_ga,
+                        3*away_wins + 1*away_losses, away_form)
+
+        return HomeAway(home, away)
 
     def __init__(self, **kwargs):
         super(Team, self).__init__(**kwargs)

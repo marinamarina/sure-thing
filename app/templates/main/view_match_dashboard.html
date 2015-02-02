@@ -6,6 +6,8 @@
 <header id="head" class="secondary"></header>
 {% endblock header %}
 {% block inner_wrapper %}
+{{ moment.include_moment() }}
+
 <div class="view-match-dashboard container jumbotron">
     <form method="POST" class="form-horizontal" role="form">
 
@@ -43,6 +45,8 @@
                 {% include 'includes/module_home_away.inc.html' %} 
             {% endwith %}
             <!-- /module home/away -->
+
+
 
     </div>
     <!--  /modules  -->

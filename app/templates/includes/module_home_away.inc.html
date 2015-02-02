@@ -1,15 +1,175 @@
+{% from 'includes/_macros.html' import teamkitimage, win_loss_draw_icon %}
 <div class="module-home-away row panel panel-default" data="{{match.id}}">
    <div class="panel-heading">
       <h3 class="panel-title">Home/Away</h3>
    </div>
-   <div class="home-team team col-sm-2 col-xs-offset-1 text-center">
-      <span class="team-form clearfix">Home Team: {{match.hometeam.name}} </span>
-   </div>
-   <div class="away-team team col-sm-2 col-xs-offset-1 text-center">
-      <span class="team-form clearfix">Away Team: {{match.awayteam.name}} </span>
-   </div>
-   <div class="away-team team col-sm-2 col-xs-offset-1 text-center">
-      <span class="clearfix">Winner: {{match.prediction_homeaway.name}}</span>
-      {{ input }}
-   </div>
+   <!-- teamkit -->
+      <div class="teamkits col-md-10 top-space">
+         <div class="teamkits__home text-center">
+           {{ teamkitimage(match, home=1) }}
+           <span class="team_name clearfix">{{match.hometeam.name}}</span>
+        </div>
+     </div>
+     <!-- teamkit -->
+   <!-- module home/away result  -->
+      <div class="col-sm-2 text-center">
+         <span class="clearfix">Winner: {{ match.prediction_homeaway.name }}</span>
+         {{ input }}
+      </div>
+      <!-- /module home/away result -->
+   
+   <!-- hometeam performance comparison -->
+   <div class="comparison col-sm-10 top-space">
+      <ul class="tabs">
+         <li class="tab-link current" data-tab="tab-1">Home team performance home/away</li>
+         <li class="tab-link" data-tab="tab-2">Away team performance home/away</li>         
+      </ul>
+      <div id="tab-1" class="tab-content current">
+         <table id="form-grid" class="table table-condensed table-striped text-muted grid">
+            <thead>
+               <tr>
+                  <th class="position" data-property="Position">Position</th>
+                  <th class="team" data-property="TeamName">Team</th>
+                  <th class="p" data-property="P" title="Played">P</th>
+                  <th class="w" data-property="W" title="Win">W</th>
+                  <th class="d" data-property="D" title="Draw">D</th>
+                  <th class="l" data-property="L" title="Loss">L</th>
+                  <th class="gf" data-property="GF" title="Goals For">GF</th>
+                  <th class="ga" data-property="GA" title="Goals Against">GA</th>
+                  <th class="gd" data-property="GD" title="Goal Difference">GD</th>
+                  <th class="pts" data-property="Pts" title="Points">Pts</th>
+                  <th class="form" data-property="F" title="Form">Form</th>
+               </tr>
+            </thead>
+            <tbody>
+               {% with home = match.hometeam.form_home_away.home %}
+               <tr>
+                  <td>xxxx</td>
+                  <td>{{home.name}}</td>
+                  <td class="played">6</td>
+                  <td>{{home.w}}</td>
+                  <td>{{home.d}}</td>
+                  <td>{{home.l}}</td>
+                  <td>{{home.gf}}</td>
+                  <td>{{home.ga}}</td>
+                  <td>{{home.gd}}</td>
+                  <td>{{home.pts}}</td>
+                  <td class="form">
+                  {% set count = 0 %}
+                    {% for ch in home.form %}
+                     <a href="" class="box 
+                      {% if ch=='W' %} w {% elif ch=='D' %} d {% else %} l {% endif %}">{{ch}} </a>
+                     {% set count = count + 1 %}
+                    {% endfor %}    
+                  {% set count = 0 %}     
+                  </td>                  
+               </tr>
+               {% endwith %}
+               {% with away = match.hometeam.form_home_away.away %}
+               <tr>
+                  <td>xxxx</td>
+                  <td>{{away.name}}</td>
+                  <td class="played">6</td>
+                  <td>{{away.w}}</td>
+                  <td>{{away.d}}</td>
+                  <td>{{away.l}}</td>
+                  <td>{{away.gf}}</td>
+                  <td>{{away.ga}}</td>
+                  <td>{{away.gd}}</td>
+                  <td>{{away.pts}}</td>
+                  <td class="form">
+                  {% set count = 0 %}
+                    {% for ch in away.form %}
+                     <a href="" class="box 
+                      {% if ch=='W' %} w {% elif ch=='D' %} d {% else %} l {% endif %}">{{ch}} </a>
+                     {% set count = count + 1 %}
+                    {% endfor %}    
+                    {% set count = 0 %}     
+                  </td>
+               </tr>
+               {% endwith %}
+            </tbody>
+         </table>
+      <!-- /hometeam performance comparison -->
+
+      <!-- teamkit >
+      <div class="teamkits col-md-10 top-space">
+         <div class="teamkits__away text-center">
+           {{ teamkitimage(match, home=2) }}
+           <span class="team_name clearfix">{{match.awayteam.name}}</span>
+        </div>
+     </div>
+     <!-- teamkit -->
+     </div>
+
+      <div id="tab-2" class="tab-content">
+      <!-- awayteam performance comparison -->
+         <table id="form-grid" class="table table-condensed table-striped text-muted grid">
+            <thead>
+               <tr>
+                  <th class="position" data-property="Position">Position</th>
+                  <th class="team" data-property="TeamName">Team</th>
+                  <th class="p" data-property="P" title="Played">P</th>
+                  <th class="w" data-property="W" title="Win">W</th>
+                  <th class="d" data-property="D" title="Draw">D</th>
+                  <th class="l" data-property="L" title="Loss">L</th>
+                  <th class="gf" data-property="GF" title="Goals For">GF</th>
+                  <th class="ga" data-property="GA" title="Goals Against">GA</th>
+                  <th class="gd" data-property="GD" title="Goal Difference">GD</th>
+                  <th class="pts" data-property="Pts" title="Points">Pts</th>
+                  <th class="form" data-property="F" title="Form">Form</th>
+               </tr>
+            </thead>
+            <tbody>
+               {% with home = match.awayteam.form_home_away.home %}
+               <tr>
+                  <td>xxxx</td>
+                  <td>{{home.name}}</td>
+                  <td class="played">6</td>
+                  <td>{{home.w}}</td>
+                  <td>{{home.d}}</td>
+                  <td>{{home.l}}</td>
+                  <td>{{home.gf}}</td>
+                  <td>{{home.ga}}</td>
+                  <td>{{home.gd}}</td>
+                  <td>{{home.pts}}</td>
+                  <td class="form">
+                  {% set count = 0 %}
+                    {% for ch in home.form %}
+                     <a href="" class="box 
+                      {% if ch=='W' %} w {% elif ch=='D' %} d {% else %} l {% endif %}">{{ch}} </a>
+                     {% set count = count + 1 %}
+                    {% endfor %}    
+                    {% set count = 0 %}     
+                  </td>
+               </tr>
+               {% endwith %}
+               {% with away = match.awayteam.form_home_away.away %}
+               <tr>
+                  <td>xxxx</td>
+                  <td>{{away.name}}</td>
+                  <td class="played">6</td>
+                  <td>{{away.w}}</td>
+                  <td>{{away.d}}</td>
+                  <td>{{away.l}}</td>
+                  <td>{{away.gf}}</td>
+                  <td>{{away.ga}}</td>
+                  <td>{{away.gd}}</td>
+                  <td>{{away.pts}}</td>
+                  <td class="form">
+                  {% set count = 0 %}
+                    {% for ch in away.form %}
+                     <a href="" class="box 
+                      {% if ch=='W' %} w {% elif ch=='D' %} d {% else %} l {% endif %}">{{ch}} </a>
+                     {% set count = count + 1 %}
+                    {% endfor %}    
+                    {% set count = 0 %}     
+                  </td>
+               </tr>
+               {% endwith %}
+            </tbody>
+         </table>
+         </div>
+      <!-- /awayteam performance comparison -->
+
 </div>

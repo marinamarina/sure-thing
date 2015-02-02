@@ -172,6 +172,7 @@ class FootballAPIWrapper:
         MatchInfo = namedtuple('MatchInfo',
                                'id date time date_stamp time_stamp '
                                'hometeam_id awayteam_id '
+                               'hometeam_name awayteam_name '
                                'hometeam_score awayteam_score '
                                'ft_score')
         all_matches = []
@@ -188,6 +189,8 @@ class FootballAPIWrapper:
                                   datetime.strptime(m['match_time'], "%H:%M").time(),
                                   int(m['match_localteam_id']),
                                   int(m['match_visitorteam_id']),
+                                  m['match_localteam_name'],
+                                  m['match_visitorteam_name'],
                                   m['match_localteam_score'],
                                   m['match_visitorteam_score'],
                                   m['match_ft_score']
@@ -233,7 +236,8 @@ class FootballAPIWrapper:
         all_played_matches = self.played_matches
         form_and_tendency_data = dict()
         MatchForFormInfo = namedtuple('MatchForFormInfo', 'id, date_stamp, date, time_stamp, hometeam_id, awayteam_id,'
-                                                          'hometeam_score, awayteam_score, outcome')
+                                                          'hometeam_name, awayteam_name hometeam_score, awayteam_score,'
+                                                          ' opponent_id, opponent_name, outcome, home')
 
         # loop through the team ids
         for team_id in self.ids_names:
@@ -247,8 +251,14 @@ class FootballAPIWrapper:
 
                     if team_id == match.hometeam_id:
                         team_is_at_home = True
+                        #opponent is awayteam
+                        opponent_id = match.awayteam_id
+                        opponent_name = match.awayteam_name
+
                     elif team_id == match.awayteam_id:
                         team_is_at_home = False
+                        opponent_id = match.hometeam_id
+                        opponent_name = match.hometeam_name
 
                     if team_is_at_home and match.hometeam_score > match.awayteam_score or  \
                         not team_is_at_home and match.hometeam_score < match.awayteam_score:
@@ -266,9 +276,14 @@ class FootballAPIWrapper:
                             match.time_stamp,
                             match.hometeam_id,
                             match.awayteam_id,
+                            match.hometeam_name,
+                            match.awayteam_name,
                             int(match.hometeam_score),
                             int(match.awayteam_score),
-                            outcome
+                            opponent_id,
+                            opponent_name,
+                            outcome,
+                            team_is_at_home
                     )
 
                     matches_list.append(matchForFormInfo)

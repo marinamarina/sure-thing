@@ -1,4 +1,4 @@
-/* CSS files concatenated |  01-02-2015 */
+/* CSS files concatenated |  02-02-2015 */
 /*******************************/
 /*         Navigation         */
 /*******************************/
@@ -221,6 +221,19 @@ ul {
 a {
   text-decoration: none;
   color: #505050;
+}
+a:hover {
+  text-decoration: none;
+  color: #505050;
+}
+
+button > a {
+  text-decoration: none;
+  color: #FFFFFF;
+}
+button > a:hover {
+  text-decoration: none;
+  color: #FFFFFF;
 }
 
 li.separate {
@@ -480,6 +493,7 @@ body#surething {
   margin-top: 30px;
 }
 
+/* View upcoming match */
 .view-match__buttons {
   margin-bottom: 20px;
   overflow: hidden;
@@ -597,6 +611,35 @@ td {
 
 .box.d {
   background-color: #b8b8b8;
+}
+
+ul.tabs {
+  margin: 0px;
+  padding: 0px;
+  list-style: none;
+}
+
+ul.tabs li {
+  background: none;
+  color: #222;
+  display: inline-block;
+  padding: 10px 15px;
+  cursor: pointer;
+}
+
+ul.tabs li.current {
+  background: #ededed;
+  color: #222;
+}
+
+.tab-content {
+  display: none;
+  background: #ededed;
+  padding: 15px;
+}
+
+.tab-content.current {
+  display: inherit;
 }
 
 /* Played matches */

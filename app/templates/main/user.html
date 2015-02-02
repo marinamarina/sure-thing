@@ -1,20 +1,24 @@
 {% extends 'base.html' %}
 {% from 'includes/_macros.html' import render_field, teamkitimage %}
 
-{% block title %}User profile{% endblock %}
+{% block title %}View Profile{% endblock %}
 
 {% block header %}
 <header id="head" class="secondary"></header>
 {% endblock header %}
 
 {% block inner_wrapper %}
+{{ moment.include_moment() }}
+
 <div class="container target">
     <div class="row">
         <div class="col-sm-10">
             <h1 class="">{{viewed_user.username}}</h1>
 
             <button type="button" class="btn btn-success">Follow me</button>
-            <button type="button" class="btn btn-info">Send me a message</button>
+            {% if current_user == viewed_user %}
+                <button type="button" class="btn btn-info"><a href="{{ url_for('auth.edit_profile') }}">Edit profile</a></button>
+            {% endif %}
             <br>
         </div>
         <div class="col-sm-2">
@@ -133,12 +137,10 @@
         <div class="panel panel-default">
             <div class="panel-heading">{{viewed_user.username}}'s comments</div>
             <div class="panel-body"> To be added...
-
-            </div>
         </div>
-
     </div>
-</div>
+    </div>
+    </div>
 </div>
 </div>
 </div>
