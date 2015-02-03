@@ -1,4 +1,4 @@
-/* CSS files concatenated |  02-02-2015 */
+/* CSS files concatenated |  03-02-2015 */
 /*******************************/
 /*         Navigation         */
 /*******************************/
@@ -613,32 +613,34 @@ td {
   background-color: #b8b8b8;
 }
 
-ul.tabs {
-  margin: 0px;
-  padding: 0px;
+.module_home_away__tabs {
+  margin: 0;
+  padding: 0;
   list-style: none;
 }
 
-ul.tabs li {
-  background: none;
-  color: #222;
-  display: inline-block;
-  padding: 10px 15px;
-  cursor: pointer;
+.module_home_away__tabs-header {
+  font-weight: bold;
+  font-size: 1.2em;
 }
 
-ul.tabs li.current {
-  background: #ededed;
+/*.module_home_away__tabs li {
+    background: none;
+    color: #222222;
+    display: inline-block;
+    cursor: pointer;
+}*/
+.module_home_away__tabs li.active {
+  /*background: #EDEDED;*/
   color: #222;
 }
 
-.tab-content {
+.module_home_away__content {
   display: none;
-  background: #ededed;
   padding: 15px;
 }
 
-.tab-content.current {
+.module_home_away__content.active {
   display: inherit;
 }
 

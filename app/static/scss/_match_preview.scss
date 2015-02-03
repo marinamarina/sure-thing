@@ -95,31 +95,33 @@ td {
 .box.d {
     background-color: #b8b8b8;
 }
- ul.tabs{
-        margin: 0px;
-        padding: 0px;
+ .module_home_away__tabs {
+        margin: 0;
+        padding: 0;
         list-style: none;
 }
-ul.tabs li{
+.module_home_away__tabs-header {
+    font-weight: bold;
+    font-size: 1.2em;
+}
+/*.module_home_away__tabs li {
     background: none;
-    color: #222;
+    color: #222222;
     display: inline-block;
-    padding: 10px 15px;
     cursor: pointer;
-}
+}*/
 
-ul.tabs li.current{
-    background: #ededed;
+.module_home_away__tabs li.active {
+    /*background: #EDEDED;*/
     color: #222;
 }
 
-.tab-content{
+.module_home_away__content {
     display: none;
-    background: #ededed;
     padding: 15px;
 }
 
-.tab-content.current{
+.module_home_away__content.active{
     display: inherit;
 }
     

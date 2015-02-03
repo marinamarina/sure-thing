@@ -1,34 +1,48 @@
 {% from 'includes/_macros.html' import teamkitimage, win_loss_draw_icon %}
-<div class="module-home-away row panel panel-default" data="{{match.id}}">
+<div class="module_home_away row panel panel-default" data="{{match.id}}">
    <div class="panel-heading">
       <h3 class="panel-title">Home/Away</h3>
    </div>
+   <div class="panel-body">
    <!-- teamkit -->
-      <div class="teamkits col-md-10 top-space">
+      <!--div class="teamkits col-md-10 top-space">
          <div class="teamkits__home text-center">
            {{ teamkitimage(match, home=1) }}
            <span class="team_name clearfix">{{match.hometeam.name}}</span>
         </div>
      </div>
      <!-- teamkit -->
-   <!-- module home/away result  -->
-      <div class="col-sm-2 text-center">
-         <span class="clearfix">Winner: {{ match.prediction_homeaway.name }}</span>
-         {{ input }}
-      </div>
-      <!-- /module home/away result -->
    
-   <!-- hometeam performance comparison -->
    <div class="comparison col-sm-10 top-space">
-      <ul class="tabs">
-         <li class="tab-link current" data-tab="tab-1">Home team performance home/away</li>
-         <li class="tab-link" data-tab="tab-2">Away team performance home/away</li>         
-      </ul>
-      <div id="tab-1" class="tab-content current">
+
+    <!-- /nav tabs -->
+    <ul class="module_home_away__tabs nav nav-tabs">
+        <li role="presentation" class="active" data-tab="home-tab">
+            <a href="#">
+                <span class="clearfix module_home_away__tabs-header">
+                    Home team performance home/away
+                </span>
+                <span class="clearfix text-muted">{{match.hometeam.name}}</span>
+            </a>
+        </li>
+        <li role="presentation" data-tab="away-tab">
+            <a href="#">
+                <span class="clearfix module_home_away__tabs-header">
+                    Away team performance home/away
+                </span>
+                <span class="clearfix text-muted">{{match.awayteam.name}}</span>
+            </a>
+        </li>         
+    </ul>
+      <!-- /nav tabs -->
+
+      <!-- hometeam performance comparison -->
+      <div id="home-tab" class="module_home_away__content active home-tab">
+
          <table id="form-grid" class="table table-condensed table-striped text-muted grid">
             <thead>
                <tr>
-                  <th class="position" data-property="Position">Position</th>
+                  <th class="position" data-property="Position">Performance</th>
                   <th class="team" data-property="TeamName">Team</th>
                   <th class="p" data-property="P" title="Played">P</th>
                   <th class="w" data-property="W" title="Win">W</th>
@@ -42,9 +56,9 @@
                </tr>
             </thead>
             <tbody>
-               {% with home = match.hometeam.form_home_away.home %}
+            {% with home = match.hometeam.form_home_away.home %}
                <tr>
-                  <td>xxxx</td>
+                  <td>At Home</td>
                   <td>{{home.name}}</td>
                   <td class="played">6</td>
                   <td>{{home.w}}</td>
@@ -67,7 +81,7 @@
                {% endwith %}
                {% with away = match.hometeam.form_home_away.away %}
                <tr>
-                  <td>xxxx</td>
+                  <td>Away</td>
                   <td>{{away.name}}</td>
                   <td class="played">6</td>
                   <td>{{away.w}}</td>
@@ -87,7 +101,6 @@
                     {% set count = 0 %}     
                   </td>
                </tr>
-               {% endwith %}
             </tbody>
          </table>
       <!-- /hometeam performance comparison -->
@@ -99,15 +112,19 @@
            <span class="team_name clearfix">{{match.awayteam.name}}</span>
         </div>
      </div>
-     <!-- teamkit -->
+     < teamkit -->
+    <p>For the last 6 matches at home</p>
+
+    <p>Points representing performance for the Home team in the upcoming match: <b>{{match.hometeam.form_home_away.home.pts}} pts</b></p>
+    {% endwith %}
      </div>
 
-      <div id="tab-2" class="tab-content">
       <!-- awayteam performance comparison -->
+      <div id="away-tab" class="module_home_away__content home-tab">
          <table id="form-grid" class="table table-condensed table-striped text-muted grid">
             <thead>
                <tr>
-                  <th class="position" data-property="Position">Position</th>
+                  <th class="position" data-property="Position">Performance</th>
                   <th class="team" data-property="TeamName">Team</th>
                   <th class="p" data-property="P" title="Played">P</th>
                   <th class="w" data-property="W" title="Win">W</th>
@@ -123,7 +140,7 @@
             <tbody>
                {% with home = match.awayteam.form_home_away.home %}
                <tr>
-                  <td>xxxx</td>
+                  <td>At Home</td>
                   <td>{{home.name}}</td>
                   <td class="played">6</td>
                   <td>{{home.w}}</td>
@@ -146,7 +163,7 @@
                {% endwith %}
                {% with away = match.awayteam.form_home_away.away %}
                <tr>
-                  <td>xxxx</td>
+                  <td>Away</td>
                   <td>{{away.name}}</td>
                   <td class="played">6</td>
                   <td>{{away.w}}</td>
@@ -166,10 +183,21 @@
                     {% set count = 0 %}     
                   </td>
                </tr>
-               {% endwith %}
+               
             </tbody>
          </table>
-         </div>
-      <!-- /awayteam performance comparison -->
+        <p>For the last 6 matches away</p>
+        <p>Points representing performance for the Away team in the upcoming match: <b>{{away.pts}} pts</b></p>
+        {% endwith %}
 
+        </div>
+      <!-- /awayteam performance comparison -->
+    </div>
+    <!-- module home/away result  -->
+      <div class="col-sm-2 text-center">
+         <span class="clearfix">Winner: {{ match.prediction_homeaway.name }}</span>
+         {{ input }}
+      </div>
+    <!-- /module home/away result -->
+</div>
 </div>

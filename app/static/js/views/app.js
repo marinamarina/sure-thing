@@ -13,9 +13,12 @@ define(['headroom1', 'headroom', 'cookie', 'bootstrap'],
                 openbtn = document.getElementById( 'open-button' ),
                 closebtn = document.getElementById( 'close-button' ),
                 isOpen = false,
+                upcomingPlayedMatchesTabs = $("#upcoming-past-nav li"),
                 played_matches_cooks = $.cookie("show_played_matches"),
                 unplayedButton = $("#upcoming-past-nav li.unplayed");
-                playedButton = $("#upcoming-past-nav li.played");
+                playedButton = $("#upcoming-past-nav li.played"),
+                homeAwayModuleTabs = $('ul.module_home_away__tabs li'),
+                homeAwayModuleContentPanels = $('.module_home_away__content');
 
     		window.setTimeout(function() {
 				$(".alert").fadeTo(200, 0)
@@ -35,16 +38,18 @@ define(['headroom1', 'headroom', 'cookie', 'bootstrap'],
         			"unpinned": "slideUp"
     			}
     		});
-            $('ul.tabs li').click(function(){
+
+            /* Switching between tabs in the Prediction Module Home/Away */
+            homeAwayModuleTabs.click(function(e){
+                e.preventDefault();
                 var tab_id = $(this).attr('data-tab');
 
-                $('ul.tabs li').removeClass('current');
-                $('.tab-content').removeClass('current');
+                homeAwayModuleTabs.removeClass('active');
+                homeAwayModuleContentPanels.removeClass('active');
 
-                $(this).addClass('current');
-                $("#"+tab_id).addClass('current');
+                $(this).addClass('active');
+                $("#"+tab_id).addClass('active');
             })
-
   
             if (played_matches_cooks == 1) {
                 unplayedButton
@@ -60,7 +65,7 @@ define(['headroom1', 'headroom', 'cookie', 'bootstrap'],
             /*allCookies = document.cookie;
             console.log(allCookies.getItem('showed_played_matches').split('=')[1])*/
 
-            $("#upcoming-past-nav li").click(function(){
+            upcomingPlayedMatchesTabs.click(function(){
                 $(".active").removeClass("active");
                 $(this).addClass("active");
             });

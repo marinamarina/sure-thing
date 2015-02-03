@@ -691,10 +691,11 @@ class Team(db.Model):
     @property
     def form_home_away(self):
         """
-        Create two tuples with the current values (wins, losses) for 6 last matches home/away performance
-        :return two league_table tuples
+        Create two tuples with the current values (wins, losses) for 6 last matches
+        representing home/away performance for a team
+        :return a tuple containing two league_table tuples
         """
-        # matches data for the team
+        # the main tuple to be returned
         HomeAway = namedtuple('HomeAway', 'home away')
 
         TeamInfo = namedtuple('TeamInfo', 'name w d l gf ga gd pts form')
@@ -746,11 +747,10 @@ class Team(db.Model):
                 away_gf += m.awayteam_score
                 away_ga += m.hometeam_score
 
-
         home = TeamInfo(self.name, home_wins, home_draws, home_losses, home_gf, home_ga, home_gf-home_ga,
-                        3*home_wins + 1*home_losses, home_form)
+                        3*home_wins + 1*home_draws, home_form)
         away = TeamInfo(self.name, away_wins, away_draws, away_losses, away_gf, away_ga, away_gf-away_ga,
-                        3*away_wins + 1*away_losses, away_form)
+                        3*away_wins + 1*away_draws, away_form)
 
         return HomeAway(home, away)
 
@@ -860,20 +860,14 @@ class Match(db.Model):
 
     @property
     def prediction_league_position(self):
-        'calculate the winner for the league position prediction module'
+        '''calculate the winner for the league position prediction module
+           by simply comparing which team's position is higher
+        '''
 
-        if (int(self.hometeam.position) < int(self.awayteam.position)):
+        if int(self.hometeam.position) < int(self.awayteam.position):
             return self.hometeam
         else:
             return self.awayteam
-
-    @property
-    def prediction_homeaway(self):
-        '''calculate the winner for the home/away prediction module
-            to be improved
-        '''
-
-        return self.hometeam
 
     @property
     def prediction_form(self):
@@ -881,7 +875,28 @@ class Match(db.Model):
             to be improved
         '''
 
-        return self.awayteam
+        return self.hometeam
+
+
+    @property
+    def prediction_homeaway(self):
+        '''calculate the winner for the form prediction module
+            to be improved
+        '''
+        # hometeam's performance at home (last 6 matches)
+        hometeam_home_pts = self.hometeam.form_home_away.home.pts
+
+        # awayteam's performance away (last 6 matches)
+        awayteam_away_pts = self.awayteam.form_home_away.away.pts
+
+        if hometeam_home_pts > awayteam_away_pts:
+            return self.hometeam
+        elif awayteam_away_pts > hometeam_home_pts:
+            return self.awayteam
+        else:
+            # if can't be decided based on performance, assume the hometeam will win (in general, it is
+            # easier to win at home than away)
+            return self.hometeam
 
     @staticmethod
     def predicted_winner(match, user=None):
