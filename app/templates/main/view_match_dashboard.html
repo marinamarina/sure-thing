@@ -26,26 +26,23 @@
     <!-- modules -->
     <div class="view-match-dashboard__modules">
         <!-- form for saving match specific settings starts here -->
-
-
             <!--module league position-->
-            {% with input=render_embedded_field(form.league_position_weight, current_weights[0].weight) %}
+            {% with input=render_embedded_field(form.league_position_weight, (100*current_weights[0].weight)|round|int if current_weights!=[] else '') %}
                 {% include 'includes/module_league_position.inc.html' %}
             {% endwith %}
             <!-- /module league position -->
 
             <!--module form-->
-            {% with input=render_embedded_field(form.form_weight, current_weights[1].weight) %}
+            {% with input=render_embedded_field(form.form_weight, (100*current_weights[1].weight)|round|int if current_weights!=[] else '') %}
                 {% include 'includes/module_form.inc.html' %} 
             {% endwith %}
             <!-- /module form -->
 
             <!-- module home/away -->
-            {% with input=render_embedded_field(form.home_away_weight, current_weights[2].weight) %}
+            {% with input=render_embedded_field(form.home_away_weight, (100*current_weights[2].weight)|round|int if current_weights!=[] else '') %}
                 {% include 'includes/module_home_away.inc.html' %} 
             {% endwith %}
             <!-- /module home/away -->
-
     </div>
     <!--  /modules  -->
 
@@ -58,7 +55,7 @@
         <h3 id="teamWinner">Predicted result for this match is: <strong>{{ team_winner_name }}</strong>
         {% if not team_winner_name=='Draw' %} is going to win {% endif %}
         </h3>
-        <h3>Probability of this result is: {{ probability }}</h3>
+        <h3>Based on your {% if current_weights!=[] %} match specific {% else %} default {% endif %} prediction settings, probability of this result is: <b>{{ probability }}%</b></h3>
     </div>
 </div>
 <!-- /overall winner -->

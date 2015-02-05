@@ -76,7 +76,6 @@ def test(coverage=False):
         cov.html_report(directory = covdir)
         print('HTML version: file://%s/index.html' % covdir)
         cov.erase()
-
 @manager.command
 def profile(length=25, profile_dir=None):
     """Start the application under the code profiler."""
@@ -86,7 +85,7 @@ def profile(length=25, profile_dir=None):
 
 @manager.command
 def deploy():
-    '''Deployment tasks'''
+    """Deployment tasks"""
     #migrate database to latest revision
     upgrade()
     #create user roles
@@ -97,8 +96,6 @@ def deploy():
     Match.update_all_matches()
     #insert modules
     PredictionModule.insert_modules()
-
-
 
 if __name__ == '__main__':
     manager.run()

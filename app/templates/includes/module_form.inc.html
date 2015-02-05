@@ -3,9 +3,9 @@
 <div class="module-form module row panel panel-default" data="{{match.id}}">
    <div class="panel-heading">
       <h3 class="panel-title">Module Form</h3>
-   </div>
-   <div class="panel-body">
-      
+  </div>
+  <div class="panel-body">
+
       <!-- form info comparison -->
       <div class="comparison col-sm-10 top-space">
          <table id="form-grid" class="table table-condensed table-striped text-muted grid">
@@ -22,157 +22,157 @@
                   <th class="gd" data-property="GD" title="Goal Difference">GD</th>
                   <th class="pts" data-property="Pts" title="Points">Pts</th>
                   <th class="form" data-property="F" title="Form">Form</th>
-               </tr>
-            </thead>
-            <tbody>
-               <tr>
-                  <td>xxxx</td>
-                  <td>{{match.hometeam.form_last_6.name}}</td>
-                  <td class="played">6</td>
-                  <td>{{match.hometeam.form_last_6.w}}</td>
-                  <td>{{match.hometeam.form_last_6.d}}</td>
-                  <td>{{match.hometeam.form_last_6.l}}</td>
-                  <td>{{match.hometeam.form_last_6.gf}}</td>
-                  <td>{{match.hometeam.form_last_6.ga}}</td>
-                  <td>{{match.hometeam.form_last_6.gd}}</td>
-                  <td>{{match.hometeam.form_last_6.pts}}</td>
-                  <td class="form">
-                    {% set count = 0 %}
-                    {% for ch in match.hometeam.form_last_6.form %}
-                      <a href="{{ url_for('.view_played_match', match_id=match.hometeam.last_matches[count].id) }}" class="box 
-                      {% if ch=='W' %} w {% elif ch=='D' %} d {% else %} l {% endif %}">{{ch}} </a>
-                     {% set count = count + 1 %}
-                    {% endfor %}    
-                    {% set count = 0 %} 
-                  </td>
-                  
-               </tr>
-               <tr>
-                  <td>xxxx</td>
-                  <td>{{match.awayteam.form_last_6.name}}</td>
-                  <td class="played">6</td>
-                  <td>{{match.awayteam.form_last_6.w}}</td>
-                  <td>{{match.awayteam.form_last_6.d}}</td>
-                  <td>{{match.awayteam.form_last_6.l}}</td>
-                  <td>{{match.awayteam.form_last_6.gf}}</td>
-                  <td>{{match.awayteam.form_last_6.ga}}</td>
-                  <td>{{match.awayteam.form_last_6.gd}}</td>
-                  <td>{{match.awayteam.form_last_6.pts}}</td>
-                  <td class="form">
-                    {% set count = 0 %}
-                    {% for ch in match.awayteam.form_last_6.form %}
-                     <a href="{{ url_for('.view_played_match', match_id=match.awayteam.last_matches[count].id) }}" class="box 
-                      {% if ch=='W' %} w {% elif ch=='D' %} d {% else %} l {% endif %}">{{ch}} </a>
-                     {% set count = count + 1 %}
-                    {% endfor %}    
-                    {% set count = 0 %} 
-                  </td>
-               </tr>
-            </tbody>
-         </table>
-      </div>
-      <!-- /form info comparison -->
+              </tr>
+          </thead>
+          <tbody>
+             <tr>
+                <td>xxxx</td>
+                <td>{{match.hometeam.form_last_6.name}}</td>
+                <td class="played">6</td>
+                <td>{{match.hometeam.form_last_6.w}}</td>
+                <td>{{match.hometeam.form_last_6.d}}</td>
+                <td>{{match.hometeam.form_last_6.l}}</td>
+                <td>{{match.hometeam.form_last_6.gf}}</td>
+                <td>{{match.hometeam.form_last_6.ga}}</td>
+                <td>{{match.hometeam.form_last_6.gd}}</td>
+                <td>{{match.hometeam.form_last_6.pts}}</td>
+                <td class="form">
+                  {% set count = 0 %}
+                  {% for ch in match.hometeam.form_last_6.form %}
+                  <a href="{{ url_for('.view_played_match', match_id=match.hometeam.last_matches[count].id) }}" class="box 
+                  {% if ch=='W' %} w {% elif ch=='D' %} d {% else %} l {% endif %}">{{ch}} </a>
+                  {% set count = count + 1 %}
+                  {% endfor %}    
+                  {% set count = 0 %} 
+              </td>
 
-      <!-- module form result  -->
-      <div class="away-team team col-sm-2 text-center">
-         <span class="clearfix">Winner: {{ match.prediction_form.name }}</span>
-         {{ input }}
-      </div>
-      <!-- /module form result -->
+          </tr>
+          <tr>
+            <td>xxxx</td>
+            <td>{{match.awayteam.form_last_6.name}}</td>
+            <td class="played">6</td>
+            <td>{{match.awayteam.form_last_6.w}}</td>
+            <td>{{match.awayteam.form_last_6.d}}</td>
+            <td>{{match.awayteam.form_last_6.l}}</td>
+            <td>{{match.awayteam.form_last_6.gf}}</td>
+            <td>{{match.awayteam.form_last_6.ga}}</td>
+            <td>{{match.awayteam.form_last_6.gd}}</td>
+            <td>{{match.awayteam.form_last_6.pts}}</td>
+            <td class="form">
+              {% set count = 0 %}
+              {% for ch in match.awayteam.form_last_6.form %}
+              <a href="{{ url_for('.view_played_match', match_id=match.awayteam.last_matches[count].id) }}" class="box 
+              {% if ch=='W' %} w {% elif ch=='D' %} d {% else %} l {% endif %}">{{ch}} </a>
+              {% set count = count + 1 %}
+              {% endfor %}    
+              {% set count = 0 %} 
+          </td>
+      </tr>
+  </tbody>
+</table>
+</div>
+<!-- /form info comparison -->
 
-      <!-- teamkits -->
-      <div class="teamkits col-md-10">
-         <div class="teamkits__home text-center">
-           {{ teamkitimage(match, home=1) }}
-           <span class="team_name clearfix">{{match.hometeam.name}}</span>
-        </div>
-        <div class="teamkits__away text-center pull-right">
-           {{ teamkitimage(match, home=2) }}
-           <span class="team_name clearfix">{{match.awayteam.name}}</span>
-        </div>
-     </div>
-     <!-- teamkits -->
-      
-      <!-- form info last 6 fixtures -->
-      <div class="last-6-fixtures col-sm-10 top-space">
-         <div class="last-6-fixtures__home col-sm-6">
-            <table class="table table-condensed table-striped text-muted grid">
-               <tbody>
+<!-- module form result  -->
+<div class="away-team team col-sm-2">
+   <span class="clearfix">Winner: {{ match.prediction_form.name }}</span>
+   {{ input }}
+</div>
+<!-- /module form result -->
 
-                  {% for last_match in match.hometeam.last_matches %}
-                  <tr class="alt ">
-                     <td>
-                        <ul style="text-align: left">
-                           <li class="team home {% if last_match.hometeam_name==match.hometeam.name %} winner{% endif %}">
-                              <span class="team" title="{{ last_match.hometeam_name }}">{{ last_match.hometeam_name }}</span>
-                           </li>
-                        </ul>
-                     </td>
-                     <td class="result">
-                        <a href="{{ url_for('.view_played_match', match_id=last_match.id) }}">{{ last_match.hometeam_score }} : {{last_match.awayteam_score}}</a></td>
-                     <td>
-                        <ul>
-                           <li class="date ta-right">{{ last_match.date}}</li>
+<!-- teamkits -->
+<div class="teamkits col-md-10">
+   <div class="teamkits__home text-center">
+     {{ teamkitimage(match, home=1) }}
+     <span class="team_name clearfix">{{match.hometeam.name}}</span>
+ </div>
+ <div class="teamkits__away text-center pull-right">
+     {{ teamkitimage(match, home=2) }}
+     <span class="team_name clearfix">{{match.awayteam.name}}</span>
+ </div>
+</div>
+<!-- teamkits -->
 
-                           <li class="team away{% if last_match.awayteam_name==match.hometeam.name %} winner{% endif %}">
-                              <span class="team" title="{{ last_match.awayteam_name }}">{{ last_match.awayteam_name }}</span>
-                           </li>
-                
-                        </ul>
-                     </td>
-                     <td class="form">
-                        <span class=" box{% if last_match.outcome=='W' %} w {% elif last_match.outcome=='D' %} d {% else %} l {% endif %}">{{last_match.outcome}}</span>
-                     </td>
-                  </tr>
-                  {% endfor %}                  
-               </tbody>
-            </table>
-         </div>
-         <div class="last-6-fixtures__away col-sm-6">
-            <table class="table table-condensed table-striped text-muted grid">
-               <tbody>
+<!-- form info last 6 fixtures -->
+<div class="last-6-fixtures col-sm-10 top-space">
+   <div class="last-6-fixtures__home col-sm-6">
+      <table class="table table-condensed table-striped text-muted grid">
+         <tbody>
 
-                  {% for last_match in match.awayteam.last_matches %}
-                  <tr class="alt ">
-                     <td>
-                        <ul style="text-align: left">
-                           <li class="team home
-                           {% if last_match.awayteam_name==match.hometeam.name %} winner
-                              {% endif %}
-                           ">
-                              <span class="team" title="{{ last_match.hometeam_name }}">
-                                 {{ last_match.hometeam_name }}
-                              </span>
-                           </li>
-                        </ul>
-                     </td>
-                     <td class="result">
-                        <a href="{{ url_for('.view_played_match', match_id=last_match.id) }}">{{ last_match.hometeam_score }} : {{last_match.awayteam_score}}</a></td>
-                     <td>
-                        <ul>
-                           <li class="date ta-right">{{ last_match.date }}</li>
-                           <li class="team away{% if last_match.awayteam_name==match.awayteam.name %} winner {% endif %}">
-                              <span class="team" title="{{ last_match.awayteam_name }}">
-                                 {{ last_match.awayteam_name }}
-                              </span>
-                           </li>
-                           </li>
-                        </ul>
-                     </td>
-                     <td class="form">
-                        <span class=" box {% if last_match.outcome=='W' %} w {% elif last_match.outcome=='D' %} d {% else %} l {% endif %}">{{last_match.outcome}}</span>
-                     </td>
-                  </tr>
-                  {% endfor %}
-               
-               </tbody>
+            {% for last_match in match.hometeam.last_matches %}
+            <tr class="alt ">
+               <td>
+                  <ul style="text-align: left">
+                     <li class="team home {% if last_match.hometeam_name==match.hometeam.name %} winner{% endif %}">
+                        <span class="team" title="{{ last_match.hometeam_name }}">{{ last_match.hometeam_name }}</span>
+                    </li>
+                </ul>
+            </td>
+            <td class="result">
+                <a href="{{ url_for('.view_played_match', match_id=last_match.id) }}">{{ last_match.hometeam_score }} : {{last_match.awayteam_score}}</a></td>
+                <td>
+                  <ul>
+                     <li class="date ta-right">{{ last_match.date}}</li>
 
-            </table>
-         </div>
-         
+                     <li class="team away{% if last_match.awayteam_name==match.hometeam.name %} winner{% endif %}">
+                        <span class="team" title="{{ last_match.awayteam_name }}">{{ last_match.awayteam_name }}</span>
+                    </li>
 
-      </div>
-      
-   </div>
+                </ul>
+            </td>
+            <td class="form">
+                <span class=" box{% if last_match.outcome=='W' %} w {% elif last_match.outcome=='D' %} d {% else %} l {% endif %}">{{last_match.outcome}}</span>
+            </td>
+        </tr>
+        {% endfor %}                  
+    </tbody>
+</table>
+</div>
+<div class="last-6-fixtures__away col-sm-6">
+  <table class="table table-condensed table-striped text-muted grid">
+     <tbody>
+
+        {% for last_match in match.awayteam.last_matches %}
+        <tr class="alt ">
+           <td>
+              <ul style="text-align: left">
+                 <li class="team home
+                 {% if last_match.awayteam_name==match.hometeam.name %} winner
+                 {% endif %}
+                 ">
+                 <span class="team" title="{{ last_match.hometeam_name }}">
+                   {{ last_match.hometeam_name }}
+               </span>
+           </li>
+       </ul>
+   </td>
+   <td class="result">
+      <a href="{{ url_for('.view_played_match', match_id=last_match.id) }}">{{ last_match.hometeam_score }} : {{last_match.awayteam_score}}</a></td>
+      <td>
+        <ul>
+           <li class="date ta-right">{{ last_match.date }}</li>
+           <li class="team away{% if last_match.awayteam_name==match.awayteam.name %} winner {% endif %}">
+              <span class="team" title="{{ last_match.awayteam_name }}">
+                 {{ last_match.awayteam_name }}
+             </span>
+         </li>
+     </li>
+ </ul>
+</td>
+<td class="form">
+  <span class=" box {% if last_match.outcome=='W' %} w {% elif last_match.outcome=='D' %} d {% else %} l {% endif %}">{{last_match.outcome}}</span>
+</td>
+</tr>
+{% endfor %}
+
+</tbody>
+
+</table>
+</div>
+
+
+</div>
+
+</div>
 
 </div>

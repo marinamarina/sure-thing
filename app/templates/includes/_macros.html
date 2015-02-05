@@ -29,7 +29,7 @@
 </div>
 {% endmacro %}
 
-{# Macro to render a submit form field for math preview #}
+{# Macro to render a submit form field for match preview #}
 {% macro render_submit_field_match_preview(field) %}
     {{ field(class_="btn btn-action col-sm-1 col-sm-offset-9") }}
 {% endmacro %}
@@ -46,10 +46,27 @@
     <img src="{{ url_for('static', filename=img_url, _external=True) }}" class="team-kit" alt="{{match.awayteam.name}}" />
 {% endmacro %}
 
+{# Macro to render a prediction settings form fields #}
+{% macro render_settings_field(field, value="") %}
+<div class="top-margin col-sm-offset-3 col-sm-6">
+    {{ field.label }} <span class="text-danger">*</span>
+    {{ field(class_="form-control", required="false", autofocus="true", value=value)|safe }}
+</div>
+
+{% if field.errors %}
+<ul class=errors>
+    {% for error in field.errors %}
+    <li>{{ error }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+{% endmacro %}
+
 {# Macro to render embedded form fields #}
 {% macro render_embedded_field(field, value="") %}
 <div class="top-margin">
-    {{ field(class_="form-control", required="false", autofocus="true", value=value)|safe }}
+    {{ field(class_="col-sm-9", required="false", autofocus="true", value=value)|safe }}
+    <p class="col-sm-2">%</p>
 </div>
 {% if field.errors %}
 <ul class=errors>

@@ -299,7 +299,7 @@ def view_match_dashboard(match_id):
                 # create a new one
                 settings_item = ModuleUserMatchSettings(user_id=me.id, match_id=match.id, module_id=module.id)
 
-            settings_item.weight = form[module.name + '_weight'].data
+            settings_item.weight = float((form[module.name + '_weight'].data)) /100
 
             try:
                 db.session.add(settings_item)
@@ -308,13 +308,8 @@ def view_match_dashboard(match_id):
 
         db.session.commit()
 
-        return redirect(url_for('.view_match_dashboard', match_id=savedmatch.id))
+        return redirect(url_for('.view_match_dashboard', match_id=match.id))
         flash('You have saved your match specific prediction settings, congratulations!')
-
-    # if user has no betting settings, make each current weight equal to an empty string
-    if not match_specific_weights:
-        flash('match specific settings not found')
-        match_specific_weights = ['' for i in range(0, len(modules))]
 
     winner = Match.predicted_winner(match, user=me)
     lt = Team.league_table()
@@ -325,13 +320,11 @@ def view_match_dashboard(match_id):
                            form=form,
                            savedmatch=savedmatch,
                            match=match,
-                           #sm_home_form=savedmatch.hometeam.form_last_matches,
-                           #sm_away_form=savedmatch.awayteam.form_last_matches,
                            user=current_user,
                            lt_hometeam=lt_hometeam,
                            lt_awayteam=lt_awayteam,
                            team_winner_name=winner[1],
-                           probability=winner[2],
+                           probability=int(winner[2]*100), #displaying percentages
                            current_weights=match_specific_weights
                            )
 

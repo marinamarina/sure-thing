@@ -15,9 +15,9 @@ class Config:
     MAIL_USE_SSL=True
     MAIL_USERNAME = 'shchukina.marina@gmail.com '#os.environ.get('FOOTY_ADMIN')
     MAIL_PASSWORD = 'sezblpfzltnulpbr'#os.environ.get('MAIL_PASSWORD')
-    FOOTY_MAIL_SUBJECT_PREFIX = 'SURETHING ADMIN '
-    FOOTY_MAIL_SENDER='Sure thing <surething@admin.com>'
-    FOOTY_ADMIN = """os.environ.get('SURETHING_ADMIN') or""" 'shchukina.marina@gmail.com'
+    SURETHING_MAIL_SUBJECT_PREFIX = 'SURETHING ADMIN '
+    SURETHING_MAIL_SENDER='Sure Thing <surething@admin.com>'
+    SURETHING_ADMIN = """os.environ.get('SURETHING_ADMIN') or""" 'shchukina.marina@gmail.com'
     SQLALCHEMY_MIGRATE_REPO = os.path.join(basedir, 'db_repository')
     PRESERVE_CONTEXT_ON_EXCEPTION = False
 
@@ -56,9 +56,9 @@ class DeploymentConfig(Config):
                 secure = ()
         mail_handler = SMTPHandler(
             mailhost=(cls.MAIL_SERVER, cls.MAIL_PORT),
-            fromaddr=cls.FLASKY_MAIL_SENDER,
-            toaddrs=[cls.FLASKY_ADMIN],
-            subject=cls.FLASKY_MAIL_SUBJECT_PREFIX + ' Application Error',
+            fromaddr=cls.SURETHING_MAIL_SENDER,
+            toaddrs=[cls.SURETHING_ADMIN],
+            subject=cls.SURETHING_MAIL_SUBJECT_PREFIX + ' Application Error',
             credentials=credentials,
             secure=secure)
         mail_handler.setLevel(logging.ERROR)

@@ -1,6 +1,5 @@
 {% extends "base.html" %}
 {% from 'includes/_macros.html' import render_field %}
-
 {% block header %}
     <header id="head" class="secondary"></header>
 {% endblock header %}
@@ -8,10 +7,12 @@
 {% block title %}Leaderboard{% endblock %}
 
 {% block inner_wrapper %}
-    <div class="container">
-        <h3>{{title}}</h3>
-        <p>Leaderboard</p>
-        <div class="leaderboard-table col-sm-12">
+    <div class="leaderboard jumbotron container">
+        <ol class="breadcrumb">
+            <li><a href="index.html">Home</a></li>
+            <li class="active">Leaderboard</li>
+        </ol>
+        <div class="leaderboard-table col-sm-12 top-space">
 
          <!-- leaderboard table -->
          <table id="form-grid" class="table table-condensed table-striped text-muted grid">

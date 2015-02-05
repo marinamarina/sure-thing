@@ -71,12 +71,11 @@
             <td>{{lt_awayteam.points}}</td>
             <td class="form">
              {% set count = 0 %}
-                    {% for ch in lt_awayteam.form %}
-                     <a href="{{ url_for('.view_played_match', match_id=match.awayteam.last_matches[count].id) }}" class="box 
-                      {% if ch=='W' %} w {% elif ch=='D' %} d {% else %} l {% endif %}">{{ch}} </a>
-                     {% set count = count + 1 %}
-                    {% endfor %}    
-                    {% set count = 0 %}   
+                {% for ch in lt_awayteam.form %}
+                  <a href="{{ url_for('.view_played_match', match_id=match.awayteam.last_matches[count].id) }}" class="box {% if ch=='W' %} w {% elif ch=='D' %} d {% else %} l {% endif %}">{{ch}} </a>
+              {% set count = count + 1 %}
+              {% endfor %}    
+              {% set count = 0 %}   
           </td>
        </tr>
     </tbody>
@@ -85,7 +84,7 @@
 <!-- /league position comparison -->
 
 <!-- league position winner -->
-<div class="col-sm-2 text-center">
+<div class="col-sm-2">
    <span class="clearfix">Winner: {{ match.prediction_league_position.name }}</span>
    {{ input }}
 

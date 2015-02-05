@@ -675,12 +675,12 @@ class Team(db.Model):
             # finding goals for, if team is at home, sum all goals that hometeam scored
             # this team is at home
             if m.hometeam_id != m.opponent_id:
-                gf += m.awayteam_score
-                ga += m.hometeam_score
+                ga += m.awayteam_score
+                gf += m.hometeam_score
             else:
                 # this team is away
-                gf += m.hometeam_score
-                ga += m.awayteam_score
+                ga += m.hometeam_score
+                gf += m.awayteam_score
 
         gd = gf - ga
 
@@ -865,9 +865,9 @@ class Match(db.Model):
         '''
 
         if int(self.hometeam.position) < int(self.awayteam.position):
-            return self.hometeam
+            return 0.8#self.hometeam
         else:
-            return self.awayteam
+            return 0.8#self.awayteam
 
     @property
     def prediction_form(self):
@@ -875,7 +875,7 @@ class Match(db.Model):
             to be improved
         '''
 
-        return self.hometeam
+        return 0.1#self.hometeam
 
 
     @property
@@ -892,11 +892,11 @@ class Match(db.Model):
         if hometeam_home_pts > awayteam_away_pts:
             return self.hometeam
         elif awayteam_away_pts > hometeam_home_pts:
-            return self.awayteam
+            return 0.1#self.awayteam
         else:
             # if can't be decided based on performance, assume the hometeam will win (in general, it is
             # easier to win at home than away)
-            return self.hometeam
+            return 0.1#self.hometeam
 
     @staticmethod
     def predicted_winner(match, user=None):
