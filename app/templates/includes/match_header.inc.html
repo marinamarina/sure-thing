@@ -1,5 +1,5 @@
 {% from 'includes/_macros.html' import teamkitimage, win_loss_draw_icon %}
-<div class="match_header row panel panel-default top-space" data="{{match.id}}">
+<div class="match-header row panel panel-default top-space" data="{{match.id}}">
    <div class="panel-body">
       <div class="away-team team col-sm-2 {% if match.was_played %}col-sm-offset-2{% else %}col-sm-offset-1{% endif %} text-center">
          <h4 class="team-name">{{match.hometeam.name}}</h4>
@@ -9,7 +9,7 @@
       </div>
       <div class="info-block col-sm-2 col-sm-offset-1 text-muted text-center margin-top-20">
          {% if match.was_played %}
-            <h3 class="match_header__score bold"> {{match.hometeam_score}} : {{match.awayteam_score}} </h3>
+            <h3 class="match-header__score bold"> {{match.hometeam_score}} : {{match.awayteam_score}} </h3>
          {% else %}
             <span class="vs clearfix">VS.</span>
          {% endif %}

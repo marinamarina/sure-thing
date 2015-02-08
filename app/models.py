@@ -662,13 +662,13 @@ class Team(db.Model):
         TeamInfo = namedtuple('TeamInfo', 'name w d l gf ga gd pts form')
         matches_data = faw.form_and_tendency(self.id)[:6]
 
-
         wins = sum([1 for match in matches_data if match.outcome == 'W'])
         draws = sum([1 for match in matches_data if match.outcome == 'D'])
         losses = sum([1 for match in matches_data if match.outcome == 'L'])
 
         gf = 0
         ga = 0
+        form =''
 
         # t=Team.query.first()
         for m in matches_data:
@@ -681,10 +681,16 @@ class Team(db.Model):
                 # this team is away
                 ga += m.hometeam_score
                 gf += m.awayteam_score
+            if m.outcome == 'W':
+                form += 'W'
+            elif m.outcome == 'D':
+                form += 'D'
+            else:
+                form += 'L'
 
         gd = gf - ga
 
-        league_table = TeamInfo(self.name, wins, draws, losses, gf, ga, gd, 3*wins + 1*losses, self.form)
+        league_table = TeamInfo(self.name, wins, draws, losses, gf, ga, gd, 3*wins + 1*draws, form)
 
         return league_table
 
@@ -697,7 +703,6 @@ class Team(db.Model):
         """
         # the main tuple to be returned
         HomeAway = namedtuple('HomeAway', 'home away')
-
         TeamInfo = namedtuple('TeamInfo', 'name w d l gf ga gd pts form')
         matches_data = faw.form_and_tendency(self.id)
         home = away= 0
@@ -826,10 +831,10 @@ class Match(db.Model):
         """Inserting all the matches to the database"""
 
         matches = faw.all_matches
-        anchor = faw.played_matches[len(faw.played_matches)-1].id #len-1
+        anchor = Match.query.filter_by(was_played=False).first().id
 
         for m in matches:
-            if m.id < anchor:
+            if m.id <= anchor:
                 continue
 
             'find the match in the database'
@@ -860,48 +865,56 @@ class Match(db.Model):
 
     @property
     def prediction_league_position(self):
-        '''calculate the winner for the league position prediction module
-           by simply comparing which team's position is higher
-        '''
+        """calculate the winner for the league position prediction module
+           ((20-homeposition)-(20-awayposition))/19
+           if prediction value is positive, it increases the probability of hometeam to win
+           if it is negative, it increases the probability of awayteam to win
+        """
+        hometeam_diff = 20-int(self.hometeam.position)
+        awayteam_diff = 20-int(self.awayteam.position)
+        prediction_value = (hometeam_diff-awayteam_diff)*100 /19
 
-        if int(self.hometeam.position) < int(self.awayteam.position):
-            return 0.8#self.hometeam
-        else:
-            return 0.8#self.awayteam
+        return prediction_value
 
     @property
     def prediction_form(self):
-        '''calculate the winner for the form prediction module
-            to be improved
-        '''
+        """calculate the winner for the form prediction module
+           (hometeam points - awayteam points)/18
+           18 is the maximum amount of points a team can achieve
+           if prediction value is positive, it increases the probability of hometeam to win
+           if it is negative, it increases the probability of awayteam to win
+        """
+        hometeam_pts = self.hometeam.form_last_6.pts
+        awayteam_pts = self.awayteam.form_last_6.pts
+        prediction_value = (hometeam_pts-awayteam_pts)*100/18
 
-        return 0.1#self.hometeam
+        return prediction_value
 
 
     @property
     def prediction_homeaway(self):
-        '''calculate the winner for the form prediction module
-            to be improved
-        '''
+        """calculate the winner for the home away module
+           (hometeam at home points - awayteam away points)/18
+           18 is the maximum amount of points a team can achieve
+           if prediction value is positive, it increases the probability of hometeam to win
+           if it is negative, it increases the probability of awayteam to win
+        """
         # hometeam's performance at home (last 6 matches)
         hometeam_home_pts = self.hometeam.form_home_away.home.pts
 
         # awayteam's performance away (last 6 matches)
         awayteam_away_pts = self.awayteam.form_home_away.away.pts
 
-        if hometeam_home_pts > awayteam_away_pts:
-            return self.hometeam
-        elif awayteam_away_pts > hometeam_home_pts:
-            return 0.1#self.awayteam
-        else:
-            # if can't be decided based on performance, assume the hometeam will win (in general, it is
-            # easier to win at home than away)
-            return 0.1#self.hometeam
+        prediction_value = (hometeam_home_pts - awayteam_away_pts)*100 / 18
+
+        return prediction_value
 
     @staticmethod
     def predicted_winner(match, user=None):
         """predicted winner based on user prediction settings"""
         total_weight = 0
+
+        # these are the percentages (floats)
         module_winners = [match.prediction_league_position, match.prediction_form, match.prediction_homeaway]
         prediction_modules = PredictionModule.query.all()
         module_length = len(prediction_modules)
@@ -917,29 +930,30 @@ class Match(db.Model):
         for i in range( 0, module_length ):
             if user_match_prediction_settings:
                 print('User saved match specific settings')
-                weight=user_match_prediction_settings[i].weight
+                weight = user_match_prediction_settings[i].weight
 
             elif (user_prediction_settings):
                 print('User settings provided, use default USER settings')
                 #why outputs unicode instead of float???
-                weight=user_prediction_settings[i].weight
+                weight = user_prediction_settings[i].weight
             else:
                 print('No user settings provided, use default SYSTEM settings')
-                weight=prediction_modules[i].weight
+                weight = prediction_modules[i].weight
 
 
-            if( match.hometeam_id == module_winners[i].id ):
-                total_weight += float(weight)
-
+            #if( match.hometeam_id == module_winners[i].id ):
+            total_weight += module_winners[i] * float(weight)
+            print module_winners[i], float(weight)
 
         winner_probability = total_weight
+        print ('Total weight {}').format(winner_probability)
 
-        if total_weight > 0.5:
+        if total_weight > 0:
             return Winner(match.hometeam.id, match.hometeam.name, winner_probability)
-        elif total_weight < 0.5:
-            return Winner(match.awayteam.id, match.awayteam.name, 1-winner_probability)
+        elif total_weight < 0:
+            return Winner(match.awayteam.id, match.awayteam.name, -1*winner_probability)
         else:
-            return Winner(-1, 'Draw', 0.5)
+            return Winner(-1, 'Draw', 0)
 
 
     @property

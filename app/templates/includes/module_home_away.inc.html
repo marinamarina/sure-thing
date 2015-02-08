@@ -1,5 +1,5 @@
 {% from 'includes/_macros.html' import teamkitimage, win_loss_draw_icon %}
-<div class="module_home_away row panel panel-default" data="{{match.id}}">
+<div class="module-home-away row panel panel-default" data="{{match.id}}">
    <div class="panel-heading">
       <h3 class="panel-title">Home/Away</h3>
    </div>
@@ -16,10 +16,10 @@
    <div class="comparison col-sm-10 top-space">
 
     <!-- /nav tabs -->
-    <ul class="module_home_away__tabs nav nav-tabs">
+    <ul class="module-home-away__tabs nav nav-tabs">
         <li role="presentation" class="active" data-tab="home-tab">
             <a href="#">
-                <span class="clearfix module_home_away__tabs-header">
+                <span class="clearfix module-home-away__tabs_header">
                     Home team performance home/away
                 </span>
                 <span class="clearfix text-muted">{{match.hometeam.name}}</span>
@@ -27,7 +27,7 @@
         </li>
         <li role="presentation" data-tab="away-tab">
             <a href="#">
-                <span class="clearfix module_home_away__tabs-header">
+                <span class="clearfix module-home-away__tabs_header">
                     Away team performance home/away
                 </span>
                 <span class="clearfix text-muted">{{match.awayteam.name}}</span>
@@ -37,7 +37,7 @@
       <!-- /nav tabs -->
 
       <!-- hometeam performance comparison -->
-      <div id="home-tab" class="module_home_away__content active home-tab">
+      <div id="home-tab" class="module-home-away__content active home-tab">
 
          <table id="form-grid" class="table table-condensed table-striped text-muted grid">
             <thead>
@@ -120,7 +120,7 @@
      </div>
 
       <!-- awayteam performance comparison -->
-      <div id="away-tab" class="module_home_away__content home-tab">
+      <div id="away-tab" class="module-home-away__content home-tab">
          <table id="form-grid" class="table table-condensed table-striped text-muted grid">
             <thead>
                <tr>
@@ -195,7 +195,7 @@
     </div>
     <!-- module home/away result  -->
       <div class="col-sm-2">
-         <span class="clearfix">Winner: {{ match.prediction_homeaway.name }}</span>
+         <span class="clearfix">Prediction Value: {{ match.prediction_homeaway }}%</span>
          {{ input }}
       </div>
     <!-- /module home/away result -->

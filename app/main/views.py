@@ -324,7 +324,7 @@ def view_match_dashboard(match_id):
                            lt_hometeam=lt_hometeam,
                            lt_awayteam=lt_awayteam,
                            team_winner_name=winner[1],
-                           probability=int(winner[2]*100), #displaying percentages
+                           probability=int(winner[2]),
                            current_weights=match_specific_weights
                            )
 
