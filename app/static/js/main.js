@@ -7,10 +7,11 @@ require.config({
         'classie' : 'vendor/classie',
         'bootstrap' : 'vendor/bootstrap.min',
         'cookie': 'vendor/jquery.cookie',
+        'chart': 'vendor/chartjs.min',
         'app' : 'views/app'
     }
 });
 
-require(['app', 'classie'], function(app, classie) {
-  app.init(classie);
+require(['app', 'classie', 'chart'], function(app, classie, Chart) {
+  app.init(classie, Chart);
 });

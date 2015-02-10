@@ -14,12 +14,12 @@
     {% include 'includes/sidebar_menu.inc.html' %}
     <!--/sidebar-->
 
-    <div class="dashboard__prediction-settings jumbotron container content-wrap">
+    <div class="dashboard-prediction-settings jumbotron container content-wrap">
 
         <ol class="breadcrumb">
             <li><a href="{{ url_for('.index') }}">Home</a></li>
             <li><a href="{{ url_for('.dashboard') }}">Dashboard</a></li>
-            <li class="active">Prediction Settings</li>
+            <li class="active">Default Prediction Settings</li>
         </ol>
 
         <!--prediction weight form-->
@@ -29,7 +29,7 @@
                 <div class="col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2">
                     <div class="panel panel-default">
                         <div class="panel-body">
-                            <h3 class="underlined-title thin text-center">Prediction settings</h3>
+                            <h3 class="underlined-title thin text-center">Default Prediction Settings</h3>
                             <p class="text-muted text-center">Please, adjust your default percentage for each prediction module</p>
 
                             <form method="POST" class= "form-register" role="form">

@@ -5,12 +5,13 @@
 <header id="head" class="secondary"></header>
 {% endblock header %}
 {% block inner_wrapper %}
-<div class="view_played_match container jumbotron">
+<div class="view-played-match container jumbotron">
 
     <ol class="breadcrumb">
-        <li><a href="{{ url_for('.index') }}">Home</a></li>
-        <li><a href="{{url_for('.dashboard') }}">Dashboard</a></li>
-        <li class="active">Archived Match</li>
+        <li><a href="{{ url_for('main.index') }}">Home</a></li>
+        <li><a href="{{url_for('main.dashboard')}}">Dashboard</a></li>
+        <li><a href="{{url_for('main.archived')}}">Archived Matches</a></li>
+        <li class="active">{{match.hometeam.name}} VS {{match.awayteam.name}}</li>
     </ol>
 
     <!-- match header  -->
@@ -20,88 +21,90 @@
     <h2>Users' Prediction Stats</h2>
 
     <!-- stats block -->
-    <div class="view_match_dashboard__info_blocks row panel panel-default">
+    <div class="view-played-match__stats row panel panel-default">
         <div class="panel-heading">
             <h3 class="panel-title">Match Prediction Results</h3>
         </div>
         <div class="panel-body">
-            <div class="stats_outer_wrapper col-md-6 col-md-offset-3">
-                <div class="stats_inner_wrapper">
-                    <h2 class="stats_title text-center">Actual match result</h2>        
-                    <div class="stats_header">
-                        <div class="stats_super_impact stats_header_left">
+            <div class="stats__outer-wrapper col-md-6 col-md-offset-3">
+                <div class="stats__inner-wrapper">
+                    <h2 class="stats__title text-center">Actual match result</h2>        
+                    <div class="stats__header">
+                        <div class="stats__header--left text-center">
                             {% if match.actual_winner_name %}
-                            <p class="text-center"> {{ match.actual_winner_name }} won the match with a score</p>
+                            <p class="super-impact"> {{ match.actual_winner_name }}</p>
+                            <p> won the match with a score</p>
                             {% else %}
-                            <p class="text-center">Draw</p>
+                            <p class="super-impact">Draw</p>
                             {% endif %}
-                            <p class="stats_super_impact__fig text-center">{{ match.hometeam_score }} :
-                                {{ match.awayteam_score }}</p>
-                            </div>
+                            <p class="super-impact">{{ match.hometeam_score }} : {{ match.awayteam_score }}</p>
                         </div>
-                        <ul class="stats_impact-figures ns_separator">
-                            <li class="stats_impact ">
-                                <p><i class="fa fa-3x fa-user"></i>&nbsp;&nbsp;overall amount of users who saved this match to their dashboards is <span class="stats_impact__fig">
-                                    {{ sm_count }}</span></p>
-                                </li>
-                                <li class="stats_impact">
-                                    <p><i class="fa fa-3x fa-user"></i>&nbsp;&nbsp;out of this number <span class="stats_impact__fig">{{ committed_count }}</span> users made a bet on this match </p>
-                                </li>
-                                {% if committed_count > 0 %}
-                                <li class="stats_impact">
-                                    <p><i class="fa fa-3x fa-thumbs-up"></i>&nbsp;&nbsp;from the all users who committed the bet <span class="stats_impact__fig">{{ won_bet_count }}</span> users' prediction was right</p>
-                                </li>
-                                <li class="stats_impact">
-                                    <p><i class="fa fa-3x fa-thumbs-down"></i>&nbsp;&nbsp;and <span class="stats_impact__fig">{{ lost_bet_count }}</span> users lost the bet predicting a wrong result</p>
-                                </li>
-                                {% endif %}
-                            </ul>
-                            <div class="stats_footer stats_small-text "></div>
-                        </div>
+                    </div>
+                    <ul class="stats__figures stats__separator">
+                        <li>
+                            <p><i class="fa fa-3x fa-user"></i>&nbsp;&nbsp;overall amount of users who saved this match to their dashboards is <span class="impact">
+                                {{ sm_count }}</span></p>
+                            </li>
+                            <li>
+                                <p><i class="fa fa-3x fa-user"></i>&nbsp;&nbsp;out of this number <span class="impact">{{ committed_count }}</span> users made a bet on this match </p>
+                            </li>
+                            {% if committed_count > 0 %}
+                            <li>
+                                <p><i class="fa fa-3x fa-thumbs-up"></i>&nbsp;&nbsp;from the all users who committed the bet <span class="impact">{{ won_bet_count }}</span> users' prediction was right</p>
+                            </li>
+                            <li>
+                                <p><i class="fa fa-3x fa-thumbs-down"></i>&nbsp;&nbsp;and <span class="impact">{{ lost_bet_count }}</span> users lost the bet predicting a wrong result</p>
+                            </li>
+                            {% endif %}
+                    </ul>
+                    <div class="stats__footer small-text stats__separator">*This is statistics for SureThing users population</div>
+                    </div>
                     </div>
                 </div>
             </div>
             <!--  /stats block  -->
 
             <!-- users prediction breakdown block-->
-            <div class="view_match_dashboard__chart row panel panel-default">
+            {% if committed_count>0 %}
+            <div class="view-match-dashboard__preferences row panel panel-default">
                 <div class="panel-heading">
                     <h3 class="panel-title">Users' Prediction Breakdown</h3>
                 </div>
                 <div class="panel-body">
                     <div class="teamkits col-md-8 col-md-offset-2">
-                        <div class="teamkits__home text-center">
+                        <div class="teamkits--home text-center">
                             {{ teamkitimage(match, home=1) }}
                             <span class="team_name clearfix">{{match.hometeam.name}}</span>
                         </div>
-                        <div class="teamkits__away text-center pull-right">
+                        <div class="teamkits--away text-center pull-right">
                             {{ teamkitimage(match, home=2) }}
                             <span class="team_name clearfix">{{match.awayteam.name}}</span>
                         </div>
                     </div>
-                    <div class="users_prediction_preferences col-md-6 col-md-offset-3">
-                        <div class="labels">
-                            <div class="label home {% if home_share==0 %} hidden {% endif %} text-center" style="width: {{ home_share }}%">Home</div>
-                            <div class="label {% if draw_share==0 %} hidden {% endif %} text-center" style="width: {{ draw_share }}%">Draw</div>
-                            <div class="label away {% if away_share==0 %} hidden {% endif %} text-center" style="width: {{ away_share }}%">Away</div>
+                    <div class="preferences col-md-6 col-md-offset-3 top-margin">
+                        <div class="preferences__labels">
+                            <h5 class="preferences__label home {% if home_share==0 %} hidden {% endif %} text-center" style="width: {{ home_share }}%">Home</h5>
+                            <h5 class="preferences__label {% if draw_share==0 %} hidden {% endif %} text-center" style="width: {{ draw_share }}%">Draw</h5>
+                            <h5 class="preferences__label away {% if away_share==0 %} hidden {% endif %} text-center" style="width: {{ away_share }}%">Away</h5>
                         </div>
-                        <div class="border_graph">
-                            <div class="bar home{% if home_share==0 %} hidden {% endif %} text-center" style="width: {{ home_share }}%">
+                        <div class="preferences__graph">
+                            <div class="preferences__graph-bar home{% if home_share==0 %} hidden {% endif %} text-center" style="width: {{ home_share }}%">
                                 {% if home_share > 0 %}{{ home_share }}% {% endif %}
                             </div>
-                            <div class="bar draw {% if draw_share==0 %} hidden {% endif %} text-center" style="width: {{ draw_share }}%">{% if draw_share > 0 %}{{ draw_share }}%{% endif %}</div>
-                            <div class="bar away {% if away_share==0 %} hidden {% endif %} text-center" style="width: {{ away_share }}%">
+                            <div class="preferences__graph-bar draw {% if draw_share==0 %} hidden {% endif %} text-center" style="width: {{ draw_share }}%">{% if draw_share > 0 %}{{ draw_share }}%{% endif %}</div>
+                            <div class="preferences__graph-bar away {% if away_share==0 %} hidden {% endif %} text-center" style="width: {{ away_share }}%">
                                 {% if away_share > 0%}{{ away_share }}%{% endif %}
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+            {% endif %}
             <!--  /users prediction breakdown block -->
 
-            {% if committed_count > 0 %}
             <!-- chart block -->
-            <div class="view_match_dashboard__chart row panel panel-default">
+            {% if committed_count > 0 %}
+            <div class="view-played-match__chart row panel panel-default">
                 <div class="panel-heading">
                     <h3 class="panel-title">Average Prediction Settings</h3>
                 </div>
@@ -112,31 +115,66 @@
             {% endif %}
             <!-- /chart block -->
 
-            {% if is_saved and is_committed %}
             <!-- feedback for the current user -->
-            <div class="view_match_dashboard__feedback row panel panel-default">
+            {% if is_saved and is_committed %}
+            <div class="view-played-match__feedback row panel panel-default">
                 <div class="panel-heading">
                     <h3 class="panel-title">Your Prediction</h3>
                 </div>
                 <div class="panel-body">
+                    <div class="feedback__info">
                     {% if predicted_winner == 'Draw' %}
-                    <p>You predicted that <span class="stats_impact__fig">{{ match.hometeam.name }}</span> were going to draw with
-                        <span class="stats_impact__fig">{{ match.awayteam.name }}</span>.</p>
+                        <p>You predicted that <span class="impact">{{ match.hometeam.name }}</span> were going to draw with
+                        <span class="impact">{{ match.awayteam.name }}</span>.</p>
                         {% else %}
-                        <p>Your prediction was that <span class="stats_impact__fig">{{ predicted_winner }}</span> was going to win with probability of <span class="stats_impact__fig">{{probability}}%</span>.</p>
-                        {% endif %}
-                        {{ sm }}
-                        {% if sm.bettor_won %}
-                            <p>Congratulations, you <span class="stats_impact__fig">Won</span> this bet!</p>
-                        {% else %}
-                            <p>Unfortunately, you <span class="stats_impact__fig">Lost</span> this bet.</p>
-                        {% endif %}
-
+                        <p>Your prediction was that <span class="impact">{{ predicted_winner }}</span> was going to win with probability of <span class="impact">{{probability}}%</span>.</p>
+                    {% endif %}
+                    {% if sm.bettor_won %}
+                        <p>Congratulations, you <span class="impact">Won</span> this bet!</p>
+                    {% else %}
+                        <p>Unfortunately, you <span class="impact">Lost</span> this bet.</p>
+                    {% endif %}
                     </div>
-                </div>
-                <!-- /feedback for the current user -->
-                {% endif %}
 
+                    <!--div class="feedback__values-used top-space">
+                        <h4>This were your prediction settings you used to predict this match result:</h4>
+                        <table id="form-grid" class="table table-condensed table-striped text-muted grid">
+                            <thead>
+                                <tr>
+                                    <th class="module" data-property="Module">Module</th>
+                                    <th class="p_value" data-property="Prediction Value">Prediction Value</th>
+                                    <th class="weight" data-property="Weight" title="Played">Weight</th>
+                                    <th class="sum" data-property="Sum" title="Win">Sum</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                               <tr>
+                                  <td>League Position</td>
+                                  <td>5435</td>
+                                  <td>534534</td>
+                                  <td>534534</td>
+                                </tr>
+                                <tr>
+                                  <td>Form</td>
+                                  <td>5435</td>
+                                  <td>534534</td>
+                                  <td>534534</td>
+
+                                </tr>
+                                <tr>
+                                  <td>League Position</td>
+                                  <td>5435</td>
+                                  <td>534534</td>
+                                  <td>534534</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    </div-->
+                </div>
+                {% endif %}
+                <!-- /feedback for the current user -->
 
 
             </div>

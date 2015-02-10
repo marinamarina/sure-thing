@@ -7,7 +7,7 @@
 <div class="panel-body">
 
   <!-- form info comparison -->
-  <div class="comparison col-sm-10 top-space">
+  <div class="module-form__comparison col-md-10 top-space">
    <table id="form-grid" class="table table-condensed table-striped text-muted grid">
     <thead>
      <tr>
@@ -36,7 +36,6 @@
     <td>{{match.hometeam.form_last_6.ga}}</td>
     <td>{{match.hometeam.form_last_6.gd}}</td>
     <td>{{match.hometeam.form_last_6.pts}}</td>
-    {{ match.hometeam.form }}
     <td class="form">
       {% set count = 0 %}
       {% for ch in match.hometeam.form_last_6.form %}
@@ -74,28 +73,21 @@
 </div>
 <!-- /form info comparison -->
 
-<!-- module form result  -->
-<div class="away-team team col-sm-2">
- <span class="clearfix">Prediction Value: {{ match.prediction_form }}%</span>
- {{ input }}
-</div>
-<!-- /module form result -->
-
 <!-- teamkits -->
-<div class="teamkits col-md-10">
- <div class="teamkits__home text-center">
+<div class="module-form__teamkits col-md-10">
+ <div class="teamkits--home text-center">
    {{ teamkitimage(match, home=1) }}
-   <span class="team_name clearfix">{{match.hometeam.name}}</span>
+   <span class="team-name clearfix">{{match.hometeam.name}}</span>
  </div>
- <div class="teamkits__away text-center pull-right">
+ <div class="teamkits--away text-center pull-right">
    {{ teamkitimage(match, home=2) }}
-   <span class="team_name clearfix">{{match.awayteam.name}}</span>
+   <span class="teamname clearfix">{{match.awayteam.name}}</span>
  </div>
 </div>
 <!-- teamkits -->
 
 <!-- form info last 6 fixtures -->
-<div class="last-6-fixtures col-sm-10 top-space">
+<div class="module-form__last-6-fixtures col-sm-10 top-space">
  <div class="last-6-fixtures__home col-sm-6">
   <table class="table table-condensed table-striped text-muted grid">
    <tbody>
@@ -167,8 +159,17 @@
 </table>
 </div>
 
-
 </div>
+
+
+<!-- module form result  -->
+<div class="module-form__prediction  col-md-2">
+ <p class="prediction-value clearfix">Prediction Value: {{ match.prediction_form }}%</p>
+ {{ input }}
+</div>
+<!-- /module form result -->
+
+
 
 </div>
 

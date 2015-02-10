@@ -1,15 +1,8 @@
-/* View upcoming match */
 .view-match__buttons {
     @include buttons-bottom;
 }
 .view-match-dashboard__buttons {
     @include buttons-bottom; 
-}
-.winner {
-    font-weight: bold;
-}
-.bold {
-       font-weight: bold; 
 }
 .show-more-toggle a {
     color: #222;
@@ -96,26 +89,18 @@ td {
     background-color: #b8b8b8;
 }
  .module-home-away__tabs {
-        margin: 0;
-        padding: 0;
-        list-style: none;
+    margin: 0;
+    padding: 0;
+    list-style: none;
 }
 .module-home-away__tabs-header {
     font-weight: bold;
     font-size: 1.2em;
 }
-/*.module_home_away__tabs li {
-    background: none;
-    color: #222222;
-    display: inline-block;
-    cursor: pointer;
-}*/
 
 .module-home-away__tabs li.active {
-    /*background: #EDEDED;*/
     color: #222;
 }
-
 .module-home-away__content {
     display: none;
     padding: 15px;
@@ -124,5 +109,18 @@ td {
 .module-home-away__content.active{
     display: inherit;
 }
-    
+.embedded-field__label {
+    display: inline-block;
+    vertical-align: middle; 
+    font-weight: normal;
+    color: inherit;   
+}
 
+.embedded-field__input {
+    display: inline-block;
+    vertical-align: middle;
+}
+.prediction-value {
+    color: inherit;
+    font-weight: 400!important;
+}

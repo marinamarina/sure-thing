@@ -30,9 +30,9 @@
                     <span class="clearfix">KICK OFF: {{match.time}} </span>
                     <span>Score:</span>
                     {% if match.hometeam_score %}
-                    <p>
-                        <span class="hometeam_score orange">{{match.hometeam_score}} :</span>
-                        <span class="awayteam_score orange">{{match.awayteam_score}}</span>
+                    <p class="match__scores">
+                        <span class="match__scores--home impact">{{match.hometeam_score}} :</span>
+                        <span class="match__scores--away impact">{{match.awayteam_score}}</span>
                     </p>
                     {% endif %}
                     {% if not match.was_played and match.hometeam_score != '?' %}

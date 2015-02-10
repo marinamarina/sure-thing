@@ -29,12 +29,12 @@
 
 
         <!-- user messages -->
-        <div class="jumbotron top-space container">
+        <div class="messages jumbotron top-space container">
 
                 {% for message in messages %}
 
                 <!-- message preview -->
-                <div class="match row panel panel-default" data="{{message.id}}">
+                <div class="message row panel panel-default" data="{{message.id}}">
                     <div class="panel-body">
                         <p class="col-sm-7" >
                             {% if message.new %}<strong>{{ message.title }}</strong>
@@ -57,7 +57,8 @@
         <!--/ user messages -->
 
         {% else %}
-        <p>You have no messages</p>
+        <p class="messages__no-messages">You have no messages <i class="fa fa-2x fa-envelope-o"></i>
+</p>
         {% endif %}
     </div>
 </div>

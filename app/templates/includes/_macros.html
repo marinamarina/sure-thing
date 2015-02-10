@@ -65,9 +65,14 @@
 {# Macro to render embedded form fields #}
 {% macro render_embedded_field(field, value="") %}
 <div class="top-margin">
-    {{ field(class_="col-sm-9", required="false", autofocus="true", value=value)|safe }}
-    <p class="col-sm-2">%</p>
+    <img src="{{ url_for('static', filename='img/multiply.png', _external=True) }}" height="29" width="29" />
 </div>
+<div class="embedded-field form-group top-margin clearfix">
+    <label for="form_weight" class="col-sm-5 embedded-field__label">Weight:</label>
+    {{ field(class_="col-sm-5 embedded-field__input", placeholder="", required="false", autofocus="true", value=value)|safe }}
+    <span class="col-sm-1">%</span>
+</div>
+
 {% if field.errors %}
 <ul class=errors>
     {% for error in field.errors %}

@@ -167,6 +167,9 @@ def commit_match(match_id):
     team_winner_id = winner.team_winner_id
     default_weights = [module for module in prediction_modules]
 
+    print "WINNER"
+    print winner
+
     # check what settings were used
     if not me is None:
         user_prediction_settings = me.list_prediction_settings()
@@ -183,11 +186,10 @@ def commit_match(match_id):
         # use default
         weights_used = default_weights
 
-
-    if(savedmatch.committed==True):
+    if savedmatch.committed:
         return redirect(url_for('.dashboard'))
     else:
-        savedmatch.committed=True
+        savedmatch.committed = True
         savedmatch.weight_league_position = weights_used[0].weight
         savedmatch.weight_form = weights_used[1].weight
         savedmatch.weight_home_away = weights_used[2].weight
@@ -285,6 +287,7 @@ def view_match_dashboard(match_id):
     match = savedmatch.match
     form = UserMatchPredictionSettings()
     match_specific_weights = me.list_match_specific_settings(match_id=match.id)
+    prediction_settings = me.list_prediction_settings()
     modules = PredictionModule.query.all()
 
     if form.validate_on_submit():
@@ -316,6 +319,9 @@ def view_match_dashboard(match_id):
     lt_hometeam = lt[str(match.hometeam_id)]
     lt_awayteam = lt[str(match.awayteam_id)]
 
+    if not match_specific_weights:
+        print prediction_settings
+
     return render_template('main/view_match_dashboard.html',
                            form=form,
                            savedmatch=savedmatch,
@@ -324,7 +330,7 @@ def view_match_dashboard(match_id):
                            lt_hometeam=lt_hometeam,
                            lt_awayteam=lt_awayteam,
                            team_winner_name=winner[1],
-                           probability=int(winner[2]),
+                           probability=winner[2],
                            current_weights=match_specific_weights
                            )
 
@@ -337,7 +343,7 @@ def view_played_match(match_id):
 
     prediction = Match.predicted_winner(match, me)
     predicted_winner = prediction.team_winner_name
-    predicted_probability = int(prediction.probability * 100)
+    predicted_probability = int(prediction.probability)
 
     match_settings = me.list_match_specific_settings(match_id=match.id)
     match_is_saved = me.has_match_saved(match)
@@ -353,41 +359,47 @@ def view_played_match(match_id):
     # how many users won the bet
     saved_matches_won = [sm for sm in saved_matches_committed if sm.bettor_won]
     saved_matches_won_bet_count = len(saved_matches_won)
+
     # how many users lost the bet
     saved_matches_lost_bet_count = saved_matches_committed_count - saved_matches_won_bet_count
 
     # how many times home/draw/away was predicted by users
     saved_matches_predicted_home = [sm for sm in saved_matches_committed if sm.predicted_winner == match.hometeam_id]
-    if saved_matches_committed_count != 0:
+
+    if saved_matches_predicted_home != 0 and saved_matches_committed_count != 0:
         saved_matches_predicted_home_share = len(saved_matches_predicted_home) * 100 / saved_matches_committed_count
     else:
         saved_matches_predicted_home_share = 0
 
     saved_matches_predicted_away = [sm for sm in saved_matches_committed if sm.predicted_winner == match.awayteam_id]
 
-    if saved_matches_committed_count != 0:
+    if saved_matches_predicted_away != 0 and saved_matches_committed_count != 0:
         saved_matches_predicted_away_share = len(saved_matches_predicted_away) * 100 / saved_matches_committed_count
     else:
         saved_matches_predicted_away_share = 0
 
-    saved_matches_predicted_draw_share = 100 - saved_matches_predicted_home_share - saved_matches_predicted_away_share
+    saved_matches_predicted_draw = [sm for sm in saved_matches_committed if sm.predicted_winner == -1]
+
+    if saved_matches_predicted_draw != 0 and saved_matches_committed_count != 0:
+        saved_matches_predicted_draw_share = len(saved_matches_predicted_draw) * 100 / saved_matches_committed_count
+    else:
+        saved_matches_predicted_draw_share = 0
 
     saved_match = me.list_matches(match_id=match.id)
     sm = [] if not saved_match else saved_match[0]
 
-
     return render_template('main/view_played_match.html',
                            match=match,
                            sm=sm,
-                           is_saved = match_is_saved,
-                           is_committed = match_is_committed,
-                           sm_count = saved_matches_count,
-                           committed_count = saved_matches_committed_count,
-                           won_bet_count = saved_matches_won_bet_count,
+                           is_saved=match_is_saved,
+                           is_committed=match_is_committed,
+                           sm_count=saved_matches_count,
+                           committed_count=saved_matches_committed_count,
+                           won_bet_count=saved_matches_won_bet_count,
                            lost_bet_count=saved_matches_lost_bet_count,
-                           home_share=saved_matches_predicted_home_share,
-                           away_share=saved_matches_predicted_away_share,
-                           draw_share=saved_matches_predicted_draw_share,
+                           home_share=20,#saved_matches_predicted_home_share,
+                           away_share=10,#saved_matches_predicted_away_share,
+                           draw_share=70,#saved_matches_predicted_draw_share,
                            user=current_user,
                            match_settings=match_settings,
                            predicted_winner=predicted_winner,

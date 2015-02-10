@@ -14,9 +14,9 @@
     {% include 'includes/sidebar_menu.inc.html' %}
     <!--/sidebar-->
     
-    <div class="dashboard__upcoming jumbotron container content-wrap">
+    <div class="dashboard-upcoming jumbotron container content-wrap">
         <!-- breadcrumbs -->
-        <ol class="breadcrumb">
+        <ol class="breadcrumb breadcrumb--with-margin">
             <li><a href="{{ url_for('.index') }}">Home</a></li>
             <li class="active">Dashboard</li>
         </ol>
@@ -26,7 +26,7 @@
         {% if savedmatches %}
             {% include 'includes/saved_matches.inc.html' %}
         {% else %}
-        <div class="dashboard__inner-no_matches text-center">
+        <div class="dashboard__no-matches text-center">
             <p>This is your dashboard!</p>
             <p><i class="fa fa-dashboard fa-5x"></i></p>
             <p><a href="{{url_for('main.index')}}">Start saving your matches now! &nbsp;<i class="fa fa-arrow-right"></i></a></p>

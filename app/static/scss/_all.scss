@@ -11,11 +11,24 @@ $imgpath :'../img/';
 .jumbotron {
     background-color: transparent;
 }
-.orange {
-    color: #FF981C;
+.winner {
     font-weight: bold;
 }
-
+.bold {
+    font-weight: bold; 
+}
+.impact {
+    color: #F78A05;
+    font-size: 1.625em;
+    font-weight: bold;
+    margin: 5px 0;
+}
+.super-impact {
+    font-size: 3em!important;
+    margin-top: 0em;
+    padding-bottom: 4px;
+    color: #007F7F;
+}
 .img-circle { border-radius: 50%; }
 .indented { margin-left: 20px; }
 .btn-round { 
@@ -86,4 +99,11 @@ li.separate {
 .box.live {
     background-color: red;
     width: 2.5em!important;
+}
+.breadcrumb--with-margin {
+    margin-left: 40px;
+}
+.small-text {
+    font-size: 0.9em;
+    color: #777;
 }

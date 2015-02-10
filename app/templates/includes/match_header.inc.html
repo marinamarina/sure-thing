@@ -4,6 +4,7 @@
       <div class="away-team team col-sm-2 {% if match.was_played %}col-sm-offset-2{% else %}col-sm-offset-1{% endif %} text-center">
          <h4 class="team-name">{{match.hometeam.name}}</h4>
          {{ teamkitimage(match, home=1) }}
+         <div class="clearfix visible-xs"></div>
          <span class="win team-last-result">{{match.hometeam.last_match.score}} {{match.hometeam.last_match.opponent_name}}</span>
          {{ win_loss_draw_icon(match, home=True) }}
       </div>
@@ -20,6 +21,7 @@
       <div class="away-team team col-sm-2 col-sm-offset-1 text-center">
          <h4 class="team-name">{{match.awayteam.name}}</h4>
          {{ teamkitimage(match, home=2) }}
+         <div class="clearfix visible-xs"></div>
          <span class="win team-last-result">{{match.awayteam.last_match.score}} {{match.awayteam.last_match.opponent_name}}</span>
          {{ win_loss_draw_icon(match, home=False) }}
       </div>

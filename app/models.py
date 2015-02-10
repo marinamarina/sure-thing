@@ -223,8 +223,8 @@ class ModuleUserSettings(db.Model):
 class SavedForLater(db.Model):
     'matches saved by users, association table'
     __tablename__='savedforlater'
-    users_id=db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
-    match_id=db.Column(db.Integer, db.ForeignKey('matches.id'), primary_key=True)
+    users_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
+    match_id = db.Column(db.Integer, db.ForeignKey('matches.id'), primary_key=True)
     committed = db.Column(db.Boolean, default=False)
     weight_league_position = db.Column(db.Float, default=None)
     weight_form = db.Column(db.Float, default=None)
@@ -560,16 +560,13 @@ class User(UserMixin, db.Model):
     def list_new_messages(self):
         return self.messages.filter_by(new=True).all()
 
-
     def delete_messages(self):
         msgs=self.messages.all()
         if msgs:
             for msg in msgs:
                 db.session.delete(msg)
 
-
     def list_won_bets(self, match):
-
         return []
 
     # using property because I want to protect the password
@@ -833,10 +830,14 @@ class Match(db.Model):
         matches = faw.all_matches
         anchor = Match.query.filter_by(was_played=False).first().id
 
+        print Match.query.filter_by(was_played=False).first()
+
+
         for m in matches:
-            if m.id <= anchor:
+            if m.id < anchor:
                 continue
 
+            print m
             'find the match in the database'
             match = Match.query.filter_by(id=m.id).first()
 
@@ -951,7 +952,7 @@ class Match(db.Model):
         if total_weight > 0:
             return Winner(match.hometeam.id, match.hometeam.name, winner_probability)
         elif total_weight < 0:
-            return Winner(match.awayteam.id, match.awayteam.name, -1*winner_probability)
+            return Winner(match.awayteam.id, match.awayteam.name, -1 * winner_probability)
         else:
             return Winner(-1, 'Draw', 0)
 

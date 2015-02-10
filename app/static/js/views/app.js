@@ -4,9 +4,10 @@ define(['headroom1', 'headroom', 'cookie', 'bootstrap'],
     	var socket = io.connect('http://' + document.domain + ':' + location.port + '/test');
         var navMessages = $('#navMessages');
 
+
 	return {
 
-        init: function(classie) { 
+        init: function(classie, Chart) { 
             
             var bodyEl = document.body,
                 content = document.querySelector( '.content-wrap' ),
@@ -17,8 +18,9 @@ define(['headroom1', 'headroom', 'cookie', 'bootstrap'],
                 played_matches_cooks = $.cookie("show_played_matches"),
                 unplayedButton = $("#upcoming-past-nav li.unplayed");
                 playedButton = $("#upcoming-past-nav li.played"),
-                homeAwayModuleTabs = $('ul.module_home_away__tabs li'),
-                homeAwayModuleContentPanels = $('.module_home_away__content');
+                homeAwayModuleTabs = $('.module-home-away__tab'),
+                homeAwayModuleContentPanels = $('.module-home-away__content'),
+                Chartjs = Chart.noConflict();
 
     		window.setTimeout(function() {
 				$(".alert").fadeTo(200, 0)
@@ -40,8 +42,13 @@ define(['headroom1', 'headroom', 'cookie', 'bootstrap'],
     		});
 
             /* Switching between tabs in the Prediction Module Home/Away */
+
+            homeAwayModuleTabs.click(function() {
+                console.log('meow')
+            })
             homeAwayModuleTabs.click(function(e){
                 e.preventDefault();
+                
                 var tab_id = $(this).attr('data-tab');
 
                 homeAwayModuleTabs.removeClass('active');
