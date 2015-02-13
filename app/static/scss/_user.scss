@@ -14,7 +14,19 @@
 .match {
 	overflow: hidden;
 }
+.user-match__header .team-kit {
+    height: 100%;
+    width: 100%;
+}
 .teamkits__home, .teamkits__away {
-	 width: 42%;
-	 height: 42%;
+
+}
+.user-match__header {
+    overflow: hidden;
+}
+.user-match__header-info {
+    padding: 0;
+}
+.user-match__prediction {
+    padding-left: 1.5em;
 }

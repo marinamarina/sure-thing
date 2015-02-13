@@ -113,12 +113,20 @@ li.separate {
 }
 
 .breadcrumb--with-margin {
-  margin-left: 40px;
+  margin-left: 40px !important;
 }
 
 .small-text {
   font-size: 0.9em;
   color: #777;
+}
+
+.separator {
+  border-bottom: 1px solid #CCCCCC;
+  padding: 10px 4px 8px;
+  border-bottom-style: dotted;
+  font-weight: bold;
+  display: block;
 }
 
 /* Typography */
@@ -136,14 +144,37 @@ body#surething {
 
 /* General styles */
 /* Navbar */
-.logo a {
+.logo {
+  margin-top: 13px;
+}
+
+.logo a, .logo--xs a {
   color: #FFFFFF;
 }
-.logo a:hover {
+.logo a:hover, .logo--xs a:hover {
   color: #FFFFFF;
   text-decoration: none;
 }
 
+.logo--xs {
+  display: none;
+  margin-top: 14px !important;
+}
+
+@media (max-width: 1034px) {
+  .logo {
+    display: none;
+  }
+
+  .logo--xs {
+    display: block;
+    margin-left: 1em;
+  }
+
+  .breadcrumb {
+    display: none;
+  }
+}
 .right-navbar-content p {
   color: white;
 }
@@ -160,6 +191,10 @@ body#surething {
   height: 106px;
   min-height: 106px;
   padding-top: 0px;
+}
+
+.head .tagline {
+  color: #000000;
 }
 
 #head .dashboard {
@@ -211,35 +246,49 @@ body#surething {
 }
 
 /* Matches Overview */
-#matches-overview {
+.matches-overview {
   font-family: 'Open Sans', sans-serif;
 }
-#matches-overview .match-date {
+
+.match-date {
   font-size: 1.7em;
   padding: 0 0 15px 32px;
   margin: 40px 0 0 0;
 }
-#matches-overview .row.match {
+
+.match {
   margin-left: auto !important;
   margin-right: auto !important;
   border-bottom: 1px solid #CCC;
   margin: 12px auto;
   width: 95%;
 }
-#matches-overview .kick-off {
+
+.kick-off {
   display: block;
   font-weight: normal;
 }
-#matches-overview .team {
+
+.match__status {
+  margin: 20px 0;
+  font-size: 1em;
+}
+
+.team {
   margin-bottom: 30px;
 }
-#matches-overview .team-kit {
+
+.team-kit {
   height: 90px;
   width: 90px;
 }
 
-#modules .league-position-comparison {
+.modules .league-position-comparison {
   margin-top: 30px;
+}
+
+.match-buttons__button {
+  margin: 10px;
 }
 
 .menu-wrap a {
@@ -622,8 +671,7 @@ body#surething {
 }
 
 .match__status {
-  margin-bottom: 94px;
-  padding-top: 58px;
+  margin-bottom: 60px 0;
 }
 
 .match__predicted-winner {
@@ -722,6 +770,10 @@ body#surething {
   text-decoration: none;
 }
 
+.module-league-position__numbers {
+  overflow: hidden;
+}
+
 .module-league-position__expand {
   margin-bottom: 1em;
 }
@@ -764,6 +816,10 @@ td.played {
 .team.home {
   text-align: right;
   margin-top: 20px;
+}
+
+.module-form__teamkits {
+  overflow: hidden;
 }
 
 .last-6-fixtures table .result {
@@ -836,6 +892,13 @@ td {
   padding: 15px;
 }
 
+@media (max-width: 768px) {
+  .module-home-away__content .form > a {
+    background: none;
+    color: #777777 !important;
+    width: 0.7em !important;
+  }
+}
 .module-home-away__content.active {
   display: inherit;
 }
@@ -845,6 +908,7 @@ td {
   vertical-align: middle;
   font-weight: normal;
   color: inherit;
+  width: 66px;
 }
 
 .embedded-field__input {
@@ -855,6 +919,36 @@ td {
 .prediction-value {
   color: inherit;
   font-weight: 400 !important;
+}
+
+/** Social buttons for Bootstrap
+  *	Author: Panayiotis Lipiridis, http://www.lip.is/;
+  *	http://shapebootstrap.net/wp-content/plugins/shapebootstrap/demo.php?id=505
+  */
+.btn-facebook {
+  color: #fff;
+  background-color: #3b5998;
+  border-color: rgba(0, 0, 0, 0.2);
+}
+
+.btn-facebook:hover, .btn-facebook:focus, .btn-facebook:active, .btn-facebook.active, .open .dropdown-toggle.btn-facebook {
+  color: #fff;
+  background-color: #30487b;
+  border-color: rgba(0, 0, 0, 0.2);
+}
+
+.btn-facebook:active, .btn-facebook.active, .open .dropdown-toggle.btn-facebook {
+  background-image: none;
+}
+
+.btn-facebook.disabled, .btn-facebook[disabled], fieldset[disabled] .btn-facebook, .btn-facebook.disabled:hover, .btn-facebook[disabled]:hover, fieldset[disabled] .btn-facebook:hover, .btn-facebook.disabled:focus, .btn-facebook[disabled]:focus, fieldset[disabled] .btn-facebook:focus, .btn-facebook.disabled:active, .btn-facebook[disabled]:active, fieldset[disabled] .btn-facebook:active, .btn-facebook.disabled.active, .btn-facebook[disabled].active, fieldset[disabled] .btn-facebook.active {
+  background-color: #3b5998;
+  border-color: rgba(0, 0, 0, 0.2);
+}
+
+.btn-facebook .badge {
+  color: #3b5998;
+  background-color: #fff;
 }
 
 /* User profile */
@@ -874,9 +968,21 @@ td {
   overflow: hidden;
 }
 
-.teamkits__home, .teamkits__away {
-  width: 42%;
-  height: 42%;
+.user-match__header .team-kit {
+  height: 100%;
+  width: 100%;
+}
+
+.user-match__header {
+  overflow: hidden;
+}
+
+.user-match__header-info {
+  padding: 0;
+}
+
+.user-match__prediction {
+  padding-left: 1.5em;
 }
 
 .messages__no-messages {

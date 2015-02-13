@@ -78,7 +78,7 @@
                 class="">Bets lost</strong></span> {{viewed_user.loss_points}}
             </li>
             <li class="list-group-item text-right"><span class="pull-left"><strong
-                class="">Followers</strong></span> 78
+                class="">Followers</strong>78</span>
             </li>
         </ul>
         <div class="panel panel-default">
@@ -109,30 +109,37 @@
                     <!-- thumbnail -->
                     <div class="thumbnail">
                         {% with match=savedmatch.match %}
-                        <div class="match top-margin">
-                            <div class="teamkits__home col-md-4 text-center">
+                        <!--header-->
+                        <div class="user-match__header top-margin">
+                            <div class="teamkits__home col-xs-5 text-center">
                                 {{ teamkitimage(match, home=1) }}
                             </div>
-                            <div class="col-md-2">
-                                <span class="clearfix">VS.</span>
-                                <span class="clearfix">{{ match.hometeam_score}}:{{match.hometeam_score}}</span>
+                            <div class="col-xs-2 user-match__header-info">
+                                <span class="clearfix impact">{{ match.hometeam_score}}:{{match.awayteam_score}}</span>
+
                             </div>
                             
-                            <div class="teamkits__away col-md-4 text-center">
+                            <div class="teamkits__away col-xs-5 text-center">
                                 {{ teamkitimage(match, home=2) }}
                             </div>
                         </div>
+                        <!--/header-->
 
                         <!--caption-->
-                        <div class="caption">
-                            <p>{{match.hometeam.name}} vs. {{match.awayteam.name}}</p>
-                            <p>My prediction was: {{ savedmatch.predicted_winner }}</p>
-                            <p>Weights used:</p>
-                            <p>League position: {{ (100*savedmatch.weight_league_position)|round|int }}%</p>
-                            <p>Form: {{ (100*savedmatch.weight_form)|round|int }}%</p>
-                            <p>Home/Away: {{ (100*savedmatch.weight_home_away)|round|int }}%</p>
-
-                        </div>
+                        <p class="user-match__about text-center top-margin">
+                            <span class="clearfix">
+                                <strong>{{match.hometeam.name}} vs. {{match.awayteam.name}}</strong></span>
+                            <span class="clearfix">Played: {{ match.date }}</span>
+                            <span class="clearfix">At: {{ match.time }}</span>
+                        </p>
+                        <p class="user-match__prediction text-justify top-margin">
+                            <span class="clearfix separator">My prediction was:</span>
+                            <span class="clearfix">{% if savedmatch.predicted_winner_name %}{{ savedmatch.predicted_winner_name }} {% else %} Draw {% endif %}</span>
+                            <span class="clearfix separator">Weights used:</span>
+                            <span class="clearfix">League position: {{ (100*savedmatch.weight_league_position)|round|int }}%</span>
+                            <span class="clearfix">Form: {{ (100*savedmatch.weight_form)|round|int }}%</span>
+                            <span class="clearfix">Home/Away: {{ (100*savedmatch.weight_home_away)|round|int }}%</span>
+                        </p>
                         <!--/caption-->
                         {% endwith %}
 

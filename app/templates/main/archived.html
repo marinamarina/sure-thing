@@ -9,13 +9,16 @@
 {% endblock header %}
 
 {% block inner_wrapper %}
+    <!--dashboard-->
     <div class="dashboard">
 
         <!--sidebar-->
             {% include 'includes/sidebar_menu.inc.html' %}
         <!--/sidebar-->
+
+        <!--dashboard archived-->
         <div class="dashboard-archived jumbotron container content-wrap">
-            <ol class="breadcrumb">
+            <ol class="breadcrumb breadcrumb--with-margin">
                 <li><a href="{{ url_for('.index') }}">Home</a></li>
                 <li><a href="{{ url_for('.dashboard') }}">Dashboard</a></li>
                 <li class="active">Archived Matches</li>
@@ -25,6 +28,7 @@
                 {% include 'includes/saved_matches.inc.html' %}
             {% endif %}
         </div>
-    </div>
-
+        <!--/dashboard archived-->
+    </div> 
+    <!--/dashboard-->   
 {% endblock %}

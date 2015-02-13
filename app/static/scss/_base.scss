@@ -9,12 +9,24 @@ body#surething {
 /* General styles */
 
 /* Navbar */
-.logo a {
+.logo {
+    margin-top: 13px;
+}
+.logo a, .logo--xs a {
     color: #FFFFFF;
     &:hover {
         color: #FFFFFF;
         text-decoration: none;
     }
+}
+.logo--xs {
+    display: none;
+    margin-top: 14px!important;
+}
+@media (max-width: 1034px) {
+    .logo {  display: none; }
+    .logo--xs { display: block; margin-left: 1em;}
+    .breadcrumb { display: none; }
 }
 .right-navbar-content {
     p {
@@ -27,6 +39,9 @@ body#surething {
 /* Header */
 .head { background: #FFFFFF url( ../img/stadium2.jpg) no-repeat 30% 87%; }
 #head.secondary {height:106px; min-height:106px; padding-top:0px; }
+.head .tagline { 
+    color: #000000;
+}
 #head .dashboard { 
     visibility: hidden;
     padding-top: 100px;

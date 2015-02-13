@@ -221,7 +221,7 @@ class ModuleUserSettings(db.Model):
 
 
 class SavedForLater(db.Model):
-    'matches saved by users, association table'
+    """matches saved by users, association table"""
     __tablename__='savedforlater'
     users_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
     match_id = db.Column(db.Integer, db.ForeignKey('matches.id'), primary_key=True)
@@ -230,8 +230,8 @@ class SavedForLater(db.Model):
     weight_form = db.Column(db.Float, default=None)
     weight_home_away = db.Column(db.Float, default=None)
     predicted_winner = db.Column(db.Integer, default=None)
-    match = db.relationship( "Match", backref = "user_assocs", order_by="Match.date_stamp, Match.time_stamp")
-    bettor = db.relationship( "User", backref="bettor")
+    match = db.relationship("Match", backref = "user_assocs", order_by="Match.date_stamp, Match.time_stamp")
+    bettor = db.relationship("User", backref="bettor")
     match_specific_settings = db.relationship("ModuleUserMatchSettings",
                                                 backref=db.backref('settings', lazy='joined'),
                                                 lazy='dynamic',
@@ -259,6 +259,10 @@ class SavedForLater(db.Model):
             return True
         else:
             return False
+    @property
+    def predicted_winner_name(self):
+        return Team.query.filter_by(id=self.predicted_winner).first().name
+
 
     def __repr__(self):
         return "<SavedForLater {}/{}> " \
@@ -282,7 +286,7 @@ class SavedForLater(db.Model):
 
     @staticmethod
     def on_changed_match_status(target, value, old_value, initiator):
-        all_savedmatches=SavedForLater.query.all()
+        all_savedmatches = SavedForLater.query.all()
 
         # make sure the match is not just overwritten and win/loss points are re-added for the second time
         if value is True and old_value is False:
@@ -315,8 +319,6 @@ class SavedForLater(db.Model):
 
                         body = "congratulation, you predicted this match results correctly!"
 
-
-
                     elif not savedmatch.bettor_won:
                         print "old value: " + str(savedmatch.bettor.loss_points)
                         savedmatch.bettor.loss_points = savedmatch.bettor.loss_points+1
@@ -333,7 +335,6 @@ class SavedForLater(db.Model):
                     else:
                         print('33333333')
                         return False
-
 
                     if predicted_winner is not None:
                         predicted_winner_name = predicted_winner.name
@@ -353,7 +354,6 @@ class SavedForLater(db.Model):
                                                body=body,
                                                predicted_winner_name=predicted_winner_name,
                                                actual_winner_name=actual_winner_name)
-
 
                     db.session.add(msg)
                     db.session.add(savedmatch.bettor)
@@ -828,10 +828,13 @@ class Match(db.Model):
         """Inserting all the matches to the database"""
 
         matches = faw.all_matches
-        anchor = Match.query.filter_by(was_played=False).first().id
+
+        if faw.unplayed_matches:
+            anchor = Match.query.filter_by(was_played=False).first().id
+        else:
+            anchor = Match.query.order_by('-id').first()
 
         print Match.query.filter_by(was_played=False).first()
-
 
         for m in matches:
             if m.id < anchor:

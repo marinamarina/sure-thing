@@ -10,6 +10,9 @@
     font-weight: bold;
     text-decoration: none;
 }
+.module-league-position__numbers {
+    overflow: hidden;
+}
 .module-league-position__expand {
     margin-bottom: 1em;
 }
@@ -46,6 +49,9 @@ td.played {
 .team.home {
     text-align: right;
     margin-top: 20px;
+}
+.module-form__teamkits {
+    overflow: hidden;
 }
 .last-6-fixtures table .result {
     width: 2.9em;
@@ -105,7 +111,14 @@ td {
     display: none;
     padding: 15px;
 }
+@media (max-width: 768px) {
+   .module-home-away__content .form>a {
+        background: none;
+        color: #777!important;
+        width: 0.7em!important;
 
+    }
+}
 .module-home-away__content.active{
     display: inherit;
 }
@@ -113,7 +126,8 @@ td {
     display: inline-block;
     vertical-align: middle; 
     font-weight: normal;
-    color: inherit;   
+    color: inherit; 
+    width: 66px;  
 }
 
 .embedded-field__input {
@@ -124,3 +138,4 @@ td {
     color: inherit;
     font-weight: 400!important;
 }
+

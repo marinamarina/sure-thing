@@ -6,39 +6,42 @@
 }
 
 /* Matches Overview */
-#matches-overview {
+.matches-overview {
 	font-family: 'Open Sans', sans-serif;
-
-	
-	.match-date {
-    	font-size: 1.7em;
-        padding: 0 0 15px 32px;
-        margin: 40px 0 0 0;
+}
+.match-date {
+    font-size: 1.7em;
+    padding: 0 0 15px 32px;
+    margin: 40px 0 0 0;
     
-	}
-	.row.match {
-		margin-left: auto!important;
-		margin-right: auto!important;
-    	border-bottom: 1px solid #CCC;
-    	margin: 12px auto;
-		width: 95%;
-	}
-	.kick-off {
-		display: block;
-		font-weight: normal;
-	}
-	.team {
-    	margin-bottom: 30px;
-	}
-	.team-kit {
-    	@include team-kit
-	}
+}
+.match {
+	margin-left: auto!important;
+	margin-right: auto!important;
+	border-bottom: 1px solid #CCC;
+	margin: 12px auto;
+	width: 95%;
+}
+.kick-off {
+	display: block;
+	font-weight: normal;
+}
+.match__status {
+	margin: 20px 0;
+	font-size: 1em;
+}
+.team {
+    margin-bottom: 30px;
+}
+.team-kit {
+    @include team-kit
 }
 
-
-#modules {
-    
+.modules {   
 	.league-position-comparison {
 		margin-top: 30px;
 	}
+}
+.match-buttons__button {
+	margin: 10px;
 }

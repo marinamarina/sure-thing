@@ -5,68 +5,77 @@
 
     {% for savedmatch in savedmatches %}
     <!--match-->
-    <div class="{% if savedmatch.committed %}match--committed{% else %}match{%endif%} row panel panel-default"
-         data="{{savedmatch.id}}">
-        <div class="panel-body">
-            <div class="match__team home-team col-sm-4 text-center">
-                <span class="match__predicted-winner clearfix">
+    <div class="{% if savedmatch.committed %}match match--committed{% else %}match{%endif%} row panel panel-default"
+    data="{{savedmatch.id}}">
+    <div class="panel-body">
+        <div class="match__team home-team col-sm-4 text-center">
+            <span class="match__predicted-winner clearfix">
                 {% if savedmatch.predicted_winner == savedmatch.match.hometeam.id %}
-                    Predicted Winner
+                Predicted Winner
                 {% endif %}
-                </span>
+            </span>
 
-                {{ teamkitimage(savedmatch.match, home=1) }}
-                <span class="match__team-name clearfix">{{savedmatch.match.hometeam.name}}</span>
-            </div>
-            <div class="col-sm-2 text-muted text-center">
-                <span class="vs">VS</span>
-                <span class="clearfix"> DATE: {{savedmatch.match.date}}</span>
-                <span class="clearfix">KICK OFF: {{savedmatch.match.time}}</span>
-                {% if savedmatch.match.hometeam_score != '?' %}
-                <p class="match__scores">
-                    <span class="match__scores--home impact">{{savedmatch.match.hometeam_score}} :</span>
-                    <span class="match__scores--away impact">{{savedmatch.match.awayteam_score}}</span>
-                </p>
-                    {% if not savedmatch.match.was_played and savedmatch.match.hometeam_score != '?' %}
-                            <span class="box live clearfix">Live</span>
-                    {% endif %}
-                {% endif %}
-            </div>
-            <div class="away-team match__team col-sm-4 text-center">
-                <span class="match__predicted-winner clearfix">
-                {% if savedmatch.predicted_winner==savedmatch.match.awayteam.id %}
-                    Predicted Winner
-                {% endif %}
-                </span>
-                {{ teamkitimage(savedmatch.match, home=2) }}
-                <span class="match__team-name clearfix">{{savedmatch.match.awayteam.name}}</span>
-            </div>
-            <div class="match__status col-sm-2 text-center">
-                {% if savedmatch.match.was_played and savedmatch.committed %}
-                     {% if savedmatch.bettor_won %}
-                        <span>Won</span>
-                     {% else %}
-                        <span>Lost</span>
-                     {% endif %}
-                {% endif %}
-            </div>
-
-            <div class="match-buttons btn-group-xs pull-right" role="group">              
-                {% if not savedmatch.was_played %}
-                    <a href="{{ url_for('.view_match_dashboard', match_id=savedmatch.match_id) }}"
-                       class="btn btn-primary">View match > </a>
-                {% else %}
-                    <a href="{{ url_for('.view_played_match', match_id=savedmatch.match_id) }}"
-                       class="btn btn-primary">View match stats > </a>
-                {% endif %}
-
-                <a class="btn btn-primary">Comments ></a>
-                <a href="{{ url_for('.remove_match', match_id=savedmatch.match_id) }}"
-                   class="btn btn-primary">Remove</a>
-            </div>
-
+            {{ teamkitimage(savedmatch.match, home=1) }}
+            <span class="match__team-name clearfix">{{savedmatch.match.hometeam.name}}</span>
         </div>
+        <div class="col-sm-2 text-muted text-center">
+            <span class="match__predicted-winner clearfix">
+                {% if savedmatch.predicted_winner==-1 %}
+                Draw predicted
+                {% endif %}
+            </span>
+            <span class="vs">VS</span>
+            <span class="clearfix"> DATE: {{savedmatch.match.date}}</span>
+            <span class="clearfix">KICK OFF: {{savedmatch.match.time}}</span>
+            {% if savedmatch.match.hometeam_score != '?' %}
+            <p class="match__scores">
+                <span class="match__scores--home impact">{{savedmatch.match.hometeam_score}} :</span>
+                <span class="match__scores--away impact">{{savedmatch.match.awayteam_score}}</span>
+            </p>
+            {% if not savedmatch.match.was_played and savedmatch.match.hometeam_score != '?' %}
+            <span class="box live clearfix">Live</span>
+            {% endif %}
+            {% endif %}
+        </div>
+        <div class="match__team away-team col-sm-4 text-center">
+            <span class="match__predicted-winner clearfix">
+                {% if savedmatch.predicted_winner==savedmatch.match.awayteam.id %}
+                Predicted Winner
+                {% endif %}
+            </span>
+            {{ teamkitimage(savedmatch.match, home=2) }}
+            <span class="match__team-name clearfix">{{savedmatch.match.awayteam.name}}</span>
+        </div>
+        <div class="match__status col-sm-2 text-center">
+            {% if savedmatch.match.was_played and savedmatch.committed %}
+            {% if savedmatch.bettor_won %}
+            <span class="impact">Win</span>
+            {% else %}
+            <span class="impact">Loss</span>
+            {% endif %}
+            {% endif %}
+        </div>
+
+        <div class="row">            
+            <div class="match-buttons btn-group-xs col-xs-offset-6 col-xs-6" role="group">     
+
+                {% if not savedmatch.was_played %}
+                <a href="{{ url_for('.view_match_dashboard', match_id=savedmatch.match_id) }}"
+                class="match-buttons__button btn btn-primary pull-right">View match > </a>
+                {% else %}
+                <a href="{{ url_for('.view_played_match', match_id=savedmatch.match_id) }}"
+                class="match-buttons__button btn btn-primary pull-right">View match stats > </a>
+                {% endif %}
+                <a href="{{ url_for('.remove_match', match_id=savedmatch.match_id) }}"
+                class="match-buttons__button btn btn-primary pull-right">Remove</a>  
+
+                <!--a class="btn btn-primary">Comments ></a-->
+            </div>
+        </div>
+
     </div>
-    <!--/match-->
-    {% endfor %}
+</div>
+<!--/match-->
+{% endfor %}
+</div>
     <!--/ saved matches -->
