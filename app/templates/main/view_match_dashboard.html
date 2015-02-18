@@ -10,7 +10,6 @@ teamkitimage %}
     {{ moment.include_moment() }}
 
 <div class="view-match-dashboard container jumbotron">
-    <form method="POST" class="form-horizontal" role="form">
 
         <ol class="breadcrumb">
             <li><a href="{{ url_for('.index') }}">Home</a></li>
@@ -26,24 +25,33 @@ teamkitimage %}
 
         <!-- modules -->
         <div class="view-match-dashboard__modules">
+
             <!-- form for saving match specific settings starts here -->
+            <form method="POST" class="form-horizontal" role="form">
+
             <!--module league position-->
             {% with input=render_embedded_field(form.league_position_weight, (100*current_weights[0].weight)|round|int if current_weights!=[] else '') %}
-            {% include 'includes/module_league_position.inc.html' %}
+                {% include 'includes/module_league_position.inc.html' %}
             {% endwith %}
             <!-- /module league position -->
 
             <!--module form-->
             {% with input=render_embedded_field(form.form_weight, (100*current_weights[1].weight)|round|int if current_weights!=[] else '') %}
-            {% include 'includes/module_form.inc.html' %} 
+                {% include 'includes/module_form.inc.html' %} 
             {% endwith %}
             <!-- /module form -->
 
             <!-- module home/away -->
             {% with input=render_embedded_field(form.home_away_weight, (100*current_weights[2].weight)|round|int if current_weights!=[] else '') %}
-            {% include 'includes/module_home_away.inc.html' %} 
+                {% include 'includes/module_home_away.inc.html' %} 
             {% endwith %}
             <!-- /module home/away -->
+
+            <!-- module hunch -->
+            {% with input=render_embedded_field(form.user_hunch_weight, (100*current_weights[3].weight)|round|int if current_weights!=[] else '') %}
+                {% include 'includes/module_hunch.inc.html' %} 
+            {% endwith %}
+            <!-- /module hunch -->
         </div>
         <!--  /modules  -->
 
@@ -69,6 +77,7 @@ teamkitimage %}
             <a href="{{ url_for('.commit_match', match_id=match.id) }}" class="btn btn-primary pull-right" id="commitToBet" style="margin-left: 1em;">Commit</a>
         </div>
         <!-- /set of buttons -->
+
         {% endif %}
         </form><!-- form for saving match specific settings ends here -->
 

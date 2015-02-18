@@ -185,7 +185,8 @@ class PredictionModule(db.Model):
         modules = {
             'league_position': 0.50,
             'form': 0.30,
-            'home_away': 0.20
+            'home_away': 0.20,
+            'user_hunch' : 0.0
         }
         for m in modules:
             module = PredictionModule.query.filter_by(name=m).first()
@@ -229,6 +230,7 @@ class SavedForLater(db.Model):
     weight_league_position = db.Column(db.Float, default=None)
     weight_form = db.Column(db.Float, default=None)
     weight_home_away = db.Column(db.Float, default=None)
+    user_hunch = db.Column(db.Float, default=None)
     predicted_winner = db.Column(db.Integer, default=None)
     match = db.relationship("Match", backref = "user_assocs", order_by="Match.date_stamp, Match.time_stamp")
     bettor = db.relationship("User", backref="bettor")
@@ -914,12 +916,15 @@ class Match(db.Model):
         return prediction_value
 
     @staticmethod
-    def predicted_winner(match, user=None):
+    def predicted_winner(match, user=None, user_hunch=-1):
         """predicted winner based on user prediction settings"""
         total_weight = 0
 
         # these are the percentages (floats)
-        module_winners = [match.prediction_league_position, match.prediction_form, match.prediction_homeaway]
+        module_values = [match.prediction_league_position,
+                          match.prediction_form,
+                          match.prediction_homeaway,
+                          user_hunch]
         prediction_modules = PredictionModule.query.all()
         module_length = len(prediction_modules)
         Winner = namedtuple("Winner", "team_winner_id, team_winner_name, probability")
@@ -930,24 +935,32 @@ class Match(db.Model):
             user_prediction_settings = user.list_prediction_settings()
             user_match_prediction_settings = user.list_match_specific_settings(match_id=match.id)
 
-
-        for i in range( 0, module_length ):
+        # we use module_length-1 because user hunch settings can be only used for a match specific settings
+        # user hunch cannot be set by default!!
+        for i in range(0, module_length-1):
             if user_match_prediction_settings:
                 print('User saved match specific settings')
                 weight = user_match_prediction_settings[i].weight
 
-            elif (user_prediction_settings):
+            elif user_prediction_settings:
                 print('User settings provided, use default USER settings')
-                #why outputs unicode instead of float???
                 weight = user_prediction_settings[i].weight
             else:
                 print('No user settings provided, use default SYSTEM settings')
                 weight = prediction_modules[i].weight
 
+            total_weight += module_values[i] * float(weight)
+            print module_values[i], float(weight)
 
-            #if( match.hometeam_id == module_winners[i].id ):
-            total_weight += module_winners[i] * float(weight)
-            print module_winners[i], float(weight)
+        if user_hunch != -1:
+            c = len(module_values)-1
+            if user_match_prediction_settings:
+                total_weight = total_weight + user_hunch * user_match_prediction_settings[c].weight
+            elif user_prediction_settings:
+                total_weight = total_weight + user_hunch * user_prediction_settings[c].weight
+            else:
+                total_weight = total_weight + user_hunch * prediction_modules[c].weight
+
 
         winner_probability = total_weight
         print ('Total weight {}').format(winner_probability)

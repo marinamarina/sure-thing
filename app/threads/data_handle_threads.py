@@ -6,6 +6,8 @@ from flask import current_app
 import sys, os
 from datetime import datetime
 
+from gevent import monkey
+monkey.patch_all()
 
 #random number Generator Thread
 thread = Thread()
@@ -50,7 +52,7 @@ class DataUpdateThread(Thread):
             sleep(30)
             faw.write_standings_data()
             time = datetime.today().strftime("%Y-%m-%d %H:%M:%S")
-            socketio.emit('data_updated', {'time' : time}, namespace='/test')
+            socketio.emit('data_updated', {'data' : time}, namespace='/test')
 
             #app=current_app._get_current_object()
             #print app
@@ -63,7 +65,6 @@ class DataUpdateThread(Thread):
                 from ..models import Match
                 #print app
                 Match.update_all_matches()'''
-
 
 
     def run(self):

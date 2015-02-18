@@ -1,0 +1,30 @@
+{% from 'includes/_macros.html' import teamkitimage, win_loss_draw_icon %}
+<div class="module-hunch module row panel panel-default" data="{{match.id}}">
+   <div class="panel-heading">
+      <h3 class="panel-title">User hunch</h3>
+   </div>
+   <div class="panel-body">
+
+      <!-- user hunch form -->
+      <div class="module-hunch__form col-sm-10">
+            <input type="radio" name="hunchRadio" value="100" /> Hometeam <br />
+            <input type="radio" name="hunchRadio" value="0" checked /> Draw <br />
+            <input type="radio" name="hunchRadio" value="-100" /> Awayteam <br />
+             <a href="{{ url_for('.update_hunch', match_id=match.id) }}" class="btn btn-primary pull-right" id="userHunch" style="margin-left: 1em;">Update</a>
+            <div id="log"></div>
+            <p class="test">{{request.script_root|tojson|safe}}{{request.path}}</p>
+         <p class="module-hunch__info muted top-space">*Please, trust your hunch and choose your value. You do not have to set any value for this module. <br />
+         If you would like the prediction for the match to be 'Draw', please set user hunch value to 'Draw' and set the prediction percentage to 100 and the other modules' prediction percentage to 0.</p>
+      </div>
+      <!-- /user hunch form -->
+
+      <!-- module user hunch result  -->
+      <div class="module-hunch__prediction col-sm-2">
+         <p class="prediction-value clearfix">Prediction Value: <span id="hunch">0</span>%</p>
+            {{ input }}
+
+      </div>
+    <!-- /module user hunch result -->
+
+   </div>
+</div>

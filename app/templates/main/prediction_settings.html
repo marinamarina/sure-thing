@@ -33,9 +33,10 @@
                             <p class="text-muted text-center">Please, adjust your default percentage for each prediction module</p>
 
                             <form method="POST" class= "form-register" role="form">
-                                {{ render_settings_field(form.league_position_weight, ( 100*current_weights[0].weight)|round|int~' %') }}
-                                {{ render_settings_field(form.form_weight, ( 100*current_weights[1].weight)|round|int~' %') }}
-                                {{ render_settings_field(form.home_away_weight, ( 100*current_weights[2].weight)|round|int~' %') }}
+                                {{ render_settings_field(form.league_position_weight, ( 100*current_weights[0].weight)|round|int) }}
+                                {{ render_settings_field(form.form_weight, ( 100*current_weights[1].weight)|round|int) }}
+                                {{ render_settings_field(form.home_away_weight, ( 100*current_weights[2].weight)|round|int) }}
+                                {{ render_settings_field(form.user_hunch_weight, ( 100*current_weights[3].weight)|round|int) }}
                                 <hr />
                                 <div class="clearfix">
                                     {{ render_submit_field(form.submit) }}

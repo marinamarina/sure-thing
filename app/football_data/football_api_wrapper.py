@@ -1,6 +1,6 @@
 #! usr/bin/python
 
-import urllib2
+import urllib3
 import json
 from datetime import datetime
 from collections import namedtuple, OrderedDict
@@ -13,18 +13,13 @@ import os
     http://api2.football-api.com/api/?Action=team&APIKey=[YOUR_API_KEY]&team_id=[team]
 '''
 class FootballAPIWrapper:
-    def __init__(self, methodName='runTest'):
-
-        '''self.app = app
-        if app is not None:
-            self.init_app(app)'''
+    def __init__(self):
 
         self._premier_league_id = '1204'
         self._base_url = 'http://football-api.com/api/?Action='
         self._basedir = os.path.dirname(__file__)
         self._datadir = os.path.abspath( os.path.join(self._basedir, '..', 'data') )
         self._proxy_on = False
-
 
     def _call_api(self, action=None, **kwargs):
         """
@@ -61,14 +56,22 @@ class FootballAPIWrapper:
             opener = urllib2.build_opener(proxy)
             urllib2.install_opener(opener)'''
         if self._proxy_on:
+
             http_proxy = {
                 "http": "http://1014481:He1kin2013@proxy1.rgu.ac.uk:8080/"
             }
         else:
             http_proxy = {}
 
-        self.response = requests.get(url=url + '&%s' % params, proxies=http_proxy)
-        self.json_response = self.response.json()
+        try:
+            self.response = requests.get(url=url + '&%s' % params, proxies=http_proxy)
+            self.json_response = self.response.json()
+        except requests.exceptions.ConnectionError as e:
+            print "These aren't the domains we're looking for."
+        except requests.exceptions.HTTPError as e:
+            print "A HTTP error occured:", e.message
+
+
 
         return self.json_response
 

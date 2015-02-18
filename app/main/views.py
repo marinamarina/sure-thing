@@ -1,5 +1,5 @@
 from flask import render_template, redirect, url_for, abort, flash, \
-    session, current_app, request
+    session, current_app, request, jsonify
 from flask_login import login_required, current_user
 from . import main
 from .forms import UserDefaultPredictionSettings, UserMatchPredictionSettings
@@ -14,10 +14,13 @@ from threading import Thread, Event
 from ..threads.data_handle_threads import RandomThread, DataUpdateThread
 from collections import namedtuple
 from collections import OrderedDict
+from flask_socketio import SocketIO, emit
 
 # random number Generator Thread
 thread = Thread()
 thread_stop_event = Event()
+from gevent import monkey
+monkey.patch_all()
 
 @main.app_context_processor
 def inject_permissions():
@@ -63,7 +66,6 @@ def show_unplayed():
     response.set_cookie('show_played_matches', value='')
     return response
 
-
 @main.route('/show_played')
 def show_played():
     redirect_to_index = redirect(url_for('.index'))
@@ -74,7 +76,7 @@ def show_played():
 @socketio.on('data_updated', namespace='/test')
 def data_updated(msg):
     Match.update_all_matches()
-    'matches updated using sockets'
+    print 'matches updated using sockets'
 
 @main.route('/messages')
 @login_required
@@ -163,12 +165,11 @@ def commit_match(match_id):
     savedmatch = me.list_matches(match_id=match_id)[0]
     prediction_modules = PredictionModule.query.all()
     module_length = len(prediction_modules)
-    winner = Match.predicted_winner(savedmatch.match, me)
+
+
+    winner = Match.predicted_winner(savedmatch.match, me, request.args.get('user_hunch'))
     team_winner_id = winner.team_winner_id
     default_weights = [module for module in prediction_modules]
-
-    print "WINNER"
-    print winner
 
     # check what settings were used
     if not me is None:
@@ -261,15 +262,17 @@ def prediction_settings():
             else:
                 settings_item = ModuleUserSettings(user_id=me.id, module_id=module.id)
 
-            settings_item.weight = form[module.name + '_weight'].data
+            settings_item.weight = float(form[module.name + '_weight'].data)/100
 
             try:
                 db.session.add(settings_item)
             except Exception:
                 db.session.flush()
 
+        flash("You have successfully adjusted your prediction weights!")
+
         return redirect(url_for('.prediction_settings'))
-        flash('You have saved your default prediction settings, congratulations!')
+        #flash('You have saved your default prediction settings, congratulations!')
 
     # if user has no betting settings, make each current weight equal to an empty string
     if not current_weights:
@@ -279,13 +282,27 @@ def prediction_settings():
     return render_template( 'main/prediction_settings.html', user=me, form=form, current_weights=current_weights)
 
 
-@main.route('/view_match_dashboard/<int:match_id>', methods=['GET','POST'])
+@main.route('/view_match_dashboard/<int:match_id>', methods=['GET', 'POST'])
 @login_required
 def view_match_dashboard(match_id):
     me = current_user
+
+    # 0 or Draw is the default value for user hunch
+    # if weights for hunch is set, but hunch has not been chosen, 0 value
+    # will "eliminate user hunch module from influencing the overall prediction"
+
+    #user_hunch = request.args.get('user_hunch', 0, type=int)
+
+    #savedmatch=current_user.list_matches(match_id=match_id)[0]
+
+    # in case this match is not saved in my saved matches
+    if not me.list_matches(match_id=match_id):
+        return redirect (url_for('.dashboard'))
+
     savedmatch = me.list_matches(match_id=match_id)[0]
     match = savedmatch.match
     form = UserMatchPredictionSettings()
+
     match_specific_weights = me.list_match_specific_settings(match_id=match.id)
     prediction_settings = me.list_prediction_settings()
     modules = PredictionModule.query.all()
@@ -293,7 +310,6 @@ def view_match_dashboard(match_id):
     if form.validate_on_submit():
         '''if(me.list_matches(match_id=match_id)[0].committed):
             return redirect(url_for('.view_match_dashboard', match_id=match_id))'''
-
         for module in modules:
             # if user already has set custom weights for the match
             if match_specific_weights:
@@ -314,13 +330,20 @@ def view_match_dashboard(match_id):
         return redirect(url_for('.view_match_dashboard', match_id=match.id))
         flash('You have saved your match specific prediction settings, congratulations!')
 
-    winner = Match.predicted_winner(match, user=me)
+    if savedmatch.user_hunch:
+        user_hunch = savedmatch.user_hunch
+    else:
+        user_hunch = 0
+
+    winner = Match.predicted_winner(match, user=me, user_hunch=user_hunch)
+
     lt = Team.league_table()
     lt_hometeam = lt[str(match.hometeam_id)]
     lt_awayteam = lt[str(match.awayteam_id)]
 
-    if not match_specific_weights:
-        print prediction_settings
+    # current weights used for the prediction can be either user default or match specific
+    # TODO: how about system settings?
+    current_weights = match_specific_weights if match_specific_weights else prediction_settings
 
     return render_template('main/view_match_dashboard.html',
                            form=form,
@@ -331,8 +354,26 @@ def view_match_dashboard(match_id):
                            lt_awayteam=lt_awayteam,
                            team_winner_name=winner[1],
                            probability=winner[2],
-                           current_weights=match_specific_weights
+                           current_weights=current_weights
                            )
+
+@main.route('/update_hunch/<int:match_id>', methods=['GET', 'POST'])
+@login_required
+def update_hunch(match_id):
+    me = current_user
+    match = Match.query.filter_by(id=match_id).first()
+
+    sm = me.list_matches(match_id=match_id)[0]
+    print ('THIS IS: ', request.args.get('hunch', 0, int))
+    sm.user_hunch = request.args.get('hunch', 0, int)
+    db.session.add(sm)
+
+    return redirect(url_for('.view_match_dashboard', match_id=match.id))
+
+
+    flash("Congratulations, you have updated user hunch value!")
+    return redirect(url_for('.view_match_dashboard', match_id=match.id))
+
 
 @main.route('/view_played_match/<int:match_id>')
 @login_required
@@ -397,9 +438,9 @@ def view_played_match(match_id):
                            committed_count=saved_matches_committed_count,
                            won_bet_count=saved_matches_won_bet_count,
                            lost_bet_count=saved_matches_lost_bet_count,
-                           home_share=20,#saved_matches_predicted_home_share,
-                           away_share=10,#saved_matches_predicted_away_share,
-                           draw_share=70,#saved_matches_predicted_draw_share,
+                           home_share=saved_matches_predicted_home_share,
+                           away_share=saved_matches_predicted_away_share,
+                           draw_share=saved_matches_predicted_draw_share,
                            user=current_user,
                            match_settings=match_settings,
                            predicted_winner=predicted_winner,
@@ -657,6 +698,10 @@ def test_disconnect():
     print('Client disconnected')'''
 
 
+@socketio.on('hunch_updated', namespace='/test')
+def handle_message(message):
+    print('received message: ' + message)
+
 @socketio.on('connect', namespace='/test')
 def test_connect():
     # need visibility of the global thread object
@@ -672,11 +717,7 @@ def test_connect():
 
 @socketio.on('disconnect', namespace='/test')
 def test_disconnect():
-
+    global disconnected
+    disconnected = '/test'
     print('Client disconnected')
 
-
-'''@socketio.on('data_updated', namespace='/test')
-def test_data_updated(time):
-    #session['receive_count'] = session.get('receive_count', 0) + 1
-    print 'CAPTURED1! ' + time'''

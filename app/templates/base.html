@@ -55,10 +55,10 @@
 
 
 {% block scripts %}
+    <script type=text/javascript> $SCRIPT_ROOT = {{ request.host|tojson|safe }}; </script>
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/0.9.16/socket.io.min.js"></script>
     <script src="{{ url_for('static', filename='js/vendor/require.js', _external=True) }} "></script>
     <script src="{{ url_for('static', filename='js/main.js', _external=True) }} "></script>
-
     {{ moment.include_jquery() }}
     {{ moment.include_moment() }}
 

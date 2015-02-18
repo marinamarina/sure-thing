@@ -92,10 +92,10 @@ def deploy():
     Role.insert_roles()
     #insert matches from the data file
     Team.insert_teams()
-    #insert matches from the data file
-    Match.update_all_matches()
     #insert modules
     PredictionModule.insert_modules()
+    #insert matches from the data file
+    Match.update_all_matches()
 
 if __name__ == '__main__':
     manager.run()

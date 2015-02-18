@@ -1,18 +1,10 @@
 {% from 'includes/_macros.html' import teamkitimage, win_loss_draw_icon %}
-<div class="module-home-away row panel panel-default" data="{{match.id}}">
+<div class="module-home-away module row panel panel-default" data="{{match.id}}">
    <div class="panel-heading">
-      <h3 class="panel-title">Home/Away</h3>
+      <h3 class="panel-title">Module Home/Away</h3>
    </div>
    <div class="panel-body">
-   <!-- teamkit -->
-      <!--div class="teamkits col-md-10 top-space">
-         <div class="teamkits__home text-center">
-           {{ teamkitimage(match, home=1) }}
-           <span class="team_name clearfix">{{match.hometeam.name}}</span>
-        </div>
-     </div>
-     <!-- teamkit -->
-   
+  
    <div class="comparison col-sm-10 top-space">
 
     <!-- /nav tabs -->
@@ -138,7 +130,7 @@
                </tr>
             </thead>
             <tbody>
-               {% with home = match.awayteam.form_home_away.home %}
+              {% with home = match.awayteam.form_home_away.home %}
                <tr>
                   <td>At Home</td>
                   <td>{{home.name}}</td>
@@ -200,5 +192,6 @@
          {{ input }}
       </div>
     <!-- /module home/away result -->
+
 </div>
 </div>
