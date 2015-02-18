@@ -92,7 +92,7 @@ define(['headroom1', 'headroom', 'cookie', 'bootstrap'],
 
             //update html for the overall prediction
             $('#predictedMatchWinner').html(msg.data.team_winner_name);
-            $('#predictedProbability').html(msg.data.probability);
+            $('#predictedProbability').html(Math.round(msg.data.probability*10,1)/10 + '%');
         });
 
             /*$.ajax({
