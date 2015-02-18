@@ -230,7 +230,7 @@ class SavedForLater(db.Model):
     weight_league_position = db.Column(db.Float, default=None)
     weight_form = db.Column(db.Float, default=None)
     weight_home_away = db.Column(db.Float, default=None)
-    user_hunch = db.Column(db.Float, default=None)
+    user_hunch = db.Column(db.Integer, default=0)
     predicted_winner = db.Column(db.Integer, default=None)
     match = db.relationship("Match", backref = "user_assocs", order_by="Match.date_stamp, Match.time_stamp")
     bettor = db.relationship("User", backref="bettor")
@@ -876,8 +876,8 @@ class Match(db.Model):
            if prediction value is positive, it increases the probability of hometeam to win
            if it is negative, it increases the probability of awayteam to win
         """
-        hometeam_diff = 20-int(self.hometeam.position)
-        awayteam_diff = 20-int(self.awayteam.position)
+        hometeam_diff = 20 - int(self.hometeam.position)
+        awayteam_diff = 20 - int(self.awayteam.position)
         prediction_value = (hometeam_diff-awayteam_diff)*100 /19
 
         return prediction_value

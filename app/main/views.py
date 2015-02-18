@@ -345,6 +345,7 @@ def view_match_dashboard(match_id):
     # TODO: how about system settings?
     current_weights = match_specific_weights if match_specific_weights else prediction_settings
 
+
     return render_template('main/view_match_dashboard.html',
                            form=form,
                            savedmatch=savedmatch,
@@ -357,16 +358,23 @@ def view_match_dashboard(match_id):
                            current_weights=current_weights
                            )
 
+
 @main.route('/update_hunch/<int:match_id>', methods=['GET', 'POST'])
 @login_required
 def update_hunch(match_id):
     me = current_user
     match = Match.query.filter_by(id=match_id).first()
+    savedmatch = me.list_matches(match_id=match_id)[0]
 
-    sm = me.list_matches(match_id=match_id)[0]
-    print ('THIS IS: ', request.args.get('hunch', 0, int))
-    sm.user_hunch = request.args.get('hunch', 0, int)
-    db.session.add(sm)
+    user_hunch = request.args.get('hunch', 0, int)
+    savedmatch.user_hunch = user_hunch
+    db.session.add(savedmatch)
+    db.session.commit()
+    socketio.emit('hunch_updated', {'data':{'team_winner_name': match.predicted_winner(match, me, user_hunch)[1],
+                                    'probability': match.predicted_winner(match, me, user_hunch)[2]
+                                            }
+                                    },
+                  namespace='/test')
 
     return redirect(url_for('.view_match_dashboard', match_id=match.id))
 

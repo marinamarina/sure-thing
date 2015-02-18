@@ -66,12 +66,7 @@ define(['headroom1', 'headroom', 'cookie', 'bootstrap'],
                     .addClass("active")
                 }
 
-        //receiving data sent from the server
-        socket.on('data_updated', function(msg) {
-            $('#log').append('<p>Received: ' + msg.data + '</p>');
-        });    
 
-        //
         if ($('input[name="hunchRadio"]').val() == 100) {
             console.log(100);
         }
@@ -89,6 +84,15 @@ define(['headroom1', 'headroom', 'cookie', 'bootstrap'],
                 hunch: my_hunch
             });
             return false;
+        });
+
+        /* receiving updated winner data 
+            sent from the server after change in user hunch */
+        socket.on('hunch_updated', function(msg) {
+
+            //update html for the overall prediction
+            $('#predictedMatchWinner').html(msg.data.team_winner_name);
+            $('#predictedProbability').html(msg.data.probability);
         });
 
             /*$.ajax({

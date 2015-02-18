@@ -61,10 +61,12 @@ teamkitimage %}
                 <h3 class="panel-title">Predicted Match Winner</h3>
             </div>
         <div class="panel-body">
-            <h3>Predicted result for this match is: <strong>{{ team_winner_name }}</strong>
-            {% if not team_winner_name=='Draw' %} is going to win {% endif %}
+            <h3>Predicted result for this match is: <span id="predictedMatchWinner">{{ team_winner_name }}
+            {% if not team_winner_name=='Draw' %} is going to win {% endif %} </span>
             </h3>
-            <h3>Based on your {% if current_weights!=[] %} match specific {% else %} default {% endif %} prediction settings, probability of this result is: <b>{{ probability }}%</b></h3>
+            <h3>Based on your {% if current_weights!=[] %} match specific {% else %} default {% endif %} prediction settings, total probability is: <span id="predictedProbability">{{ probability|round(2) }}%</span></h3>
+
+            <p class="module-hunch__info muted top-space">*Please, be adviced that probability of one of the teams to win can be maximum 100% (The higher the value, the higher is the probability). If the total probability is equal to 0%, it means that the probability of either of teams to win is equal to 0%, therefore the prediction is <b>Draw</b>.</p>
         </div>
         </div>
         <!-- /overall winner -->
