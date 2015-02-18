@@ -8,3 +8,5 @@ The project aims to build a web application simulating football betting experien
 The stated above would be achieved by taking several steps. On completion of a background research, 
 current football prediction web applications will be researched and a set of requirements will be produced to assess users’ needs. After that a layout and overall design of the application will be produced, as well as the desired behavior of its features. Once the prototyping is completed, the main project deliverable, i.e. working web application will be produced and throughly tested. 
 
+Please see my [SureThing website](http://www.surething.click/) to see the working application. 
+
