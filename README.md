@@ -19,7 +19,7 @@ current football prediction web applications will be researched and a set of req
 Note: all of the commands in the rest of this README are relative to the root of the repository. Therefore, when you've downloaded the repo, make sure you `cd surething` to go into the top level of the repository.
 
 * download repository
-* install dependencies with pip (`pip install`)
+* install dependencies with pip (`pip install -r requirements.txt`)
 * create production database: `sqlite3 data/production.db < data/db.sql`
 
 to do...
