@@ -1,3 +1,6 @@
+[![Build Status](https://magnum.travis-ci.com/marinamarina/sure-thing.svg?token=mjEQw6pBznfzG3bFcBry&branch=master)](https://magnum.travis-ci.com/marinamarina/sure-thing)
+[![Dependency Status](https://gemnasium.com/marinamarina/sure-thing.svg)](https://gemnasium.com/marinamarina/sure-thing)
+
 # Football Prediction Application
 This repository contains the codebase for my Major Project (i.e. dissertation) at Robert Gordon University, and is currently a work in progress.
 
@@ -7,6 +10,35 @@ The project aims to build a web application simulating football betting experien
 
 The stated above would be achieved by taking several steps. On completion of a background research, 
 current football prediction web applications will be researched and a set of requirements will be produced to assess users’ needs. After that a layout and overall design of the application will be produced, as well as the desired behavior of its features. Once the prototyping is completed, the main project deliverable, i.e. working web application will be produced and throughly tested. 
+
+## Pre-requisites
+
+* Python (version >= 2.7)
+
+## Installation
+
+Note: all of the commands in the rest of this README are relative to the root of the repository. Therefore, when you've downloaded the repo, make sure you `cd surething` to go into the top level of the repository.
+
+* download repository
+* install dependencies with pip (`pip install -r requirements.txt`)
+* create production database: `sqlite3 data/production.db < data/db.sql`
+
+to do...
+
+## Deployment
+
+* run `python manage.py runserver`
+* go to http://localhost:5000/ in your browser
+* you should now be able to register an account and log in using the forms provided
+
+...to be completed
+
+## Running tests
+
+Run the unit tests:
+
+run `python manage.py test`
+
 
 Please see my [SureThing website](http://www.surething.click/) to see the working application. 
 
