@@ -1,12 +1,11 @@
-from . import db, faw, cache
+from . import db, faw
 from werkzeug.security import generate_password_hash, check_password_hash
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from flask_login import UserMixin, AnonymousUserMixin
-from flask import current_app, request
 from . import login_manager
-from datetime import datetime, time
+from datetime import datetime
 import hashlib
-from flask import flash, render_template
+from flask import flash, render_template, current_app
 from sqlalchemy.ext.associationproxy import association_proxy
 from collections import namedtuple
 
