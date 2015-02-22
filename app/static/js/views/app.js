@@ -41,16 +41,16 @@ define(['headroom1', 'headroom', 'cookie', 'bootstrap'],
                  }
             });
 
-                /* Switching between tabs in the Prediction Module Home/Away */
-                homeAwayModuleTabs.click(function(e){
-                    e.preventDefault();
+            /* Switching between tabs in the Prediction Module Home/Away */
+            homeAwayModuleTabs.click(function(e){
+                 e.preventDefault();
 
-                    var tab_id = $(this).attr('data-tab');
+                 var tab_id = $(this).attr('data-tab');
 
-                    homeAwayModuleTabs.removeClass('active');
-                    homeAwayModuleContentPanels.removeClass('active');
+                 homeAwayModuleTabs.removeClass('active');
+                 homeAwayModuleContentPanels.removeClass('active');
 
-                    $(this).addClass('active');
+                 $(this).addClass('active');
                     $("#"+tab_id).addClass('active');
                 });
 
@@ -67,19 +67,11 @@ define(['headroom1', 'headroom', 'cookie', 'bootstrap'],
                 }
 
 
-        if ($('input[name="hunchRadio"]').val() == 100) {
-            console.log(100);
-        }
-
-
         $('input[name="hunchRadio"]').change(function(event) {
             var my_hunch = $(this).val(),
                 match_id = $('.module-hunch').attr('data');
-                console.log('http://' + $SCRIPT_ROOT + '/update_hunch/' + match_id);
 
             $("#hunch").text(my_hunch);
-
-            
             $.getJSON('http://' + $SCRIPT_ROOT + '/update_hunch/' + match_id, {
                 hunch: my_hunch
             });

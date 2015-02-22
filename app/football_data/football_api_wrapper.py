@@ -1,6 +1,5 @@
 #! usr/bin/python
 
-import urllib3
 import json
 from datetime import datetime
 from collections import namedtuple, OrderedDict

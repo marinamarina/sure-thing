@@ -2,8 +2,6 @@ from threading import Event, Thread
 from random import random
 from time import sleep
 from .. import socketio, faw
-from flask import current_app
-import sys, os
 from datetime import datetime
 
 from gevent import monkey

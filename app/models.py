@@ -953,17 +953,18 @@ class Match(db.Model):
             print module_values[i], float(weight)
 
         if user_hunch != -1:
-            c = len(module_values)-1
+            c = len(module_values) - 1
             if user_match_prediction_settings:
+
+                # replace with augmented assignment
                 total_weight = total_weight + user_hunch * user_match_prediction_settings[c].weight
             elif user_prediction_settings:
                 total_weight = total_weight + user_hunch * user_prediction_settings[c].weight
             else:
                 total_weight = total_weight + user_hunch * prediction_modules[c].weight
 
-
         winner_probability = total_weight
-        print ('Total weight {}').format(winner_probability)
+        print 'Total weight {}'.format(winner_probability)
 
         if total_weight > 0:
             return Winner(match.hometeam.id, match.hometeam.name, winner_probability)
@@ -985,7 +986,7 @@ class Match(db.Model):
                 return self.awayteam_id
     @property
     def actual_winner_name(self):
-        if self.actual_winner==-1:
+        if self.actual_winner == -1:
             return None
         else:
             return Team.query.filter_by(id=self.actual_winner).first().name

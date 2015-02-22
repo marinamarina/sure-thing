@@ -166,8 +166,7 @@ def commit_match(match_id):
     prediction_modules = PredictionModule.query.all()
     module_length = len(prediction_modules)
 
-
-    winner = Match.predicted_winner(savedmatch.match, me, request.args.get('user_hunch'))
+    winner = Match.predicted_winner(savedmatch.match, me, savedmatch.user_hunch)
     team_winner_id = winner.team_winner_id
     default_weights = [module for module in prediction_modules]
 
