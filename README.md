@@ -1,4 +1,5 @@
 [![Build Status](https://magnum.travis-ci.com/marinamarina/sure-thing.svg?token=mjEQw6pBznfzG3bFcBry&branch=master)](https://magnum.travis-ci.com/marinamarina/sure-thing)
+[![Dependency Status](https://gemnasium.com/marinamarina/sure-thing.svg)](https://gemnasium.com/marinamarina/sure-thing)
 
 # Football Prediction Application
 This repository contains the codebase for my Major Project (i.e. dissertation) at Robert Gordon University, and is currently a work in progress.
