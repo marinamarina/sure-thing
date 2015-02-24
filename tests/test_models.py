@@ -9,9 +9,13 @@ class TestPredictionSettings(unittest.TestCase):
         self.app_context = self.app.app_context()
         self.app_context.push()
         db.create_all()
+        #create user roles
         Role.insert_roles()
+        #insert matches from the data file
         Team.insert_teams()
+        #insert modules
         PredictionModule.insert_modules()
+        #insert matches from the data file
         Match.update_all_matches()
         self.u1 = User(email='jenny@example.com', password='cat')
         self.u1.confirmed = True
@@ -19,7 +23,6 @@ class TestPredictionSettings(unittest.TestCase):
         db.session.commit()
         matches = Match.query.all()
 
-        print "THE LENGTH{}".format(len(matches))
         #non-played
         self.match1 = Match.query.all()[len(matches) - 2]
         self.match2 = Match.query.all()[len(matches) - 1]
@@ -46,16 +49,11 @@ class TestPredictionSettings(unittest.TestCase):
         db.drop_all()
         self.app_context.pop()
 
-    @unittest.skip('')
-    def test_league_position(self):
-        #print(self.match.hometeam)
-        pass
-
-    @unittest.skip('')
-    def test_default_prediction(self):
-
-        #testing the saved matches array length
+    def test_saved_matches_length(self):
         self.assertTrue(self.u1.list_matches(), 'User saved matches for later revision' )
+        self.assertTrue(len(self.u1.list_matches()) == 5, 'User saved exactly 5 matches' )
+
+    def test_default_prediction(self):
 
         print ('\n--------TESTING DEFAULT SYSTEM CONFIGURATION-------')
         print ('\n--------TESTING MATCH 1-------')
@@ -65,47 +63,95 @@ class TestPredictionSettings(unittest.TestCase):
         print match1.hometeam, match1.awayteam
         print ('--------testing league position prediction module-------')
 
-        #user with lower league position is a winner of module 'league position'
-        if int(match1.hometeam.position) > int(match1.awayteam.position):
-            self.assertTrue(match1.prediction_league_position == match1.awayteam)
+        if self.prediction_league_position(match1) > 0:
+            self.assertTrue(match1.prediction_league_position > 0)
         else:
-            self.assertTrue(match1.prediction_league_position == match1.hometeam)
+            self.assertTrue(match1.prediction_league_position < 0)
 
-        print 'LEAGUE_POSITION WINNER: {}, %: {}'.format(str(match1.prediction_league_position),
-                                                         PredictionModule.query.filter_by(id=1).first().default_weight
-                                              )
-        print  'FORM WINNER: {}, %: {}'.format(str(match1.prediction_form),
-                                               PredictionModule.query.filter_by(id=2).first().default_weight
-                                               )
-        print  'HOME_AWAY WINNER: {}, %:{}'.format(str(match1.prediction_homeaway),
-                                                   PredictionModule.query.filter_by(id=3).first().default_weight
+        print 'LEAGUE_POSITION VALUE: {}% * {}%'.format(str(match1.prediction_league_position),
+                                                        int(PredictionModule.query.filter_by(id=1).first().weight) * 100
+                                                        )
+
+        if self.prediction_form(match1) > 0:
+            self.assertTrue(match1.prediction_form > 0)
+        else:
+            self.assertTrue(match1.prediction_form < 0)
+
+        print 'FORM VALUE: {}% * {}%'.format(str(match1.prediction_form),
+                                               int(PredictionModule.query.filter_by(id=2).first().weight) * 100
                                                )
 
-        print 'OVERALL WINNER: {}'.format( str(Match.predicted_winner(match1)) )
+        if self.prediction_homeaway(match1) > 0:
+            self.assertTrue(match1.prediction_homeaway > 0)
+        else:
+            self.assertTrue(match1.prediction_homeaway < 0)
+
+        print 'HOME_AWAY VALUE: {}% * {}%'.format(str(match1.prediction_homeaway),
+                                                  int(PredictionModule.query.filter_by(id=3).first().weight) * 100
+                                                  )
 
         print ('\n--------TESTING MATCH 2-------')
+
         match2 = self.u1.list_matches()[1].match
         #testing default configuration
         print match2.hometeam, match2.awayteam
         print ('--------testing league position prediction module-------')
 
-        #user with lower league position is a winner of module 'league position'
-        if int(match2.hometeam.position) > int(match2.awayteam.position):
-            self.assertTrue(match2.prediction_league_position == match2.awayteam)
+        if self.prediction_league_position(match2) > 0:
+            self.assertTrue(match2.prediction_league_position > 0)
         else:
-            self.assertTrue(match2.prediction_league_position == match2.hometeam)
+            self.assertTrue(match2.prediction_league_position < 0)
 
-        print 'LEAGUE_POSITION WINNER: {}, %: {}'.format(str(match2.prediction_league_position),
-                                                         PredictionModule.query.filter_by(id=1).first().default_weight
-                                              )
-        print  'FORM WINNER: {}, %: {}'.format(str(match2.prediction_form),
-                                               PredictionModule.query.filter_by(id=2).first().default_weight
-                                               )
-        print  'HOME_AWAY WINNER: {}, %:{}'.format(str(match2.prediction_homeaway),
-                                                   PredictionModule.query.filter_by(id=3).first().default_weight
-                                               )
+        print 'LEAGUE_POSITION VALUE: {}% * {}%'.format(str(match2.prediction_league_position),
+                                                        int(PredictionModule.query.filter_by(id=1).first().weight) * 100
+                                                        )
 
-        print 'OVERALL WINNER: {}'.format( str(Match.predicted_winner(match2, self.u1)) )
+        if self.prediction_form(match2) > 0:
+            self.assertTrue(match2.prediction_form > 0)
+        else:
+            self.assertTrue(match2.prediction_form < 0)
+
+        print 'FORM VALUE: {}% * {}%'.format(str(match2.prediction_form),
+                                            int(PredictionModule.query.filter_by(id=2).first().weight) * 100
+                                            )
+
+        if self.prediction_homeaway(match2) > 0:
+            self.assertTrue(match2.prediction_homeaway > 0)
+        else:
+            self.assertTrue(match2.prediction_homeaway < 0)
+
+        print 'HOME_AWAY VALUE: {}% * {}%'.format(str(match2.prediction_homeaway),
+                                                  int(PredictionModule.query.filter_by(id=3).first().weight) * 100
+                                                  )
+
+        """
+        print 'OVERALL WINNER: {}'.format( str(Match.predicted_winner(match1)) )
+
+        """
+
+    def prediction_league_position(self, match):
+        hometeam_diff = 20 - int(match.hometeam.position)
+        awayteam_diff = 20 - int(match.awayteam.position)
+        prediction_value = (hometeam_diff - awayteam_diff) * 100 / 19
+
+        return prediction_value
+
+    def prediction_form(self, match):
+        hometeam_pts = match.hometeam.form_last_6.pts
+        awayteam_pts = match.awayteam.form_last_6.pts
+        prediction_value = (hometeam_pts - awayteam_pts) * 100 / 18
+
+        return prediction_value
+
+    def prediction_homeaway(self, match):
+        hometeam_home_pts = match.hometeam.form_home_away.home.pts
+
+        # awayteam's performance away (last 6 matches)
+        awayteam_away_pts = match.awayteam.form_home_away.away.pts
+
+        prediction_value = (hometeam_home_pts - awayteam_away_pts) * 100 / 18
+
+        return prediction_value
 
     @unittest.skip("")
     def test_user_prediction(self):

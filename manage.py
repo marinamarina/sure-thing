@@ -1,4 +1,5 @@
 import os
+import coverage
 from app import create_app, db
 from app.models import User, Role, Permission, Follow, \
     Team, Match, SavedForLater, \
@@ -9,8 +10,6 @@ from app.models import User, Role, Permission, Follow, \
 from flask_migrate import Migrate, MigrateCommand, upgrade
 from flask_script.commands import Server, Shell, ShowUrls, Clean
 from app import socketio
-
-
 from flask.ext.script import Manager
 
 basedir = os.path.abspath(os.path.dirname(__file__))
@@ -18,7 +17,6 @@ port = 5000
 
 cov = None
 if os.environ.get('FLASK_COVERAGE'):
-    import coverage
     cov = coverage.coverage(branch=True, include='app/*')
     cov.start()
 

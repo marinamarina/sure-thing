@@ -22,6 +22,7 @@ thread_stop_event = Event()
 from gevent import monkey
 monkey.patch_all()
 
+
 @main.app_context_processor
 def inject_permissions():
     return dict(Permission=Permission, pokus='keek')

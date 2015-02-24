@@ -18,7 +18,7 @@ class FootballAPIWrapper:
         self._base_url = 'http://football-api.com/api/?Action='
         self._basedir = os.path.dirname(__file__)
         self._datadir = os.path.abspath( os.path.join(self._basedir, '..', 'data') )
-        self._proxy_on = False
+        self._proxy_on = True
 
     def _call_api(self, action=None, **kwargs):
         """

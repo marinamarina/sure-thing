@@ -1,4 +1,4 @@
-/* CSS files concatenated |  13-02-2015 */
+/* CSS files concatenated |  24-02-2015 */
 /*******************************/
 /*         Navigation         */
 /*******************************/
@@ -195,6 +195,10 @@ img.pull-left { margin-right: 10px; }
   font-weight: bold;
 }
 
+.orange {
+  color: #FF8C00;
+}
+
 .impact {
   color: #F78A05;
   font-size: 1.625em;
@@ -379,7 +383,9 @@ body#surething {
 }
 
 .head .tagline {
-  color: #000000;
+  color: white;
+  font-size: 1.2em;
+  font-weight: 700;
 }
 
 #head .dashboard {

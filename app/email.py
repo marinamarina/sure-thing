@@ -11,7 +11,7 @@ def send_email(to, subject, template, **kwargs ):
     app=current_app._get_current_object()
 
     """send an email"""
-    msg = Message(app.config['FOOTY_MAIL_SUBJECT_PREFIX'] + subject, sender=app.config['FOOTY_MAIL_SENDER'], recipients=[to])
+    msg = Message(app.config['SURETHING_MAIL_SUBJECT_PREFIX'] + subject, sender=app.config['SURETHING_MAIL_SENDER'], recipients=[to])
 
     # we export the variable user into the template using the args dictionary
     msg.body = render_template(template + '.txt', **kwargs)

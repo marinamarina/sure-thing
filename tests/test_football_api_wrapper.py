@@ -38,15 +38,6 @@ class TestFootballAPIWrapper(unittest.TestCase):
         print ("\n")
         self.assertEqual(len(league_table.items()), 20 , 'There are 20 teams in the premier league')
 
-        for team_id, tuple in league_table.items():
-            print team_id, tuple.position
-
-    def test_league_table(self):
-        league_table = self.faw.league_table
-        print ("\n")
-
-        from pprint import pprint
-        pprint(league_table)
 
     def test_unplayed_matches_tuple(self):
         pprint(self.faw.form_and_tendency(9002))

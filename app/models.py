@@ -10,7 +10,6 @@ from sqlalchemy.ext.associationproxy import association_proxy
 from collections import namedtuple
 
 
-"""Database models representation"""
 class Permission:
     FOLLOW = 0x01
     COMMENT = 0x02
@@ -18,7 +17,7 @@ class Permission:
     MODERATE_COMMENTS = 0x08
     ADMINISTER = 0x80
 
-# Defining models
+
 class Role(db.Model):
     __tablename__ = 'roles'
     id = db.Column(db.Integer, primary_key=True)
@@ -67,7 +66,6 @@ class Message(db.Model):
         m = Message.query.filter_by(id=message.id).first()
         if m:
             db.session.delete(m)
-
 
     def __repr__(self):
         'message representation'
@@ -157,10 +155,6 @@ class ModuleUserMatchSettings(db.Model):
     weight = db.Column(db.Float)
     user = db.relationship('User', backref = "user_match_assoc")
 
-
-    #hometeam = db.relationship('Match', backref=db.backref('hometeam'), lazy='dynamic', primaryjoin="Match.hometeam_id==Team.id")
-
-
     def __repr__(self):
         return "<ModuleUserMatchSettings> user_id: {}/match_id: {} (module_id: {}, weight:{})".format(
             self.user_id,
@@ -168,6 +162,7 @@ class ModuleUserMatchSettings(db.Model):
             self.module_id,
             self.weight
         )
+
 
 class PredictionModule(db.Model):
     __tablename__ = 'prediction_modules'
@@ -241,6 +236,7 @@ class SavedForLater(db.Model):
 
     was_played = association_proxy('match', 'was_played')
 
+    #TODO
     def update_lsp(self, rate):
         lsp=0
         rateArr=map(int, rate.split('/'))
@@ -263,7 +259,6 @@ class SavedForLater(db.Model):
     @property
     def predicted_winner_name(self):
         return Team.query.filter_by(id=self.predicted_winner).first().name
-
 
     def __repr__(self):
         return "<SavedForLater {}/{}> " \
@@ -449,7 +444,6 @@ class User(UserMixin, db.Model):
     # take a look, this provides me an overview of matches for the user, only this value
     bets_won = association_proxy('saved_matches', 'bettor_won')
 
-
     def __init__(self, **kwargs):
         super(User, self).__init__(**kwargs)
 
@@ -597,6 +591,7 @@ class User(UserMixin, db.Model):
                     self.location
         )
 
+
 class AnonymousUser(AnonymousUserMixin):
     'class is assigned to the current user when the user is not logged in'
     def can(self):
@@ -619,7 +614,7 @@ def load_user(user_id):
     return User.query.get(int(user_id))
 
 class Team(db.Model):
-    '''represents a football team'''
+    """represents a football team"""
     __tablename__ = 'teams'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64), unique=True)
@@ -666,7 +661,7 @@ class Team(db.Model):
 
         gf = 0
         ga = 0
-        form =''
+        form = ''
 
         # t=Team.query.first()
         for m in matches_data:
@@ -688,7 +683,7 @@ class Team(db.Model):
 
         gd = gf - ga
 
-        league_table = TeamInfo(self.name, wins, draws, losses, gf, ga, gd, 3*wins + 1*draws, form)
+        league_table = TeamInfo(self.name, wins, draws, losses, gf, ga, gd, 3 * wins + 1 * draws, form)
 
         return league_table
 
@@ -751,9 +746,9 @@ class Team(db.Model):
                 away_ga += m.hometeam_score
 
         home = TeamInfo(self.name, home_wins, home_draws, home_losses, home_gf, home_ga, home_gf-home_ga,
-                        3*home_wins + 1*home_draws, home_form)
+                        3 * home_wins + 1 * home_draws, home_form)
         away = TeamInfo(self.name, away_wins, away_draws, away_losses, away_gf, away_ga, away_gf-away_ga,
-                        3*away_wins + 1*away_draws, away_form)
+                        3 * away_wins + 1 * away_draws, away_form)
 
         return HomeAway(home, away)
 
@@ -828,20 +823,21 @@ class Match(db.Model):
     def update_all_matches():
         """Inserting all the matches to the database"""
 
+        anchor = 0
         matches = faw.all_matches
 
-        if faw.unplayed_matches:
-            anchor = Match.query.filter_by(was_played=False).first().id
-        else:
-            anchor = Match.query.order_by('-id').first()
-
-        print Match.query.filter_by(was_played=False).first()
+        if Match.query.all():
+            if faw.unplayed_matches:
+                anchor = Match.query.filter_by(was_played=False).first().id
+            elif faw.played_matches:
+                anchor = Match.query.order_by('Match.id').first().id
+            else:
+                anchor = 0
 
         for m in matches:
             if m.id < anchor:
                 continue
 
-            print m
             'find the match in the database'
             match = Match.query.filter_by(id=m.id).first()
 
@@ -891,7 +887,7 @@ class Match(db.Model):
         """
         hometeam_pts = self.hometeam.form_last_6.pts
         awayteam_pts = self.awayteam.form_last_6.pts
-        prediction_value = (hometeam_pts-awayteam_pts)*100/18
+        prediction_value = (hometeam_pts - awayteam_pts) * 100 / 18
 
         return prediction_value
 
@@ -910,7 +906,7 @@ class Match(db.Model):
         # awayteam's performance away (last 6 matches)
         awayteam_away_pts = self.awayteam.form_home_away.away.pts
 
-        prediction_value = (hometeam_home_pts - awayteam_away_pts)*100 / 18
+        prediction_value = (hometeam_home_pts - awayteam_away_pts) * 100 / 18
 
         return prediction_value
 
