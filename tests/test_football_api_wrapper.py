@@ -8,7 +8,7 @@ from app.football_data.football_api_wrapper import FootballAPIWrapper
 
 class TestFootballAPIWrapper(unittest.TestCase):
     """Testing the Football API Wrapper
-        Private methods are tested throught the public interface (public methods)
+        Note that private methods are tested throught the public interface (public methods)
     """
 
     def setUp(self):
@@ -18,10 +18,10 @@ class TestFootballAPIWrapper(unittest.TestCase):
         self.datadir = os.path.abspath(os.path.join(self.basedir, '..', 'data'))
 
     def test_write_standings_data(self):
-        print self.basedir
+        print self.datadir
         #os.path.join(self._basedir, '..', 'data')
         #os.path.isfile(fname)
-        #self.faw.write_matches_data()
+        self.faw.write_standings_data()
         #self.assertTrue(os.path.exists(self.datadir))
 
     def test_write_matches_data(self):
@@ -49,29 +49,22 @@ class TestFootballAPIWrapper(unittest.TestCase):
         self.assertEqual(ids_names[9221], 'Hull City', 'Checking that the id associates with a certain team')
 
     def test_all_matches(self):
-
         all_matches = self.faw.all_matches
-
         self.assertIs(type(all_matches), list, 'All matches is a list')
         self.assertFalse(all_matches[0].hometeam_score == '?', 'The first match was played and has a full time score')
+        #print all_matches[len(all_matches)-1]
 
     def test_unplayed_matches(self):
-
         unplayed_matches = self.faw.unplayed_matches
-
         self.assertIs(type(unplayed_matches), list, 'Unplayed matches is a list')
 
-        # each match in the list is unplayed
+        # check that each match in the list is unplayed
         for um in unplayed_matches:
             self.assertFalse(um.hometeam_score != '?', 'Each match in the list was not played'
                                                        ' and does not have a full time score')
-
-    def test_unplayed_matches_tuple(self):
-        matches = self.faw.unplayed_matches
-        for m in matches:
-            self.assertTrue(datetime.strptime(m.date, "%d.%m.%Y").date() >= datetime.now().date(),
+            self.assertTrue(datetime.strptime(um.date, "%d.%m.%Y").date() >= datetime.now().date(),
                             "All the matches dates should be IN THE FUTURE compared to today")
-            self.assertTrue(m.ft_score == '', 'FT Score is unknown=>match has not been played yet')
+            self.assertTrue(um.ft_score == '', 'FT Score is unknown=>match has not been played yet')
 
     def test_played_matches(self):
 
@@ -82,12 +75,9 @@ class TestFootballAPIWrapper(unittest.TestCase):
         for pm in played_matches:
             self.assertFalse(pm.hometeam_score == '?', 'Each match in the list was played'
                                                        ' and has a full time score')
-
-    def test_played_matches_tuple(self):
-        matches = self.faw.played_matches
-        for m in matches:
-            self.assertTrue(datetime.strptime(m.date, "%d.%m.%Y").date() <= datetime.now().date(),
+            self.assertTrue(datetime.strptime(pm.date, "%d.%m.%Y").date() <= datetime.now().date(),
                             "All the matches dates should be IN THE PAST compared to today")
+
 
     def test_league_table(self):
         league_table = self.faw.league_table

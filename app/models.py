@@ -822,29 +822,36 @@ class Match(db.Model):
     @staticmethod
     def update_all_matches():
         """Inserting all the matches to the database"""
-
         anchor = 0
         matches = faw.all_matches
 
         if Match.query.all():
-            if faw.unplayed_matches:
+            # there are matches in the database
+
+            # there are unplayed matches in the database
+            if Match.query.filter_by(was_played=False).all():
+                # we are updating all matches staring from the first unplayed
                 anchor = Match.query.filter_by(was_played=False).first().id
             elif faw.played_matches:
-                anchor = Match.query.order_by('Match.id').first().id
-            else:
-                anchor = 0
+                # there are no unplayed matches in the database, all of them are played
+                # no need to update, anchor is the very last match in the database
+                anchor = Match.query.order_by(Match.id.desc()).first().id
+        else:
+            # there are no matches in the database
+            # just add them all, start from 0
+            anchor = 0
 
         for m in matches:
             if m.id < anchor:
                 continue
 
-            'find the match in the database'
+            # find the match in the database
             match = Match.query.filter_by(id=m.id).first()
 
-            'if not in the database, create a new match'
+            # if not in the database, create a new match
             if match is None:
-                match = Match(id=m.id, hometeam_id = m.hometeam_id, awayteam_id = m.awayteam_id, date = m.date, time = m.time,
-                    date_stamp = m.date_stamp, time_stamp = m.time_stamp)
+                match = Match(id=m.id, hometeam_id=m.hometeam_id, awayteam_id=m.awayteam_id, date=m.date, time=m.time,
+                              date_stamp=m.date_stamp, time_stamp=m.time_stamp)
 
             match.hometeam_score = m.hometeam_score
             match.awayteam_score = m.awayteam_score

@@ -22,7 +22,6 @@ class FootballAPIWrapper:
 
     def _call_api(self, action=None, **kwargs):
         """
-        Private method
         Store the response from the search endpoint in json_response
         :param action: Football API action: competition, standings, today, fixtures, commentaries
         :param kwargs: e.g
