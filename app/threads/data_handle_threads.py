@@ -11,6 +11,7 @@ monkey.patch_all()
 thread = Thread()
 thread_stop_event = Event()
 
+
 class RandomThread(Thread):
     def __init__(self):
         self.delay = 400 #seconds change to 6000
@@ -50,19 +51,7 @@ class DataUpdateThread(Thread):
             sleep(30)
             faw.write_standings_data()
             time = datetime.today().strftime("%Y-%m-%d %H:%M:%S")
-            socketio.emit('data_updated', {'data' : time}, namespace='/test')
-
-            #app=current_app._get_current_object()
-            #print app
-            #sleep(self.delay)
-
-        '''sleep(30)
-            with app.app_context():
-                print("meow")
-                #current_app.app_context.push()
-                from ..models import Match
-                #print app
-                Match.update_all_matches()'''
+            socketio.emit('data_updated', {'data': time}, namespace='/test')
 
 
     def run(self):

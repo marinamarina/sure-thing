@@ -1,8 +1,9 @@
 from flask_wtf import Form
 from wtforms import StringField, IntegerField, PasswordField, BooleanField, SubmitField, TextAreaField, SelectField
-from wtforms.validators import DataRequired, Email, Length, ValidationError, EqualTo
+from wtforms.validators import DataRequired, Email, Length, EqualTo
 from ..models import User, Role
 from .validators import validator_user_already_registered
+
 
 """This is a module holding form objects"""
 class CSRFDisabledForm(Form):
@@ -11,11 +12,13 @@ class CSRFDisabledForm(Form):
         kwargs['csrf_enabled'] = False
         super(CSRFDisabledForm, self).__init__(*args, **kwargs)
 
+
 class LoginForm(CSRFDisabledForm):
     email = StringField('Email address', validators = [DataRequired(message= "Please enter your email!"), Email()])
     password = PasswordField('Password', validators=[DataRequired(message= "Please enter your password!")])
     rememberMe = BooleanField('Remember me')
     submit = SubmitField('Login')
+
 
 class RegistrationForm(CSRFDisabledForm):
     email = StringField('Email', description='Email address', validators=[DataRequired(), Email(), validator_user_already_registered()])
@@ -23,6 +26,7 @@ class RegistrationForm(CSRFDisabledForm):
     password = PasswordField('Password', description='Password', validators=[DataRequired(message= "Please enter a valid password!"), EqualTo('password2', message= "Passwords must match!" )])
     password2 = PasswordField('Confirm Password', description='Confirm Password', validators=[DataRequired(message="Please confirm your password!")])
     submit = SubmitField('Register')
+
 
 class PasswordChangeForm(CSRFDisabledForm):
     old_password = PasswordField('Old Password', validators=[DataRequired()])
@@ -37,6 +41,7 @@ class EditProfile(CSRFDisabledForm):
     fav_team = StringField('Fav team', validators=[Length(0,64)])
     about_me = TextAreaField('About me')
     submit = SubmitField('Submit')
+
 
 class AdminManageProfiles(CSRFDisabledForm):
     email = StringField('Email', validators=[DataRequired(), Length(1, 64),
@@ -70,7 +75,7 @@ class UserMatchPredictionSettings(CSRFDisabledForm):
     form_weight = IntegerField('Form')
     home_away_weight = IntegerField('Home/Away')
     user_hunch_weight = IntegerField('User Hunch')
-    submit = SubmitField('Save')
+    submit = SubmitField('Update')
 
 
 class BlogPostForm(CSRFDisabledForm):

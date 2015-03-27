@@ -1,4 +1,4 @@
-/* CSS files concatenated |  24-02-2015 */
+/* CSS files concatenated |  12-03-2015 */
 /*******************************/
 /*         Navigation         */
 /*******************************/
@@ -183,6 +183,18 @@ img.pull-left { margin-right: 10px; }
 
 	.widget-simplenav { margin-left:-5px; }		
 	.widget-simplenav a{ margin:0 5px; }		
+.alert {
+  width: 300px;
+  text-align: center;
+  position: absolute;
+  top: 107px;
+  right: 0;
+  left: 0;
+  margin: auto;
+  z-index: 200;
+  box-shadow: 0px 0px 5px #CCC;
+}
+
 .jumbotron {
   background-color: transparent;
 }

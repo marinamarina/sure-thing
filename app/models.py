@@ -873,7 +873,7 @@ class Match(db.Model):
         """
         hometeam_diff = 20 - int(self.hometeam.position)
         awayteam_diff = 20 - int(self.awayteam.position)
-        prediction_value = (hometeam_diff-awayteam_diff)*100 /19
+        prediction_value = (hometeam_diff-awayteam_diff) * 100 / 19
 
         return prediction_value
 
@@ -973,9 +973,9 @@ class Match(db.Model):
     def actual_winner(self):
         """who actually won the match?"""
         if self.hometeam_score != '?' and self.awayteam_score != '?':
-            if (int(self.hometeam_score) > int(self.awayteam_score)):
+            if int(self.hometeam_score) > int(self.awayteam_score):
                 return self.hometeam_id
-            elif(int(self.hometeam_score) == int(self.awayteam_score)):
+            elif int(self.hometeam_score) == int(self.awayteam_score):
                 return -1
             else:
                 return self.awayteam_id

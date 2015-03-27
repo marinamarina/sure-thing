@@ -6,12 +6,9 @@ from flask_login import current_user
 
 from .models import Permission
 
-
 # a decorator that would check if
 # a user has required permissions for this route,
 # otherwise redirect to 403
-'written by me, definitely include in the app'
-
 def permission_required(permission):
     def actual_decorator(function):
         @functools.wraps(function)
@@ -21,6 +18,7 @@ def permission_required(permission):
             return function(*args)
         return decorated_function
     return actual_decorator
+
 
 def admin_required():
     return permission_required(Permission.ADMINISTER)

@@ -60,7 +60,7 @@ def test(coverage=False):
     tests = unittest.TestLoader().discover('tests')
     #Run the unittests
 
-    unittest.TextTestRunner(verbosity=2).run(
+    unittest.TextTestRunner(verbosity=1).run(
         tests
     )
 

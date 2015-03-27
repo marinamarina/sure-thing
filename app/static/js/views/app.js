@@ -23,10 +23,10 @@ define(['headroom1', 'headroom', 'cookie', 'bootstrap'],
 
 
             window.setTimeout(function() {
-                 $(".alert").fadeTo(200, 0)
-                 .slideUp(200, function(){
-                     $(this).remove();
-                 });
+                 $(".alert").fadeTo(1200, 0)
+                            .slideUp(1200, function(){
+                                $(this).remove();
+                            });
             }, 1000);
 
 

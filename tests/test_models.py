@@ -49,10 +49,12 @@ class TestPredictionSettings(unittest.TestCase):
         db.drop_all()
         self.app_context.pop()
 
+    @unittest.skip("")
     def test_saved_matches_length(self):
         self.assertTrue(self.u1.list_matches(), 'User saved matches for later revision' )
         self.assertTrue(len(self.u1.list_matches()) == 5, 'User saved exactly 5 matches' )
 
+    @unittest.skip("")
     def test_default_prediction(self):
 
         print ('\n--------TESTING DEFAULT SYSTEM CONFIGURATION-------')

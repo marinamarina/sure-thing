@@ -11,12 +11,10 @@ from ..models import User, Permission, Team, \
 from ..email import send_email
 from ..decorators_me import permission_required, templated
 from threading import Thread, Event
-from ..threads.data_handle_threads import RandomThread, DataUpdateThread
+from ..threads.data_handle_threads import DataUpdateThread
 from collections import namedtuple
-from collections import OrderedDict
-from flask_socketio import SocketIO, emit
 
-# random number Generator Thread
+# initiating a Thread
 thread = Thread()
 thread_stop_event = Event()
 from gevent import monkey
@@ -26,7 +24,6 @@ monkey.patch_all()
 @main.app_context_processor
 def inject_permissions():
     return dict(Permission=Permission, pokus='keek')
-
 
 #route decorators
 @main.route('/', methods=['POST', 'GET'])
@@ -73,6 +70,7 @@ def show_played():
     response = current_app.make_response(redirect_to_index)
     response.set_cookie('show_played_matches', value='1')
     return response
+
 
 @socketio.on('data_updated', namespace='/test')
 def data_updated(msg):
@@ -728,4 +726,3 @@ def test_disconnect():
     global disconnected
     disconnected = '/test'
     print('Client disconnected')
-
