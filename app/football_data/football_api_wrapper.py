@@ -17,7 +17,7 @@ class FootballAPIWrapper:
         self._premier_league_id = '1204'
         self._base_url = 'http://football-api.com/api/?Action='
         self._basedir = os.path.dirname(__file__)
-        self._datadir = os.path.abspath( os.path.join(self._basedir, '..', 'data'))
+        self._datadir = os.path.abspath(os.path.join(self._basedir, '..', 'data'))
         self._proxy_on = False
 
     def _call_api(self, action=None, **kwargs):
@@ -87,7 +87,7 @@ class FootballAPIWrapper:
             raw_data["standings"] = self._get_standings()["teams"]
             raw_data["date-time"] = self.date_tuple.today + ' ' + self.date_tuple.current_time
 
-            with open(self._datadir + '/standings.json', mode='w') as outfile:
+            with open(self.datadir + '/standings.json', mode='w') as outfile:
                 json.dump(raw_data, outfile)
 
             outfile.close()
@@ -105,11 +105,11 @@ class FootballAPIWrapper:
             raw_data["matches"] = self._get_all_matches()["matches"]
             raw_data["date-time"] = self.date_tuple.today + ' ' + self.date_tuple.current_time
 
-            with open(self._datadir + '/test.txt', 'wb') as localfile:
+            with open(self.datadir + '/test.txt', 'wb') as localfile:
                 localfile.write("Keekaboos")
             localfile.close()
 
-            with open(self._datadir + '/all_matches.json', mode='w') as outfile:
+            with open(self.datadir + '/all_matches.json', mode='w') as outfile:
                 json.dump(raw_data, outfile)
 
             outfile.close()
@@ -120,7 +120,7 @@ class FootballAPIWrapper:
         """Create an team id -> name relationship
             that can be accessed via property
         """
-        with open(self._datadir + '/standings.json', 'r') as localfile:
+        with open(self.datadir + '/standings.json', 'r') as localfile:
             standings_data = json.load(localfile)
         localfile.close()
 
@@ -139,7 +139,7 @@ class FootballAPIWrapper:
         :return tuple of two arrays of tuples
         """
 
-        with open(self._datadir + '/all_matches.json', 'r') as localfile:
+        with open(self.datadir + '/all_matches.json', 'r') as localfile:
             matches_data = json.load(localfile)
             from pprint import pprint
         localfile.close()
@@ -185,7 +185,7 @@ class FootballAPIWrapper:
         Read the data from a local file
         :return league_table dictionary
         """
-        with open(self._datadir + '/standings.json', 'r') as localfile:
+        with open(self.datadir + '/standings.json', 'r') as localfile:
             standings_data = json.load(localfile)
 
         localfile.close()
@@ -295,8 +295,12 @@ class FootballAPIWrapper:
         self.api_key = value
 
     @property
-    def data_dir(self):
-        return self._data_dir
+    def datadir(self):
+        return self._datadir
+
+    @datadir.setter
+    def datadir(self, path):
+        self.datadir = path
 
     @property
     def ids_names(self):

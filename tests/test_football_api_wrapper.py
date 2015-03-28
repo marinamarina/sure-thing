@@ -2,30 +2,48 @@
 import unittest
 from datetime import datetime
 import os.path
-from pprint import pprint
+import shutil
 from app.football_data.football_api_wrapper import FootballAPIWrapper
 
 
+#@unittest.skip("skipping due to the time delay")
 class TestFootballAPIWrapper(unittest.TestCase):
     """Testing the Football API Wrapper
         Note that private methods are tested throught the public interface (public methods)
+
     """
+    @classmethod
+    def setUpClass(cls):
+        cls.faw = FootballAPIWrapper()
+        # data directory for testing purposes
+        datadir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'app/data_test'))
+        cls.faw.datadir = datadir
 
-    def setUp(self):
-        self.faw = FootballAPIWrapper()
-        self.faw.api_key = '2890be06-81bd-b6d7-1dcb4b5983a0'
-        self.basedir = os.path.dirname(__file__)
-        self.datadir = os.path.abspath(os.path.join(self.basedir, '..', 'data'))
+        if not os.path.exists(datadir):
+            os.makedirs(datadir)
 
-    def test_write_standings_data(self):
-        print self.datadir
-        #os.path.join(self._basedir, '..', 'data')
-        #os.path.isfile(fname)
-        self.faw.write_standings_data()
-        #self.assertTrue(os.path.exists(self.datadir))
+        cls.faw.api_key = '2890be06-81bd-b6d7-1dcb4b5983a0'
+        cls.faw.write_matches_data()
+        cls.faw.write_standings_data()
+
+    @classmethod
+    def tearDownClass(cls):
+        shutil.rmtree(cls.faw.datadir)
+        cls.faw = None
 
     def test_write_matches_data(self):
-        pass
+        base_filename = 'all_matches'
+        filename_suffix = 'json'
+        filename = os.path.join(self.faw.datadir, base_filename + "." + filename_suffix)
+
+        os.path.isfile(filename)
+
+    def test_write_standings_data(self):
+        base_filename = 'standings'
+        filename_suffix = 'json'
+        filename = os.path.join(self.faw.datadir, base_filename + "." + filename_suffix)
+
+        os.path.isfile(filename)
 
     # test static methods
     def test_get_beginning_year(self):
@@ -35,7 +53,10 @@ class TestFootballAPIWrapper(unittest.TestCase):
         pass
 
     def test_api_key(self):
-        pass
+        # create a new instance with no api key assigned
+        faw = FootballAPIWrapper()
+        with self.assertRaises(AttributeError):
+            faw.api_key
 
     def test_data_dir(self):
         pass
@@ -67,7 +88,6 @@ class TestFootballAPIWrapper(unittest.TestCase):
             self.assertTrue(um.ft_score == '', 'FT Score is unknown=>match has not been played yet')
 
     def test_played_matches(self):
-
         played_matches = self.faw.played_matches
         self.assertIs(type(played_matches), list, 'Played matches is a list')
 
@@ -77,7 +97,6 @@ class TestFootballAPIWrapper(unittest.TestCase):
                                                        ' and has a full time score')
             self.assertTrue(datetime.strptime(pm.date, "%d.%m.%Y").date() <= datetime.now().date(),
                             "All the matches dates should be IN THE PAST compared to today")
-
 
     def test_league_table(self):
         league_table = self.faw.league_table

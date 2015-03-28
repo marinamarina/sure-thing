@@ -941,32 +941,32 @@ class Match(db.Model):
         # user hunch cannot be set by default!!
         for i in range(0, module_length-1):
             if user_match_prediction_settings:
-                print('User saved match specific settings')
+                #print('User saved match specific settings')
                 weight = user_match_prediction_settings[i].weight
 
             elif user_prediction_settings:
-                print('User settings provided, use default USER settings')
+                #print('User settings provided, use default USER settings')
                 weight = user_prediction_settings[i].weight
             else:
-                print('No user settings provided, use default SYSTEM settings')
+                #print('No user settings provided, use default SYSTEM settings')
                 weight = prediction_modules[i].weight
 
             total_weight += module_values[i] * float(weight)
-            print module_values[i], float(weight)
+            #print module_values[i], float(weight)
 
         if user_hunch != -1:
             c = len(module_values) - 1
             if user_match_prediction_settings:
 
                 # replace with augmented assignment
-                total_weight = total_weight + user_hunch * user_match_prediction_settings[c].weight
+                total_weight += user_hunch * user_match_prediction_settings[c].weight
             elif user_prediction_settings:
-                total_weight = total_weight + user_hunch * user_prediction_settings[c].weight
+                total_weight += user_hunch * user_prediction_settings[c].weight
             else:
-                total_weight = total_weight + user_hunch * prediction_modules[c].weight
+                total_weight += user_hunch * prediction_modules[c].weight
 
         winner_probability = total_weight
-        print 'Total weight {}'.format(winner_probability)
+        #print 'Total weight {}'.format(winner_probability)
 
         if total_weight > 0:
             return Winner(match.hometeam.id, match.hometeam.name, winner_probability)
