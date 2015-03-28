@@ -6,7 +6,7 @@ import shutil
 from app.football_data.football_api_wrapper import FootballAPIWrapper
 
 
-#@unittest.skip("skipping due to the time delay")
+@unittest.skip("skipping due to the time delay")
 class TestFootballAPIWrapper(unittest.TestCase):
     """Testing the Football API Wrapper
         Note that private methods are tested throught the public interface (public methods)
