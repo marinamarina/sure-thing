@@ -182,12 +182,11 @@ class TestPredictionSettings(unittest.TestCase):
         db.session.commit()
 
         self.assertEqual(len(u1.list_match_specific_settings(match_id=match1.id)), 3,
-                             "Length of the list containing match specific settings is equal to 3")
+                         "Length of the list containing match specific settings is equal to 3")
 
         for i in range(0, len(match_specific_settings)):
             self.assertEqual(ModuleUserMatchSettings.query.filter_by(user_id=self.u1.id).all()[i].weight,
                              match_specific_settings[i], "Check that the match specific values are in database")
-
 
         # Check that for the calculation are used match specific settings
         probability = match1.prediction_league_position * mss1.weight \
@@ -256,126 +255,180 @@ class TestPredictionSettings(unittest.TestCase):
         db.session.commit()
 
         self.assertEqual(len(u1.list_match_specific_settings(match_id=match1.id)), 3,
-                         "List user1 match specific settings is not empty")
+                         "List user1 match specific settings contains 3 matches")
 
         for i in range(0, len(user1_match_specific_settings)):
             self.assertEqual(ModuleUserMatchSettings.query.filter_by(user_id=u1.id).all()[i].weight,
                              user1_match_specific_settings[i], "Check that user1 match specific weights are saved")
 
-
         self.assertIsNotNone(u2.list_match_specific_settings(match_id=match1.id),
-                             "List user2 match specific settings is not empty")
+                             "List user2 match specific settings contains 3 matches")
 
         for i in range(0, len(user2_match_specific_settings)):
             self.assertEqual(ModuleUserMatchSettings.query.filter_by(user_id=u2.id).all()[i].weight,
                              user2_match_specific_settings[i], "Check that user2 match specific weights are in saved")
 
-        # make sure that different weights are used for two different users
-        # Check that for the calculation are used match specific settings
+        # make sure that different set of weights are used for two different users in the application
         probability_user_1 = match1.prediction_league_position * mss1_1.weight \
-                      + match1.prediction_form * mss2_1.weight \
-                      + match1.prediction_homeaway * mss3_1.weight
+                           + match1.prediction_form * mss2_1.weight \
+                           + match1.prediction_homeaway * mss3_1.weight
 
         self.assertAlmostEqual(probability_user_1, Match.predicted_winner(match1, u1).probability)
 
-
         probability_user2 = match1.prediction_league_position * mss1_2.weight \
-                        + match1.prediction_form * mss2_2.weight \
-                        + match1.prediction_homeaway * mss3_2.weight
+                           + match1.prediction_form * mss2_2.weight \
+                           + match1.prediction_homeaway * mss3_2.weight
 
         self.assertAlmostEqual(probability_user2, Match.predicted_winner(match1, u2).probability)
 
-    @unittest.skip("")
     def test_actual_winner(self):
-        print ('\n\n-----------------ACTUAL WINNER---------------------')
+        # ACTUAL WINNER
+        # test a sample array of 3 played matches
+        for m in self.u1.list_matches()[0:3]:
+            if m.was_played:
+                self.assertTrue(m.was_played, "The match was played")
 
-        # test a match
-        match3 = self.u1.list_matches()[0]
-        print match3
-        print 'WAS PLAYED?' + str(match3.match.date)
-        print 'Score is '+ str(match3.match.hometeam_score) + ':' +str(match3.match.awayteam_score)
+                if m.match.hometeam_score > m.match.awayteam_score:
+                    self.assertEqual(m.match.actual_winner, m.match.hometeam_id, 'Home win')
+                elif m.match.hometeam_score < m.match.awayteam_score:
+                    self.assertEqual(m.match.actual_winner, m.match.awayteam_id, 'Away win')
+                else:
+                    self.assertEqual(m.match.actual_winner, -1, 'It\'s a draw')
 
-        print 'Actual winner: ' + str(match3.match.actual_winner)
-        self.assertEqual(match3.match.actual_winner, 9092, 'Actual winner was Chelsea')
-
-        # test draw
-        match4 = self.u1.list_matches()[1]
-        print match4
-        print 'WAS PLAYED?' + str(match4.match.date)
-        print 'Score is '+ str(match4.match.hometeam_score) + ':' +str(match4.match.awayteam_score)
-
-        print 'Actual winner: ' + str(match4.match.actual_winner)
-        self.assertEqual(match4.match.actual_winner, -1, 'This is draw')
-
-        # test another match
-        match5 = self.u1.list_matches()[2]
-        print match5
-        print 'WAS PLAYED?' + str(match5.match.date)
-        print 'Score is '+ str(match5.match.hometeam_score) + ':' +str(match5.match.awayteam_score)
-
-        print 'Actual winner: ' + str(match5.match.actual_winner)
-        self.assertEqual(match5.match.actual_winner, 9259, 'Actual winner was Man City')
-
-
-    @unittest.skip("")
     def test_bettor_won(self):
-        print ('\n\n-----------------BETTOR WON---------------------')
+        # BETTOR WON
         match3 = self.u1.list_matches()[0]
         match4 = self.u1.list_matches()[1]
-        match3.committed=True
-        match4.committed=True
+        match3.committed = True
+        match4.committed = True
 
         db.session.add(match3)
         db.session.add(match4)
         db.session.commit()
-        print 'Predicted winner is ' + str (Match.predicted_winner(user=self.u1,match=match3.match).team_winner_id)
-        print 'Actual winner is ' + str(match3.match.actual_winner)
-        print 'Predicted winner is ' + str (Match.predicted_winner(user=self.u1,match=match4.match).team_winner_id)
-        print 'Actual winner is ' + str(match4.match.actual_winner)
 
-        # user guessed it correctly
-        self.assertTrue(match3.bettor_won, 'User predicted match result correctly')
-
-        # the actual result is a draw, user predicted home win
-        self.assertFalse(match4.bettor_won, 'User predicted match result correctly')
+        for m in self.u1.list_matches()[0:2]:
+            if Match.predicted_winner(user=self.u1,match=m.match).team_winner_id == m.match.actual_winner:
+                # user guessed it correctly
+                self.assertTrue(m.bettor_won, 'User predicted match result correctly')
+            else:
+                self.assertFalse(m.bettor_won, 'User has not predicted match result correctly')
 
         # change the settings so user predicts draw
-        mus1=ModuleUserMatchSettings(user_id=self.u1.id, match_id=match4.match.id, module_id=1, weight=0.2)
-        mus2=ModuleUserMatchSettings(user_id=self.u1.id, match_id=match4.match.id, module_id=2, weight=0.3)
-        mus3=ModuleUserMatchSettings(user_id=self.u1.id, match_id=match4.match.id, module_id=3, weight=0.5)
+        match_specific_settings = [0.6, 0.3, 0.1]
 
-        db.session.add(mus1)
-        db.session.add(mus2)
-        db.session.add(mus3)
+        mss1 = ModuleUserMatchSettings(user_id=self.u1.id, match_id=match4.match.id, module_id=1,
+                                       weight=match_specific_settings[0])
+        mss2 = ModuleUserMatchSettings(user_id=self.u1.id, match_id=match4.match.id, module_id=2,
+                                       weight=match_specific_settings[1])
+        mss3 = ModuleUserMatchSettings(user_id=self.u1.id, match_id=match4.match.id, module_id=3,
+                                       weight=match_specific_settings[2])
+
+        db.session.add(mss1)
+        db.session.add(mss2)
+        db.session.add(mss3)
         db.session.commit()
 
-        user_match_prediction_settings = self.u1.list_match_specific_settings(match_id=match4.match.id)
+        for m in self.u1.list_matches()[0:2]:
+            if Match.predicted_winner(user=self.u1,match=m.match).team_winner_id == m.match.actual_winner:
+                # user guessed it correctly
+                self.assertTrue(m.bettor_won, 'User predicted match result correctly')
+            else:
+                self.assertFalse(m.bettor_won, 'User has not predicted match result correctly')
 
-        print user_match_prediction_settings
+    def test_user_hunch_module_contrib_to_draw(self):
+        # TEST user hunch contrib to DRAW
+        u1 = self.u1
+        match1 = self.u1.list_matches()[0]
+        match2 = self.u1.list_matches()[1]
+        match1.committed = True
+        match2.committed = True
 
+        db.session.add(match1)
+        db.session.add(match2)
+        db.session.commit()
 
-        print match4.match.hometeam, match4.match.awayteam
-        print 'LEAGUE_POSITION WINNER: {}, %: {}'.format(str(match4.match.prediction_league_position),
-                                                         mus1.weight
-                                              )
-        print  'FORM WINNER: {}, %: {}'.format(str(match4.match.prediction_form),
-                                               mus2.weight
-                                               )
-        print  'HOME_AWAY WINNER: {}, %:{}'.format(str(match4.match.prediction_homeaway),
-                                                mus3.weight
-                                               )
+        match_specific_settings = [0.0, 0.0, 0.0, 1.0]
 
-        print 'OVERALL WINNER: {}'.format( str(Match.predicted_winner(match4.match, self.u1)) )
+        mss1 = ModuleUserMatchSettings(user_id=u1.id, match_id=match1.match.id, module_id=1,
+                                       weight=match_specific_settings[0])
+        mss2 = ModuleUserMatchSettings(user_id=u1.id, match_id=match1.match.id, module_id=2,
+                                       weight=match_specific_settings[1])
+        mss3 = ModuleUserMatchSettings(user_id=u1.id, match_id=match1.match.id, module_id=3,
+                                       weight=match_specific_settings[2])
+        mss4 = ModuleUserMatchSettings(user_id=u1.id, match_id=match1.match.id, module_id=4,
+                                       weight=match_specific_settings[3])
 
-        self.assertTrue(match4.bettor_won, 'User predicted match result correctly')
+        db.session.add(mss1)
+        db.session.add(mss2)
+        db.session.add(mss3)
+        db.session.add(mss4)
+        db.session.commit()
 
+        # module user hunch changed the result to draw
+        self.assertEqual(Match.predicted_winner(match1.match, u1).team_winner_id, -1,
+                         'User hunch contributed to Draw result')
 
-    @unittest.skip("TO DO: TEST user hunch contrib to DRAW, contrib to changing result")
-    def test_user_hunch_module(self):
-        pass
+    def test_user_hunch_module_contrib_to_change_result(self):
+        # TEST user hunch contrib to DRAW, contrib to changing result
+        # TEST user hunch contrib to DRAW
+        prediction_result = ''
+        u1 = self.u1
+        match1 = self.u1.list_matches()[1]
+        match2 = self.u1.list_matches()[1]
+        match1.committed = True
+        match2.committed = True
 
+        db.session.add(match1)
+        db.session.add(match2)
+        db.session.commit()
 
-    @unittest.skip('')
-    def test_winning_config(self):
-        match=Match.query.filter_by(id=1963810).first()
-        pass
+        # module user hunch changed the result to draw
+        if Match.predicted_winner(match1.match, u1).team_winner_id == match1.match.hometeam_id:
+            # home win
+            prediction_result = 1
+        elif Match.predicted_winner(match1.match, u1).team_winner_id == match1.match.awayteam_id:
+            # away win
+            prediction_result = -1
+        else:
+            # draw
+            prediction_result = 0
+
+        match_specific_settings = [0.0, 0.0, 0.0, 1.0]
+
+        mss1 = ModuleUserMatchSettings(user_id=u1.id, match_id=match1.match.id, module_id=1,
+                                       weight=match_specific_settings[0])
+        mss2 = ModuleUserMatchSettings(user_id=u1.id, match_id=match1.match.id, module_id=2,
+                                       weight=match_specific_settings[1])
+        mss3 = ModuleUserMatchSettings(user_id=u1.id, match_id=match1.match.id, module_id=3,
+                                       weight=match_specific_settings[2])
+        mss4 = ModuleUserMatchSettings(user_id=u1.id, match_id=match1.match.id, module_id=4,
+                                       weight=match_specific_settings[3])
+
+        db.session.add(mss1)
+        db.session.add(mss2)
+        db.session.add(mss3)
+        db.session.add(mss4)
+        db.session.commit()
+
+        # module user hunch changed the result to draw
+        if prediction_result == 1:
+            match1.user_hunch = -100
+            db.session.add(match1)
+            db.session.commit()
+            self.assertEqual(Match.predicted_winner(match1.match, u1, match1.user_hunch).team_winner_id,
+                             match1.match.awayteam_id,
+                             'User hunch changed the prediction')
+        elif prediction_result == -1:
+            match1.user_hunch = 100
+            db.session.add(match1)
+            db.session.commit()
+            self.assertEqual(Match.predicted_winner(match1.match, u1, match1.user_hunch).team_winner_id,
+                             match1.match.hometeam_id,
+                             'User hunch changed the prediction')
+        else:
+            match1.user_hunch = 100
+            db.session.add(match1)
+            db.session.commit()
+            self.assertEqual(Match.predicted_winner(match1.match, u1, match1.user_hunch).team_winner_id,
+                             match1.match.hometeam_id,
+                             'User hunch changed the prediction')

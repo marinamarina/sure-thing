@@ -6,7 +6,6 @@ import shutil
 from app.football_data.football_api_wrapper import FootballAPIWrapper
 
 
-@unittest.skip("skipping due to the time delay")
 class TestFootballAPIWrapper(unittest.TestCase):
     """Testing the Football API Wrapper
         Note that private methods are tested throught the public interface (public methods)
@@ -56,7 +55,7 @@ class TestFootballAPIWrapper(unittest.TestCase):
         # create a new instance with no api key assigned
         faw = FootballAPIWrapper()
         with self.assertRaises(AttributeError):
-            faw.api_key
+            key = faw.api_key
 
     def test_data_dir(self):
         pass
@@ -101,7 +100,7 @@ class TestFootballAPIWrapper(unittest.TestCase):
     def test_league_table(self):
         league_table = self.faw.league_table
         print ("\n")
-        self.assertEqual(len(league_table.items()), 20 , 'There are 20 teams in the premier league')
+        self.assertEqual(len(league_table.items()), 20, 'There are 20 teams in the premier league')
 
     def test_date_tuple(self):
         pass

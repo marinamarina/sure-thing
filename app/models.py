@@ -68,12 +68,12 @@ class Message(db.Model):
             db.session.delete(m)
 
     def __repr__(self):
-        'message representation'
+        """message representation"""
         return '<Message> title: {}, user_id: {}, timestamp: {}'\
             .format(self.title,
                     self.addressee_id,
                     self.timestamp
-        )
+            )
 
 '''class ModelUsingMarkdown(db.Model):
 
@@ -146,6 +146,7 @@ class Comments(db.Model):
 #db.event.listen(Comment.body, 'set', Comment.on_changed_body)
 '''
 
+
 class ModuleUserMatchSettings(db.Model):
     'set custom user % for each match'
     __tablename__='moduleusermatchsettings'
@@ -171,8 +172,8 @@ class PredictionModule(db.Model):
     description = db.Column(db.String(64))
     weight = db.Column(db.Float)
     module = db.relationship('ModuleUserMatchSettings', backref=db.backref('module'),
-                                  lazy='dynamic',
-                                  primaryjoin='ModuleUserMatchSettings.module_id==PredictionModule.id')
+                            lazy='dynamic',
+                            primaryjoin='ModuleUserMatchSettings.module_id==PredictionModule.id')
 
     @staticmethod
     def insert_modules():
@@ -180,7 +181,7 @@ class PredictionModule(db.Model):
             'league_position': 0.50,
             'form': 0.30,
             'home_away': 0.20,
-            'user_hunch' : 0.0
+            'user_hunch': 0.0
         }
         for m in modules:
             module = PredictionModule.query.filter_by(name=m).first()
@@ -199,7 +200,7 @@ class PredictionModule(db.Model):
         )
 
 class ModuleUserSettings(db.Model):
-    'set custom user %'
+    """set custom user %"""
     __tablename__='moduleusersettings'
     user_id=db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
     module_id = db.Column(db.Integer, db.ForeignKey('prediction_modules.id'), primary_key=True)
@@ -238,7 +239,7 @@ class SavedForLater(db.Model):
 
     #TODO
     def update_lsp(self, rate):
-        lsp=0
+        lsp = 0
         rateArr=map(int, rate.split('/'))
         print rateArr
         if rateArr[0] > rateArr[1]:
@@ -302,9 +303,8 @@ class SavedForLater(db.Model):
 
 
                     if savedmatch.bettor_won:
-                        print('111111')
                         print "old value: " + str(savedmatch.bettor.win_points)
-                        savedmatch.bettor.win_points = savedmatch.bettor.win_points + 1
+                        savedmatch.bettor.win_points += 1
                         print "new value: " + str(savedmatch.bettor.win_points)
                         title = "You won a bet for " \
                                + savedmatch.match.hometeam.name \
@@ -316,20 +316,16 @@ class SavedForLater(db.Model):
                         body = "congratulation, you predicted this match results correctly!"
 
                     elif not savedmatch.bettor_won:
-                        print "old value: " + str(savedmatch.bettor.loss_points)
-                        savedmatch.bettor.loss_points = savedmatch.bettor.loss_points+1
-                        print "new value: " + str(savedmatch.bettor.loss_points)
-                        title="You lost a bet for " \
-                              + savedmatch.match.hometeam.name \
-                              + ' vs.' \
-                              + savedmatch.match.awayteam.name \
-                              + ', played on ' \
-                              + savedmatch.match.date
+                        savedmatch.bettor.loss_points += 1
+                        title = "You lost a bet for " \
+                                + savedmatch.match.hometeam.name \
+                                + ' vs.' \
+                                + savedmatch.match.awayteam.name \
+                                + ', played on ' \
+                                + savedmatch.match.date
 
-                        body="unfortunately, you did not predict this match result correctly!"
-                        print('222222222')
+                        body = "unfortunately, you did not predict this match result correctly!"
                     else:
-                        print('33333333')
                         return False
 
                     if predicted_winner is not None:
@@ -433,10 +429,10 @@ class User(UserMixin, db.Model):
     )
 
     match_specific_settings = db.relationship('ModuleUserMatchSettings',
-                                          backref=db.backref('bettor_match', lazy='joined'),
-                                          foreign_keys=[ModuleUserMatchSettings.user_id, PredictionModule.id],
-                                          lazy='dynamic',
-                                          cascade='all, delete-orphan'
+                                              backref=db.backref('bettor_match', lazy='joined'),
+                                              foreign_keys=[ModuleUserMatchSettings.user_id, PredictionModule.id],
+                                              lazy='dynamic',
+                                              cascade='all, delete-orphan'
     )
 
     messages = db.relationship('Message', backref='addressee', lazy='dynamic')
@@ -618,8 +614,10 @@ class Team(db.Model):
     __tablename__ = 'teams'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64), unique=True)
-    hometeam = db.relationship('Match', backref=db.backref('hometeam'), lazy='dynamic', primaryjoin="Match.hometeam_id==Team.id")
-    awayteam = db.relationship('Match', backref=db.backref('awayteam'), lazy='dynamic', primaryjoin="Match.awayteam_id==Team.id")
+    hometeam = db.relationship('Match', backref=db.backref('hometeam'), lazy='dynamic',
+                               primaryjoin="Match.hometeam_id==Team.id")
+    awayteam = db.relationship('Match', backref=db.backref('awayteam'), lazy='dynamic',
+                               primaryjoin="Match.awayteam_id==Team.id")
 
     @property
     def position(self):
@@ -628,8 +626,8 @@ class Team(db.Model):
 
     @property
     def form(self):
-       current_form = faw.league_table[str(self.id)].form
-       return current_form
+        current_form = faw.league_table[str(self.id)].form
+        return current_form
 
     @property
     def last_match(self):
@@ -768,9 +766,9 @@ class Team(db.Model):
 
     @staticmethod
     def insert_teams():
-        '''
+        """
         @param id_names: Dictionary with the ids and names of the league teams
-        '''
+        """
         ids_names = faw.ids_names
 
         for id, name in ids_names.items():
@@ -924,9 +922,9 @@ class Match(db.Model):
 
         # these are the percentages (floats)
         module_values = [match.prediction_league_position,
-                          match.prediction_form,
-                          match.prediction_homeaway,
-                          user_hunch]
+                         match.prediction_form,
+                         match.prediction_homeaway,
+                         user_hunch]
         prediction_modules = PredictionModule.query.all()
         module_length = len(prediction_modules)
         Winner = namedtuple("Winner", "team_winner_id, team_winner_name, probability")
@@ -955,9 +953,9 @@ class Match(db.Model):
             #print module_values[i], float(weight)
 
         if user_hunch != -1:
+            # user hunch is always the last module
             c = len(module_values) - 1
             if user_match_prediction_settings:
-
                 # replace with augmented assignment
                 total_weight += user_hunch * user_match_prediction_settings[c].weight
             elif user_prediction_settings:
@@ -966,7 +964,6 @@ class Match(db.Model):
                 total_weight += user_hunch * prediction_modules[c].weight
 
         winner_probability = total_weight
-        #print 'Total weight {}'.format(winner_probability)
 
         if total_weight > 0:
             return Winner(match.hometeam.id, match.hometeam.name, winner_probability)

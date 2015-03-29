@@ -1,8 +1,6 @@
 import unittest
-import time
-from datetime import datetime
 from app import create_app, db
-from app.models import User, AnonymousUser, Role, Permission, Follow
+from app.models import User, Role
 
 
 class UserModelTestCase(unittest.TestCase):
@@ -24,7 +22,7 @@ class UserModelTestCase(unittest.TestCase):
 
     def test_password_is_read_only(self):
         with self.assertRaises(AttributeError):
-            self.u.password
+            password = self.u.password
 
     def test_password_verification(self):
         self.assertTrue(self.u.verify_password('cat'))

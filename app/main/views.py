@@ -518,32 +518,6 @@ def post(id):
     comments = post.comments.order_by(Comment.timestamp.asc()).all()
 
     return render_template('main/post.html', comments=comments, posts=[post], form=form)
-
-# a unique url to the editor for a blogpost
-@main.route('/post_editor/<int:id>', methods=['POST', 'GET'])
-@login_required
-def post_editor(id):
-
-    form = BlogPostForm()
-    post = Post.query.get_or_404(id)
-
-    if current_user.id != post.author_id and not current_user.can(Permission.ADMINISTER):
-        abort(403)
-    else:
-        if form.validate_on_submit():
-            post.body_html=form.body_html.data
-            post.title=form.title.data
-            post.edited=True
-            try:
-                #add new post
-                db.session.add(post)
-                return redirect(url_for('.index'))
-            except Exception:
-                db.session.flush()
-            finally:
-                flash('You have edited your blogpost, congratulations!')
-
-    return render_template( 'main/post_editor.html', form=form, posts=[post])
 '''
 
 
