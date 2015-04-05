@@ -28,6 +28,7 @@ class FootballAPIWrapper:
         :return: output as a json object
         :raise (Exception('Error: Action was not passed')):
         """
+
         if action is None:
             raise(Exception('Error: Action not passed to call_api'))
 
@@ -57,10 +58,10 @@ class FootballAPIWrapper:
         try:
             response = requests.get(url=url + '&%s' % params, proxies=http_proxy)
             json_response = response.json()
-        except requests.exceptions.ConnectionError as e:
-            print "These aren't the domains we're looking for."
+        except requests.exceptions.ConnectionError:
+            print ("These aren't the domains we're looking for.")
         except requests.exceptions.HTTPError as e:
-            print "A HTTP error occured:", e.message
+            print ("A HTTP error occured:", e.message)
 
         return json_response
 
@@ -126,7 +127,7 @@ class FootballAPIWrapper:
 
         # feeding the dictionary
         output_data = {
-            int(team["stand_team_id"]) : team["stand_team_name"]
+            int(team["stand_team_id"]): team["stand_team_name"]
             for team in standings_data['standings']
         }
 
@@ -244,20 +245,20 @@ class FootballAPIWrapper:
 
                     # create a tuple representing a match
                     matchForFormInfo = MatchForFormInfo(
-                            match.id,
-                            match.date_stamp,
-                            match.date,
-                            match.time_stamp,
-                            match.hometeam_id,
-                            match.awayteam_id,
-                            match.hometeam_name,
-                            match.awayteam_name,
-                            int(match.hometeam_score),
-                            int(match.awayteam_score),
-                            opponent_id,
-                            opponent_name,
-                            outcome,
-                            team_is_at_home
+                        match.id,
+                        match.date_stamp,
+                        match.date,
+                        match.time_stamp,
+                        match.hometeam_id,
+                        match.awayteam_id,
+                        match.hometeam_name,
+                        match.awayteam_name,
+                        int(match.hometeam_score),
+                        int(match.awayteam_score),
+                        opponent_id,
+                        opponent_name,
+                        outcome,
+                        team_is_at_home
                     )
 
                     matches_list.append(matchForFormInfo)
