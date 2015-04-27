@@ -1,4 +1,4 @@
-[![Build Status](https://magnum.travis-ci.com/marinamarina/sure-thing.svg?token=mjEQw6pBznfzG3bFcBry&branch=master)](https://magnum.travis-ci.com/marinamarina/sure-thing)
+![SureThing version number](https://img.shields.io/badge/version-0.1.0-lightgrey.svg) [![Build Status](https://magnum.travis-ci.com/marinamarina/sure-thing.svg?token=mjEQw6pBznfzG3bFcBry&branch=master)](https://magnum.travis-ci.com/marinamarina/sure-thing)
 [![Dependency Status](https://www.versioneye.com/user/projects/54eba57748b34132bb000002/badge.png)](https://www.versioneye.com/user/projects/54eba57748b34132bb000002)
 
 
