@@ -1,7 +1,7 @@
 import os
 import coverage
 from app import create_app, db
-from app.models import User, Role, Permission, Follow, \
+from app.models import User, Role, Permission, \
     Team, Match, SavedForLater, \
     PredictionModule, \
     ModuleUserSettings, \
@@ -58,7 +58,6 @@ def test(coverage=False):
     import unittest
 
     tests = unittest.TestLoader().discover('tests')
-    #Run the unittests
 
     unittest.TextTestRunner(verbosity=1).run(
         tests

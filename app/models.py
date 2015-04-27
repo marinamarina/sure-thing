@@ -73,82 +73,11 @@ class Message(db.Model):
             .format(self.title,
                     self.addressee_id,
                     self.timestamp
-            )
-
-'''class ModelUsingMarkdown(db.Model):
-
-    @staticmethod
-    def on_changed_body(self, target, value, old_value, initiator):
-        allowed_tags = ['a', 'abbr', 'acronym', 'b', 'blockquote', 'code',
-                        'em', 'i', 'li', 'ol', 'pre', 'strong', 'ul',
-                        'h1', 'h2', 'h3', 'p']
-
-        target.body_html = bleach.linkify (bleach.clean(markdown(value, output_format='html')))
-'''
-
-
-'''class Post(db.Model):
-    __tablename__='posts'
-    id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String)
-    body = db.Column(db.Text)
-    body_html = db.Column(db.Text)
-    timestamp = db.Column(db.DateTime(), index=True, default = datetime.utcnow)
-    edited = db.Column(db.Boolean, default=False)
-    author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    comments = db.relationship('Comment', backref='post', lazy='dynamic')
-
-
-    @staticmethod
-    def on_changed_body(self, target, value, old_value, initiator):
-        allowed_tags = ['a', 'abbr', 'acronym', 'b', 'blockquote', 'code',
-                        'em', 'i', 'li', 'ol', 'pre', 'strong', 'ul',
-                        'h1', 'h2', 'h3', 'p']
-
-        target.body_html = bleach.linkify (bleach.clean(markdown(value, output_format='html')))
-
-    def __repr__(self):
-        'posts representation'
-        return '<Post %r> %r %r' % (self.body_html, self.author_id, self.timestamp)
-
-#db.event.listen(Post.body, 'set', Post.on_changed_body)
-
-class Comments(db.Model):
-        __tablename__ = 'comments'
-        id = db.Column(db.Integer, primary_key=True)
-        body = db.Column(db.Text)
-        body_html = db.Column(db.Text)
-        timestamp = db.Column(db.DateTime(), index=True, default = datetime.utcnow)
-
-        #will be used by moderators to supress comments that are offensive
-        disabled = db.Column(db.Boolean, default=False)
-        edited = db.Column(db.Boolean, default=False)
-        author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-        post_id = db.Column(db.Integer, db.ForeignKey('posts.id'))
-
-
-        @staticmethod
-        def on_changed_body(self, target, value, old_value, initiator):
-            allowed_tags = ['a', 'abbr', 'acronym', 'b', 'blockquote', 'code',
-                        'em', 'i', 'li', 'ol', 'pre', 'strong', 'ul',
-                        'h1', 'h2', 'h3', 'p']
-
-            target.body_html = bleach.linkify (bleach.clean(
-                markdown(value, output_format='html'),
-                tags=allowed_tags,
-                strip=True
-            ))
-
-        def __repr__(self):
-            'comment representation'
-            return '<Comment %r> %r %r' % (self.body, self.author_id, self.timestamp)
-
-#db.event.listen(Comment.body, 'set', Comment.on_changed_body)
-'''
+        )
 
 
 class ModuleUserMatchSettings(db.Model):
-    'set custom user % for each match'
+    """set custom user % for each match"""
     __tablename__='moduleusermatchsettings'
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
     match_id = db.Column(db.Integer, db.ForeignKey('savedforlater.match_id'), primary_key=True)
@@ -199,10 +128,11 @@ class PredictionModule(db.Model):
                 self.weight
         )
 
+
 class ModuleUserSettings(db.Model):
     """set custom user %"""
     __tablename__='moduleusersettings'
-    user_id=db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
     module_id = db.Column(db.Integer, db.ForeignKey('prediction_modules.id'), primary_key=True)
     weight = db.Column(db.Float)
     user = db.relationship("User", backref = "user_assocs")
@@ -362,19 +292,6 @@ class SavedForLater(db.Model):
         # match1.match.was_played=False
 
 
-'''
-@event.listens_for(SavedForLater.match, 'before_update')
-def receive_before_update(mapper, connection, target):
-    print("updated!")
-    print target'''
-
-class Follow(db.Model):
-    'following-follower feature'
-    __tablename__='follows'
-    follower_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
-    followed_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
-    timestamp = db.Column(db.DateTime, default=datetime.utcnow)
-
 
 class User(UserMixin, db.Model):
     __tablename__ = 'users'
@@ -396,28 +313,13 @@ class User(UserMixin, db.Model):
     lsp = db.Column(db.Float, default=0, nullable=True)
     role_id = db.Column(db.Integer, db.ForeignKey('roles.id'))
 
-    #posts = db.relationship('Post', backref='author', lazy='dynamic')
-    #comments = db.relationship('Comment', backref='author', lazy='dynamic')
-
-    #foreign key is an optional argument, backreferences in this case are applied to the Follow model,
-    #not to each other
-
-    # I am followed by those users
-    followed = db.relationship('Follow', foreign_keys=[Follow.follower_id],
-                               backref=db.backref('follower', lazy='joined'),
-                               lazy='dynamic',
-                               cascade='all, delete-orphan')
-    # I follow those users
-    followers = db.relationship('Follow', foreign_keys=[Follow.followed_id],
-                                backref=db.backref('followed', lazy='joined'),
-                                lazy='dynamic',
-                                cascade='all, delete-orphan')
 
     # I saved those matches for a review
     saved_matches = db.relationship('SavedForLater',
                                     foreign_keys=[SavedForLater.users_id],
                                     backref=db.backref('user', lazy='joined'),
                                     lazy='dynamic',
+                                    passive_deletes=True,
                                     cascade='all, delete-orphan'
                                     )
 
@@ -475,9 +377,8 @@ class User(UserMixin, db.Model):
         self.last_seen = datetime.utcnow()
         db.session.add(self)
 
-
     def avatar(self, size=230, default='retro', rating='g'):
-        'size is in pixels'
+        """size is in pixels"""
         url='http://gravatar.com/avatar'
         # md hash tag of the user's email address
         hash = hashlib.md5(self.email.encode('utf-8')).hexdigest()
@@ -491,22 +392,6 @@ class User(UserMixin, db.Model):
 
     def is_administrator(self):
         return self.can(Permission.ADMINISTER)
-
-    def follow(self, user):
-        if not self.is_following(user):
-            f = Follow(follower=self, followed=user)
-            db.session.add(f)
-
-    def unfollow(self, user):
-        f=self.followed.filter_by(followed_id=user.id).first()
-        if f:
-            db.session.delete(f)
-
-    def is_following(self, user):
-        return self.followed.filter_by(followed_id=user.id).first() is not None
-
-    def is_followed_by(self, user):
-        return self.follower.filter_by(follower_id=user.user_id).first() is not None
 
     def save_match(self, match):
         if not self.has_match_saved(match):
@@ -536,8 +421,8 @@ class User(UserMixin, db.Model):
         ]
 
     def list_prediction_settings(self, **kwargs):
-       """insert your module id as a parameter in case you want to see only one module value"""
-       return [settings
+        """insert your module id as a parameter in case you want to see only one module value"""
+        return [settings
                 for settings in self.prediction_settings.filter_by(**kwargs)
                 ]
 
@@ -569,18 +454,9 @@ class User(UserMixin, db.Model):
     def password(self, value):
         self.password_hash = generate_password_hash(value)
 
-    # self-follow for users that are already in the database
-    @staticmethod
-    def update_self_follows():
-        for user in User.query.all():
-            user.follow(user)
-            db.session.add(user)
-            print user.followers.count()
-        #db.session.commit()
-        #db.session.close()
 
     def __repr__(self):
-        'user representation'
+        """user representation"""
         return '<User (username={}, real_name={}, location={})>'\
             .format(self.username,
                     self.real_name,
@@ -589,16 +465,13 @@ class User(UserMixin, db.Model):
 
 
 class AnonymousUser(AnonymousUserMixin):
-    'class is assigned to the current user when the user is not logged in'
+    """class is assigned to the current user when the user is not logged in"""
     def can(self):
         return False
 
     def is_administrator(self):
         return False
 
-class ReadOnly(AttributeError):
-        'custom exception'
-        pass
 
 login_manager.anonymous_user = AnonymousUser
 
@@ -752,17 +625,7 @@ class Team(db.Model):
 
     def __init__(self, **kwargs):
         super(Team, self).__init__(**kwargs)
-        #self.league_position = 1
-        '''if self.role is None:
-            if self.email == 'shchukina.marina@gmail.com': #current_app.config['FOOTY_ADMIN']:
-                self.role = Role.query.filter_by(permissions=0xff).first()
-                flash('SUPER POWERS, can I write articles? %r' % self.can(Permission.WRITE_ARTICLES))
-            else:
-                self.role = Role.query.filter_by(default=True).first()
-                flash('COMMONER, can I write articles? %r' % self.can(Permission.WRITE_ARTICLES))'''
 
-        #self.location='Aberdeen'
-        #self.follow(self)
 
     @staticmethod
     def insert_teams():
@@ -810,12 +673,6 @@ class Match(db.Model):
     awayteam_score = db.Column(db.String(4))
     saved_for_later = db.relationship('SavedForLater', backref='saved_matches', lazy='dynamic')
     users_who_saved_match = association_proxy('saved_by_users', 'users_id')
-
-    comments = db.relationship('Comment', backref='match', lazy='dynamic')
-
-    '''def __init__(self, id, hometeam_id, awayteam_id, date, time, date_stamp, time_stamp):
-
-        is_active = True'''
 
     @staticmethod
     def update_all_matches():
@@ -1003,20 +860,3 @@ class Match(db.Model):
             )
 
 db.event.listen(Match.was_played, 'set', SavedForLater.on_changed_match_status, retval=False)
-
-class Comment(db.Model):
-        __tablename__ = 'comments'
-        id = db.Column(db.Integer, primary_key=True)
-        body = db.Column(db.Text)
-        timestamp = db.Column(db.DateTime(), index=True, default = datetime.utcnow)
-
-        #will be used by moderators to supress comments that are offensive
-        disabled = db.Column(db.Boolean, default=False)
-        edited = db.Column(db.Boolean, default=False)
-        author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-        match_id = db.Column(db.Integer, db.ForeignKey('matches.id'))
-
-        def __repr__(self):
-            return "<Comment> id:{}".format(
-                self.id
-            )

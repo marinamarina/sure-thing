@@ -2,7 +2,6 @@ import unittest
 from app import create_app, db
 from app.models import PredictionModule, Role, Match, User, Team, ModuleUserMatchSettings, ModuleUserSettings
 
-@unittest.skip("")
 class TestPredictionSettings(unittest.TestCase):
     def setUp(self):
         self.app = create_app('testing')
@@ -52,7 +51,6 @@ class TestPredictionSettings(unittest.TestCase):
         self.assertTrue(len(self.u1.list_matches()) == 5, 'User saved exactly 5 matches')
 
     def test_system_default_prediction_settings(self):
-
         # TESTING DEFAULT SYSTEM CONFIGURATION
         # TESTING MATCH1
         match1 = self.u1.list_matches()[0].match
@@ -134,7 +132,6 @@ class TestPredictionSettings(unittest.TestCase):
         return prediction_value
 
     def test_user_default_prediction_settings(self):
-
         # TESTING USER  DEFAULT CONFIGURATION
         self.assertTrue(self.u1.list_matches(), 'User saved matches to the dashboard')
         match1 = self.u1.list_matches()[0].match

@@ -1,10 +1,19 @@
 {% extends 'base.html' %}
-{% import "bootstrap/wtf.html" as wtf %}
+
 {% block title %}Unconfirmed{% endblock %}
-{% block inner_container %}
-<p>
-    Dear {{ current_user.username }}, you have not confirmed your account yet.
+
+{% block header %}
+    <header id="head" class="secondary"></header>
+{% endblock header %}
+
+{% block inner_wrapper %}
+    <!-- container -->
+    <div class="change_password container jumbotron">
+        <p> Dear {{ current_user.username }}, you have not confirmed your account yet.
     Please, confirm your account before you can access this site.
-    If you have not received your verification email, please <a href="{{ url_for('auth.resend_verification_email') }} ">click here</a>
-</p>
-{% endblock %}
+    If you have not received your verification email, please <a href="{{ url_for('auth.resend_verification_email') }} ">click here</a></p>
+
+    </div>  
+    <!-- /container -->
+
+{% endblock inner_wrapper %}

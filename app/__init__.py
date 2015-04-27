@@ -19,7 +19,7 @@ monkey.patch_all()
 bootstrap = Bootstrap()
 mail = Mail()
 #database representation
-db = SQLAlchemy()
+db = SQLAlchemy(session_options={'expire_on_commit': False})
 
 login_manager = LoginManager()
 login_manager.session_protection = 'strong'

@@ -127,6 +127,7 @@ def delete_all_messages():
 
 
 @main.route('/leaderboard')
+@login_required
 @templated()
 def leaderboard():
     users=User.query\
@@ -452,25 +453,6 @@ def view_played_match(match_id):
                            predicted_winner=predicted_winner,
                            probability=predicted_probability)
 
-'''   post = Post.query.get_or_404(id)
-    form = CommentPostForm()
-    if form.validate_on_submit():
-        comment = Comment(body=form.body_html.data,
-                          post=post,
-                          author=current_user._get_current_object())
-        try:
-            #add new comment
-            db.session.add(comment)
-            return redirect(url_for('.post', id=post.id))
-        except Exception:
-            db.session.flush()
-        finally:
-            flash('Your comment has been published!')
-
-    comments = post.comments.order_by(Comment.timestamp.asc()).all()
-
-    return render_template('main/post.html', comments=comments, posts=[post], form=form)'''
-
 @main.route('/remove_match/<int:match_id>')
 @login_required
 def remove_match(match_id):
@@ -493,33 +475,6 @@ def remove_match(match_id):
 @templated()
 def admin():
     pass
-
-
-'''
-# a unique url to each blogpost
-@main.route('/post/<int:id>', methods=['GET', 'POST'])
-#@templated
-def post(id):
-    post = Post.query.get_or_404(id)
-    form = CommentPostForm()
-    if form.validate_on_submit():
-        comment = Comment(body=form.body_html.data,
-                          post=post,
-                          author=current_user._get_current_object())
-        try:
-            #add new comment
-            db.session.add(comment)
-            return redirect(url_for('.post', id=post.id))
-        except Exception:
-            db.session.flush()
-        finally:
-            flash('Your comment has been published!')
-
-    comments = post.comments.order_by(Comment.timestamp.asc()).all()
-
-    return render_template('main/post.html', comments=comments, posts=[post], form=form)
-'''
-
 
 @main.route('/follow/<username>')
 @login_required

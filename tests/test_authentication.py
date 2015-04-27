@@ -3,8 +3,9 @@ import unittest
 from flask import url_for
 from app import create_app, db
 from app.models import User, Role, Match
+import bs4
 
-class FlaskClientTestCase(unittest.TestCase):
+class AuthenticationTestCase(unittest.TestCase):
     def setUp(self):
         self.app = create_app('testing')
         self.app_context = self.app.app_context()
@@ -18,16 +19,14 @@ class FlaskClientTestCase(unittest.TestCase):
         db.drop_all()
         self.app_context.pop()
 
-    @unittest.skip("")
-    def test_home_page(self):
+    def test_non_authenticated_user(self):
         response = self.client.get(url_for('main.index'))
-        self.assertTrue(b'Stranger' in response.data)
+        self.assertTrue(b'LOG IN' in response.data)
 
-    @unittest.skip("")
     def test_register_and_login(self):
         # register a new account
         response = self.client.post(url_for('auth.register'), data={
-            'email': 'john@example.com',
+            'email': 'john@mail.com',
             'username': 'john',
             'password': 'cat',
             'password2': 'cat'
@@ -36,21 +35,11 @@ class FlaskClientTestCase(unittest.TestCase):
 
         # login with the new account
         response = self.client.post(url_for('auth.login'), data={
-            'email': 'john@example.com',
+            'email': 'john@mail.com',
             'password': 'cat'
         }, follow_redirects=True)
-        self.assertTrue(re.search(b'Hello,\s+john!', response.data))
-        self.assertTrue(
-            b'You have not confirmed your account yet' in response.data)
 
-        # send a confirmation token
-        user = User.query.filter_by(email='john@example.com').first()
-        token = user.generate_confirmation_token()
-        response = self.client.get(url_for('auth.confirm', token=token),
-                                   follow_redirects=True)
-        self.assertTrue(
-            b'You have confirmed your account' in response.data)
+        self.assertTrue(re.search(b'john', response.data))
 
         # log out
         response = self.client.get(url_for('auth.logout'), follow_redirects=True)
-        self.assertTrue(b'You have been logged out' in response.data)
