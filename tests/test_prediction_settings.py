@@ -60,24 +60,24 @@ class TestPredictionSettings(unittest.TestCase):
         if self.prediction_league_position(match1) > 0:
             self.assertTrue(match1.prediction_league_position > 0)
         else:
-            self.assertTrue(match1.prediction_league_position < 0)
+            self.assertTrue(match1.prediction_league_position <= 0)
 
         if self.prediction_form(match1) > 0:
             self.assertTrue(match1.prediction_form > 0)
         else:
-            self.assertTrue(match1.prediction_form < 0)
+            self.assertTrue(match1.prediction_form <= 0)
 
         # testing form prediction module
         if self.prediction_form(match1) > 0:
             self.assertTrue(match1.prediction_form > 0)
         else:
-            self.assertTrue(match1.prediction_form < 0)
+            self.assertTrue(match1.prediction_form <= 0)
 
         # testing home/away prediction module
         if self.prediction_homeaway(match1) > 0:
             self.assertTrue(match1.prediction_homeaway > 0)
         else:
-            self.assertTrue(match1.prediction_homeaway < 0)
+            self.assertTrue(match1.prediction_homeaway <= 0)
 
         # TESTING MATCH 2
         match2 = self.u1.list_matches()[1].match
@@ -88,24 +88,25 @@ class TestPredictionSettings(unittest.TestCase):
         if self.prediction_league_position(match2) > 0:
             self.assertTrue(match2.prediction_league_position > 0)
         else:
-            self.assertTrue(match2.prediction_league_position < 0)
+            self.assertTrue(match2.prediction_league_position <= 0)
 
         if self.prediction_form(match2) > 0:
             self.assertTrue(match2.prediction_form > 0)
         else:
-            self.assertTrue(match2.prediction_form < 0)
+
+            self.assertTrue(match2.prediction_form <= 0)
 
         # testing form prediction module
         if self.prediction_homeaway(match2) > 0:
             self.assertTrue(match2.prediction_homeaway > 0)
         else:
-            self.assertTrue(match2.prediction_homeaway < 0)
+            self.assertTrue(match2.prediction_homeaway <= 0)
 
         # testing home/away prediction module
         if self.prediction_homeaway(match2) > 0:
             self.assertTrue(match2.prediction_homeaway > 0)
         else:
-            self.assertTrue(match2.prediction_homeaway < 0)
+            self.assertTrue(match2.prediction_homeaway <= 0)
 
     def prediction_league_position(self, match):
         hometeam_diff = 20 - int(match.hometeam.position)

@@ -130,7 +130,7 @@ def delete_all_messages():
 @login_required
 @templated()
 def leaderboard():
-    users=User.query\
+    users = User.query\
               .order_by(User.win_points.desc())\
               .all()
 
