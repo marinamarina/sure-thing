@@ -794,7 +794,7 @@ class Match(db.Model):
 
         # we use module_length-1 because user hunch settings can be only used for a match specific settings
         # user hunch cannot be set by default!!
-        for i in range(0, module_length-1):
+        for i in range(0, module_length - 1):
             if user_match_prediction_settings:
                 #print('User saved match specific settings')
                 weight = user_match_prediction_settings[i].weight
@@ -857,6 +857,6 @@ class Match(db.Model):
             self.was_played,
             self.hometeam_score,
             self.awayteam_score
-            )
+        )
 
 db.event.listen(Match.was_played, 'set', SavedForLater.on_changed_match_status, retval=False)

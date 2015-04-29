@@ -8,11 +8,11 @@ from app import db
 from ..email import send_email
 from sqlalchemy.exc import IntegrityError
 from flask import abort
-from ..decorators_me import admin_required
 
 @auth.before_app_request
 def before_request():
     pass
+    # still todo
     """if current_user.is_authenticated():
 
         if not current_user.confirmed \
@@ -104,9 +104,6 @@ def verify(token):
         flash('The confirmation token has expired!')
     return redirect(url_for('main.index'))
 
-'''The page that is presented to unconfirmed users just renders a template that gives users instructions
-for how to confirm their account and offers a link to request a new confirmation email,
-in case the original email was lost. The route that resends the confirmation email is shown in Example 8-23.'''
 @auth.route('/unconfirmed')
 def unconfirmed():
     if current_user.is_anonymous() or current_user.confirmed:
@@ -152,13 +149,6 @@ def edit_profile():
 
     return render_template('auth/edit_profile.html', user=me, form=form, title='Edit profile')
 
-
-
-@auth.route('/change_email_request', methods=['GET', 'POST'])
-def change_email_request():
-    return redirect( url_for('auth.profile', user=current_user.username) )
-
-
 @auth.route('/change_password.html', methods=['GET', 'POST'])
 @login_required
 def change_password():
@@ -174,31 +164,3 @@ def change_password():
             flash('Incorrect password!')
 
     return render_template('auth/change_password.html', title='Change Password', user=current_user, form=form)
-
-
-@auth.route('/admin_manage_profiles/<int:id>', methods=['GET', 'POST'])
-@login_required
-#@admin_required
-def admin_manage_profiles(id):
-    user = User.query.get_or_404(id)
-    form = AdminManageProfiles(user=user)
-
-    flash(user.username + user.real_name)
-    if form.validate_on_submit():
-        flash('Form is valid')
-        user.username = form.username.data
-        user.email = form.email.data
-        user.confirmed = form.confirmed.data
-        user.real_name = form.real_name.data
-        user.location = form.location.data
-        user.about_me = form.about_me.data
-        user.role = form.role.data
-
-        #db.session.add(user)
-        #db.session.commit()
-
-        flash('You have edited the users profile!' + user.__repr__())
-        return redirect( url_for('.user', username=user.username) )
-    form.confirmed.data = user.confirmed
-
-    return render_template('auth/admin_manage_profiles.html', title='Admin manage profile', form=form, user=user)

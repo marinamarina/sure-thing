@@ -30,7 +30,7 @@ def make_shell_context():
     """make app, db available to the command line"""
     return dict(app=app, db=db, User=User, Role=Role,
                 Permission=Permission,
-                Follow=Follow, Message=Message,
+                Message=Message,
                 Team=Team, Match=Match,
                 SavedForLater=SavedForLater,
                 PredictionModule=PredictionModule,
@@ -48,7 +48,7 @@ def runserver(debug=True): #needs to be changed to False in production or for up
     socketio.run(app, host='127.0.0.1', port=port)
 
 @manager.command
-def test(coverage=False):
+def test(coverage = False):
 
     if coverage and not os.environ.get('FLASK_COVERAGE'):
         import sys

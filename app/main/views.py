@@ -249,19 +249,22 @@ def prediction_settings():
     me = current_user
     form = UserDefaultPredictionSettings()
     #current user prediction settings in the database
+
+    # either I already set weights or use system default
     current_weights = me.prediction_settings.all()
-    modules= PredictionModule.query.all()
+    modules = PredictionModule.query.all()
 
     if form.validate_on_submit():
 
         for module in modules:
-            # if user already has set custom weights in the database
+            # if user already has set default weights in the database
             if current_weights:
                 settings_item = ModuleUserSettings.query.filter_by(user_id=me.id, module_id=module.id).first()
             else:
+                # adding weights for the first time
                 settings_item = ModuleUserSettings(user_id=me.id, module_id=module.id)
 
-            settings_item.weight = float(form[module.name + '_weight'].data)/100
+            settings_item.weight = float(form[module.name + '_weight'].data) / 100
 
             try:
                 db.session.add(settings_item)
@@ -274,8 +277,9 @@ def prediction_settings():
         #flash('You have saved your default prediction settings, congratulations!')
 
     # if user has no betting settings, make each current weight equal to an empty string
-    if not current_weights:
-        current_weights = ['' for i in range(0, len(modules))]
+
+    """if not current_weights:
+        current_weights = ['' for i in range(0, len(modules))]"""
 
 
     return render_template( 'main/prediction_settings.html', user=me, form=form, current_weights=current_weights)
@@ -573,65 +577,6 @@ def terms_and_conditions():
 @main.route('/privacy_policy')
 def privacy_policy():
     return render_template('main/privacy_policy.html', user=current_user, title='Privacy Policy')
-
-'''
-@main.route('/moderate')
-@login_required
-@permission_required(Permission.MODERATE_COMMENTS)
-def moderate():
-    comments = Comment.query.order_by(Comment.timestamp.desc())
-    return render_template('main/moderate.html', comments=comments)
-
-@main.route('/moderate_enable/<int:id>')
-@login_required
-#@permission_required(Permission.MODERATE_COMMENTS)
-def moderate_enable(id):
-    comment = Comment.query.get_or_404(id)
-    comment.disabled = False
-    db.session.add(comment)
-    return redirect(url_for('.moderate'))
-
-@main.route('/moderate_disable/<int:id>')
-@login_required
-#@permission_required(Permission.MODERATE_COMMENTS)
-def moderate_disable(id):
-    comment = Comment.query.get_or_404(id)
-    comment.disabled = True
-    db.session.add(comment)
-    return redirect(url_for('.moderate'))'''
-
-'''@threads.on('my event', namespace='/test')
-def test_message(message):
-    session['receive_count'] = session.get('receive_count', 0) + 1
-    emit('my response',
-         {'data': message['data'], 'count': session['receive_count']})
-
-
-@threads.on('my broadcast event', namespace='/test')
-def test_message(message):
-    session['receive_count'] = session.get('receive_count', 0) + 1
-    emit('my response',
-         {'data': message['data'], 'count': session['receive_count']},
-         broadcast=True)
-
-@threads.on('join', namespace='/test')
-def join(message):
-    join_room(message['room'])
-    session['receive_count'] = session.get('receive_count', 0) + 1
-    emit('my response',
-         {'data': 'In rooms: ' + ', '.join(request.namespace.rooms),
-          'count': session['receive_count']})
-
-
-@threads.on('connect', namespace='/test')
-def test_connect():
-    emit('my response', {'data': 'Connected', 'count': 0})
-
-
-@threads.on('disconnect', namespace='/test')
-def test_disconnect():
-    print('Client disconnected')'''
-
 
 @socketio.on('hunch_updated', namespace='/test')
 def handle_message(message):

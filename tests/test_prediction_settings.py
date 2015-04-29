@@ -2,6 +2,7 @@ import unittest
 from app import create_app, db
 from app.models import PredictionModule, Role, Match, User, Team, ModuleUserMatchSettings, ModuleUserSettings
 
+
 class TestPredictionSettings(unittest.TestCase):
     def setUp(self):
         self.app = create_app('testing')

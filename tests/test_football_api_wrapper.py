@@ -26,7 +26,7 @@ class TestFootballAPIWrapper(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls):
-        #shutil.rmtree(cls.faw.datadir)
+        shutil.rmtree(cls.faw.datadir)
         cls.faw = None
 
     #@unittest.skip("")
