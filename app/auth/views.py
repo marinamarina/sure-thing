@@ -12,7 +12,7 @@ from flask import abort
 @auth.before_app_request
 def before_request():
     pass
-    # still todo
+    # TODO (if user is not confirmed, redirect to unconfirmed page)
     """if current_user.is_authenticated():
 
         if not current_user.confirmed \

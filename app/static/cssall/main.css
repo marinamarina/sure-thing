@@ -1,4 +1,4 @@
-/* CSS files concatenated |  12-03-2015 */
+/* CSS files concatenated |  29-04-2015 */
 /*******************************/
 /*         Navigation         */
 /*******************************/
@@ -313,10 +313,6 @@ li.separate {
   width: 2.5em !important;
 }
 
-.breadcrumb--with-margin {
-  margin-left: 40px !important;
-}
-
 .small-text {
   font-size: 0.9em;
   color: #777;
@@ -337,6 +333,14 @@ body#surething {
 }
 
 /* Layout specific */
+* {
+  margin: 0;
+}
+
+html, body {
+  height: 100%;
+}
+
 .secondary-small {
   height: 100px;
   min-height: 100px;
@@ -425,6 +429,11 @@ body#surething {
   margin: 0;
 }
 
+.breadcrumb--with-margin {
+  margin-left: 40px !important;
+}
+
+/* Inner wrapper */
 /* Footer */
 .footer1 .widget {
   font-size: 1.1em;
@@ -862,6 +871,7 @@ body#surething {
 }
 .dashboard {
   position: relative;
+  min-height: 350px;
 }
 
 .dashboard__saved-matches {
@@ -874,7 +884,7 @@ body#surething {
 }
 
 .match__status {
-  margin-bottom: 60px 0;
+  margin: 60px 0;
 }
 
 .match__predicted-winner {

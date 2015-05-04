@@ -1,5 +1,6 @@
 .dashboard {
 	position: relative;
+    min-height: 350px;
 }
 .dashboard__saved-matches {
 	margin-top: 0;
@@ -10,7 +11,7 @@
 	}
 }
 .match__status {
-	margin-bottom: 60px 0;
+	margin: 60px 0;
 }
 .match__predicted-winner  {
 	color: #FF981C;

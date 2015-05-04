@@ -4,6 +4,8 @@ body#surething {
     -webkit-font-smoothing: antialiased;
 }
 /* Layout specific */
+* { margin: 0; }
+html, body { height: 100%; }
 .secondary-small { height:100px; min-height: 100px; padding-top:0px; }
 
 /* General styles */
@@ -66,6 +68,12 @@ body#surething {
 .breadcrumb {
     margin: 0;
 }
+.breadcrumb--with-margin {
+    margin-left: 40px!important;
+}
+
+/* Inner wrapper */
+
 /* Footer */
 .footer1 {
     .widget {

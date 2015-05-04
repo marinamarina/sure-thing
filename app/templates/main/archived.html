@@ -18,14 +18,23 @@
 
         <!--dashboard archived-->
         <div class="dashboard-archived jumbotron container content-wrap">
+            <!--breadcrumbs-->
             <ol class="breadcrumb breadcrumb--with-margin">
                 <li><a href="{{ url_for('.index') }}">Home</a></li>
                 <li><a href="{{ url_for('.dashboard') }}">Dashboard</a></li>
                 <li class="active">Archived Matches</li>
             </ol>
+            <!--/breadcrumbs-->
 
-            {% if savedmatches.length != 0 %}
+            {% if savedmatches %}
                 {% include 'includes/saved_matches.inc.html' %}
+            {% else %}
+                <div class="dashboard__no-matches text-center">
+                    <p>This is your dashboard!</p>
+                    <p><i class="fa fa-dashboard fa-5x"></i></p>
+                    <p>There are no archived matches :-(</p>
+                </div>
+
             {% endif %}
         </div>
         <!--/dashboard archived-->
