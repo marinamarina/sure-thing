@@ -3,7 +3,7 @@
 
 
 # Football Prediction Application
-This repository contains the codebase for my Major Project (i.e. dissertation) at Robert Gordon University, and is currently a work in progress.
+This repository contains the codebase for my Major Project (i.e. dissertation) at Robert Gordon University.
 
 ## Overview
 
@@ -39,9 +39,6 @@ to do...
 Run the unit tests:
 
 run `python manage.py test`
-
-
-Please see my [SureThing website](http://www.surething.click/) to see the working application. 
 
 ## License
 This project is free and released as open source software covered by the terms of the [GNU Public License](http://www.gnu.org/licenses/gpl-3.0.html) (GPL v3). You may not use the software, documentation, and samples exc
