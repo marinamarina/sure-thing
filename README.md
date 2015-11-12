@@ -1,4 +1,5 @@
 [![SureThing version number](https://img.shields.io/badge/version-0.1.0-lightgrey.svg) [![Build Status](https://travis-ci.org/ChrisBAshton/smartresolution.svg?branch=master)](https://travis-ci.org/marinamarina/sure-thing) [![Dependency Status](https://www.versioneye.com/user/projects/54eba57748b34132bb000002/badge.png)](https://www.versioneye.com/user/projects/54eba57748b34132bb000002)
+[![License](https://img.shields.io/badge/license-GPLv3-blue.svg)](http://www.gnu.org/licenses/gpl-3.0.html)
 
 
 # Football Prediction Application
