@@ -50,7 +50,7 @@ class FootballAPIWrapper:
 
         if self._proxy_on:
             http_proxy = {
-                "http": "http://1014481:He1kin2013@proxy1.rgu.ac.uk:8080/"
+                "http": "http://1014481:password@proxy1.rgu.ac.uk:8080/"
             }
         else:
             http_proxy = {}
