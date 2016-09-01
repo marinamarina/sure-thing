@@ -11,29 +11,6 @@ monkey.patch_all()
 thread = Thread()
 thread_stop_event = Event()
 
-
-class RandomThread(Thread):
-    def __init__(self):
-        self.delay = 400 #seconds change to 6000
-        super(RandomThread, self).__init__()
-
-    def randomNumberGenerator(self):
-        """
-        Generate a random number every 100 second and emit to a threads instance (broadcast)
-        Ideally to be run in a separate thread?
-        """
-        #infinite loop of magical random numbers
-        print "Making random numbers"
-        while not thread_stop_event.isSet():
-            number = round(random()*10, 3)
-            print number
-            socketio.emit('newnumber', {'number': number}, namespace='/test')
-            sleep(self.delay)
-
-    def run(self):
-        self.randomNumberGenerator()
-
-
 class DataUpdateThread(Thread):
     def __init__(self):
         self.delay = 100 #seconds
