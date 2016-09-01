@@ -1,4 +1,4 @@
-[![SureThing version number](https://img.shields.io/badge/version-0.1.0-lightgrey.svg) [![Build Status](https://travis-ci.org/ChrisBAshton/smartresolution.svg?branch=master)](https://travis-ci.org/marinamarina/sure-thing) 
+[![SureThing version number](https://img.shields.io/badge/version-0.1.0-lightgrey.svg)] [![Build Status](https://travis-ci.org/ChrisBAshton/smartresolution.svg?branch=master)](https://travis-ci.org/marinamarina/sure-thing) 
 [![Coverage](https://img.shields.io/codecov/c/github/request/request.svg?style=flat-square)](https://codecov.io/github/request/request?branch=master)
 [![Coverage](https://img.shields.io/coveralls/request/request.svg?style=flat-square)](https://coveralls.io/r/request/request)
 [![Dependency Status](https://www.versioneye.com/user/projects/54eba57748b34132bb000002/badge.png)](https://www.versioneye.com/user/projects/54eba57748b34132bb000002)
